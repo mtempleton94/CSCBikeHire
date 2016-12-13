@@ -92,5 +92,35 @@ public class ProjectManager {
 // END :: Add New Booking	
 //==========================================================
 	
+		
+//==========================================================	
+// Add New Booking	
+//==========================================================
+		public ArrayList<BookingObject> DeleteBooking(String employee, String date, String timeslot) throws Exception 
+		{
+			ArrayList<BookingObject> feeds = null;
+			try 
+			{
+				Database database = new Database();
+				Connection connection = database.Get_Connection();
+				java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				connection.setAutoCommit(false);    
+				String deleteStatement = "DELETE FROM bikehire.booking WHERE emailAddress='"+employee+"' AND date='"+date+"' AND timeslot='"+timeslot+"';";
+				System.out.println("Delete: " + deleteStatement);
+				connection.setAutoCommit(false);
+				stmt.addBatch(deleteStatement);
+				stmt.executeBatch();
+				connection.commit();
+			}
+			catch (Exception e)
+			{
+				System.out.println("Error: " + e.getMessage());
+				throw e;
+			}
+			return feeds;
+		}
+//==========================================================	
+// END :: Add New Booking	
+//==========================================================
 	
 }
