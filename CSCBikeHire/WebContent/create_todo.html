@@ -162,6 +162,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout)
 		$scope.result.forEach(function(date) {
 		    $scope.updadeBookingDisplay(date);
 		});
+
 		$scope.getUserBookings();
 	});
 //=====================================================================================
@@ -236,8 +237,17 @@ app.controller("HttpGetController", function ($scope, $http, $timeout)
     	        });
     	}
     	
-
-		//Update the display
+    	$scope.updateDisplay();
+    };
+//=====================================================================================
+// END :: SendData 
+//=====================================================================================	 
+	
+	
+	
+	$scope.updateDisplay = function()
+	{
+			//Update the display
 		setTimeout(function () {
 		    $scope.$apply(function () {
 		         $http.get('http://localhost:8080/CSCBikeHire/rest/todos/data')  
@@ -247,15 +257,14 @@ app.controller("HttpGetController", function ($scope, $http, $timeout)
 	        		$scope.result.forEach(function(date) {
 	        		    $scope.updadeBookingDisplay(date);
 	        		});
+
 	        		$scope.getUserBookings(); //Get the current user's bookings
 	        		$scope.selectedBookings = []; //Clear the array of selected items
 		    	});
 		    });
 		}, 1000);
-    };
-//=====================================================================================
-// END :: SendData 
-//=====================================================================================	 
+	}
+	
 	
 	
 	
@@ -332,6 +341,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout)
 			}
 		else
 			{
+			console.log(arrayCount);
 			$scope.myBookingsArray[arrayCount].timeslots += "-"+date.timeslot;
 			}
 		lastDate = formattedDate; 
@@ -388,26 +398,50 @@ app.controller("HttpGetController", function ($scope, $http, $timeout)
 //=====================================================================================
 // Cancel Booking
 //=====================================================================================		
+	var cancelDate;
+	var cancelTime;
+	
 	$scope.cancelBooking = function(date, timeslot) 
 	{
 		document.getElementById('cancelOverlay').style.display = 'block';
 		var element = document.getElementById("cancelDateTime");
-		element.innerHTML = date + " at " + timeslot;		
+		element.innerHTML = date + " at " + timeslot;
+		cancelDate = date;
+		cancelTime = timeslot;
 	}
 	
 	$scope.confirmCancel = function() 
 	{
 		document.getElementById('cancelOverlay').style.display = 'none';
-		
 		var deleteData = $.param({
-            employeeID: "swilson6",
-			date: date,
-            timeslot: timeslot
+            employeeID: currentUser,
+			date: cancelDate,
+            timeslot: cancelTime
         });
-		
-	      $http.delete('http://localhost:8080/CSCBikeHire/rest/todos/delete', deleteData, config)  
+	      $http.delete('http://localhost:8080/CSCBikeHire/rest/todos/delete/'+currentUser+'/'+convertDateSQL(cancelDate)+'/'+cancelTime, deleteData, config)      
 	        .success(function (deleteData, status, headers, config) {
 	            $scope.PostDataResponse = deleteData;
+	          //  
+	            
+	            //Update My Bookings Display
+	            //$scope.displayMyBookingsContent();	            
+	            
+	            for(var i = 0; i < $scope.myBookingsArray.length; i++) 
+	            {
+    			var obj = $scope.myBookingsArray[i];
+    			
+	    			if(obj.date == cancelDate && obj.timeslots.indexOf("-") == -1) 
+	    			{
+	    				var bookingID = $scope.myBookingsArray[i].date+"-"+$scope.myBookingsArray[i].timeslots;
+	    				$scope.changeTimeslotColour(document.getElementById(bookingID),1); // Manually set timeslot colour
+	    				$scope.myBookingsArray.splice(i, 1);
+	    				arrayCount--;
+	    			}
+				}
+	            $scope.updateDisplay();
+	
+	            
+	            
 	        })
 	        .error(function (deleteData, status, header, config) {
 	            $scope.ResponseDetails = "Data: " + deleteData +

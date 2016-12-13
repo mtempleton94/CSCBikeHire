@@ -11,7 +11,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.Produces; 
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -140,7 +140,7 @@ public class TodosResource {
 // Delete a Booking      
 //======================================================================      
              @DELETE
-             @Path("/delete")
+             @Path("/delete/{employeeID}/{date}/{timeslot}")
              @Produces(MediaType.TEXT_HTML)
              @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
              public void deleteBooking(@PathParam("employeeID") String employeeID,
@@ -149,10 +149,10 @@ public class TodosResource {
                      @Context HttpServletResponse servletResponse) throws IOException {
              	try{
              		System.out.println("DELETE " + employeeID +" "+ date +" "+ timeslot);
-                    /* ArrayList<BookingObject> feedData = null; 
+                     ArrayList<BookingObject> feedData = null; 
              		ProjectManager projectManager= new ProjectManager();
-             		feedData = projectManager.PostFeeds(employeeID, date, timeslot);
-                     servletResponse.sendRedirect("../create_todo.html");*/
+             		feedData = projectManager.DeleteBooking(employeeID, date, timeslot);
+                    // servletResponse.sendRedirect("../../../create_todo.html");
              	} catch(Exception e) {
              		System.out.println("Exception: " + e.getMessage());
              	}
