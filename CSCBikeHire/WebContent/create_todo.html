@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+<meta charset="ISO-8859-1">
+<title>My Client</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/angular.min.js"></script> 
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+		<font face="arial black,arial">
+</head>
+<body ng-controller="HttpGetController">
+
+  	<div class="overlay" id="overlay">
+ 		<div  class="confirmBookingWindow" id="confirmBookingWindow">
+ 			<div ng-repeat="booking in selectedBookings">{{booking}}</div>
+ 			<button ng-click="confirmConfirmation()">Confirm</button>
+			<button ng-click="cancelConfirmation()">Cancel</button>
+ 		</div>
+ 		<div  class="statDecWindow" id="statDecWindow">
+ 			<p>I will not sell the bike in exchange for magic beans.</p>
+ 			<button ng-click="agreeStatDec()">I Agree</button>
+			<button ng-click="cancelConfirmation()">I Do Not Agree</button>
+ 		</div>
+	</div> 
+ 
+ 
+  	<div class="cancelOverlay" id="cancelOverlay">
+ 		<div  class="cancelBookingWindow" id="cancelBookingWindow">
+ 			<p id="cancelBookingMessage">Are you sure you want to cancel this booking?</p>
+ 			<p id="cancelDateTime"></p>
+ 			<button ng-click="confirmCancel()">Confirm</button>
+			<button ng-click="cancelCancel()">Cancel</button>
+ 		</div>
+	</div> 
+ 
+
+
+<div class="header" id="header" >
+  <img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
+</div>
+
+
+
+
+
+
+<div class="navPanelContainer" id="navPanelContainer">
+
+</div>
+
+<div class="navPanel" id="navPanel">
+	<div class="tabs" id="tabs">
+  		<div class="tablink" id="HireABikeTab" ng-click="openTab(event, 'HireABike');">Hire a Bike</div>
+  		<div class="tablink" id="MyBookingsTab" ng-click="openTab(event, 'MyBookings');">My Bookings</div>
+	</div>
+  </div>
+
+
+
+
+
+<div id="HireABike" class="tabBody">
+
+
+
+  <div ng-repeat="date in dates">
+  		<div class="day">   
+			<div class= "dayComponent">        
+            	<p>{{date.dayWord}}</p><p>{{date.dayNum}}</p><p>{{date.monthWord}}</p>
+         	</div>
+
+            <div class= "dayComponent" id="{{date.fullDate}}-1" ng-style="setBackground" ng-click="selectBooking(date.fullDate, 1);">        
+               <p> 8 - 11 </p>
+           	</div>
+
+            <div class= "dayComponent" id="{{date.fullDate}}-2" ng-style="setBackground" ng-click="selectBooking(date.fullDate, 2);">        
+             	<p> 11 - 2 </p>
+       		</div>
+
+            <div class= "dayComponent" id="{{date.fullDate}}-3" ng-style="setBackground" ng-click="selectBooking(date.fullDate, 3);">        
+              <p> 2 - 5 </p>
+         	</div>
+     	</div>
+  </div>
+  
+  <div class="right-corder-container">
+    <button class="right-corder-container-button" ng-click="makeBooking();">
+        <span class="short-text">+</span>
+    </button>
+</div>
+
+
+
+
+
+ 
+ </div> 
+  
+  
+  
+
+  <div id="MyBookings" class="tabBody">
+      
+      <div ng-repeat="booking in myBookingsArray">
+              
+             <div class= "myBookingEntry" id="{{booking.date}}">        
+               <div class="mb-day">   
+					<div class= "mb-dayComponent">        
+            			<p>{{booking.date}}</p>
+         			</div>
+
+            		<div class= "mb-dayComponent" id="mb-{{booking.date}}-1">        
+		               <p> 8 - 11 </p> <p ng-click="cancelBooking(booking.date, 1);">X</p>
+		           	</div>
+
+		            <div class= "mb-dayComponent" id="mb-{{booking.date}}-2" ng-style="setBackground">        
+		             	<p> 11 - 2 </p> <p ng-click="cancelBooking(booking.date, 2);">X</p>
+		       		</div>
+
+		            <div class= "mb-dayComponent" id="mb-{{booking.date}}-3" ng-style="setBackground">        
+		              <p> 2 - 5 </p>  <p ng-click="cancelBooking(booking.date, 3);">X</p>
+		         	</div>
+     			</div>
+           	</div>
+         
+         
+     	</div>
+    
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<script type="text/javascript">
+
+var app = angular.module("app", []);
+
+app.controller("HttpGetController", function ($scope, $http, $timeout) 
+{
+	var currentUser = "swilson6";
+//=====================================================================================
+// Get All User Bookings 
+//=====================================================================================	
+	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/data')  
+	.success(function(response)
+	{	
+		$scope.result = response;
+		$scope.result.forEach(function(date) {
+		    $scope.updadeBookingDisplay(date);
+		});
+		$scope.getUserBookings();
+	});
+//=====================================================================================
+// END :: Get All User Bookings 
+//=====================================================================================		
+	
+
+	
+//=====================================================================================
+// Get Current User Bookings 
+//=====================================================================================	 
+	$scope.getUserBookings = function () 
+    {
+
+	var data = $.param({employeeID: currentUser});
+	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userbookings/'+currentUser, data)  
+	.success(function(userBookingResponse)
+	{	
+		$scope.userBookingResult = userBookingResponse;
+		$scope.userBookingResult.forEach(function(date) {
+			    $scope.updadeBookingDisplayUser(date);
+			    scroll();
+		});
+	});
+    };
+//=====================================================================================
+// END :: Get Current User Bookings 
+//=====================================================================================	 	
+	
+  
+	
+
+	
+	
+	
+	
+	
+
+//=====================================================================================
+// SendData 
+//=====================================================================================
+  
+    var bookings = [];
+	var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
+	$scope.agreeStatDec = function () 
+    {
+		document.getElementById('overlay').style.display = 'none';
+		document.getElementById('confirmBookingWindow').style.display = 'block';
+		document.getElementById('statDecWindow').style.display = 'none';
+    	
+		var arrayLength = $scope.selectedBookings.length;
+    	for (var i = 0; i < arrayLength; i++) 
+    	{
+    		var dateTimeslot = $scope.selectedBookings[i].split("-"); 
+    		var sqlDate = convertDateSQL(dateTimeslot[0]);
+    		
+    		var data = $.param({
+    	            employeeID: currentUser,
+    				date: sqlDate,
+    	            timeslot: dateTimeslot[1]
+    	        });
+    	        
+    	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos', data, config)  
+    	        .success(function (data, status, headers, config) {
+    	            $scope.PostDataResponse = data;
+    	        })
+    	        .error(function (data, status, header, config) {
+    	            $scope.ResponseDetails = "Data: " + data +
+    	                "<hr />status: " + status +
+    	                "<hr />headers: " + header +
+    	                "<hr />config: " + config;
+    	        });
+    	}
+    	
+
+		//Update the display
+		setTimeout(function () {
+		    $scope.$apply(function () {
+		         $http.get('http://localhost:8080/CSCBikeHire/rest/todos/data')  
+	        	.success(function(response)
+	        	{	
+	        		$scope.result = response;
+	        		$scope.result.forEach(function(date) {
+	        		    $scope.updadeBookingDisplay(date);
+	        		});
+	        		$scope.getUserBookings(); //Get the current user's bookings
+	        		$scope.selectedBookings = []; //Clear the array of selected items
+		    	});
+		    });
+		}, 1000);
+    };
+//=====================================================================================
+// END :: SendData 
+//=====================================================================================	 
+	
+	
+	
+	
+	
+//=====================================================================================
+// Convert Dates to appropriate format
+//=====================================================================================	
+	function convertDateSQL(date)
+	{
+		var dateComponents = date.split("/"); 
+		var sqlFormatDate = dateComponents[2]+"-"+dateComponents[1]+"-"+dateComponents[0];
+		return sqlFormatDate;
+	}
+	
+	function convertDateJS(date)
+	{
+		var dateComponents = date.split("-"); 
+		var sqlFormatDate = dateComponents[2]+"/"+dateComponents[1]+"/"+dateComponents[0];
+		return sqlFormatDate;
+	}
+//=====================================================================================
+// END :: Convert Dates to appropriate format
+//=====================================================================================	
+	
+
+	
+	//Colours
+		// 1 = White
+		// 2 = Red
+		// 3 = Green
+		// 4 = Black
+	$scope.updadeBookingDisplay = function(date) 
+	{
+		//Timeslot 1
+		var bookingID = date.date+"-1";
+		if(date.timeslot1 < 5)
+			$scope.changeTimeslotColour(document.getElementById(bookingID),1);
+		else
+			$scope.changeTimeslotColour(document.getElementById(bookingID),2);
+
+		//Timeslot 2
+		bookingID = date.date+"-2";
+		if(date.timeslot1 < 5)
+			$scope.changeTimeslotColour(document.getElementById(bookingID),1);
+		else
+			$scope.changeTimeslotColour(document.getElementById(bookingID),2);
+		
+		//Timeslot 3
+		bookingID = date.date+"-3";
+		if(date.timeslot1 < 5)
+			$scope.changeTimeslotColour(document.getElementById(bookingID),1);
+		else
+			$scope.changeTimeslotColour(document.getElementById(bookingID),2);
+	}
+
+
+
+//=====================================================================================
+// Create array of user bookings 
+//=====================================================================================	
+	var lastDate = "00/00/0000";
+	$scope.myBookingsArray = new Array();
+	var arrayCount = -1;
+	$scope.updadeBookingDisplayUser = function(date) 
+	{
+		var formattedDate = convertDateJS(date.date);
+		var bookingID = formattedDate+"-"+date.timeslot;
+		$scope.changeTimeslotColour(document.getElementById(bookingID),3);
+		if(lastDate != formattedDate)
+			{
+			arrayCount++;
+			$scope.myBookingsArray.push({"date":formattedDate, "timeslots":date.timeslot});
+			}
+		else
+			{
+			$scope.myBookingsArray[arrayCount].timeslots += "-"+date.timeslot;
+			}
+		lastDate = formattedDate; 
+	}
+//=====================================================================================
+// END :: Create array of user bookings 
+//=====================================================================================	
+	
+	
+	
+//=====================================================================================
+// Disply content in My Bookings 
+//=====================================================================================		
+	$scope.displayMyBookingsContent = function() 
+	{
+		for (var i in $scope.myBookingsArray) 
+		{
+			var timeslots = $scope.myBookingsArray[i].timeslots.split("-"); 
+    		
+			for (var j in timeslots) 
+			{
+				document.getElementById("mb-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).style.display = 'inline-block';
+			}
+		}
+	}
+//=====================================================================================
+// END :: Disply content in My Bookings 
+//=====================================================================================		
+	
+
+	$scope.changeTimeslotColour = function(element, color) 
+	{
+    	switch(color) 
+    	{
+        case 1:
+        	var backgroundColor = "rgba(255, 255, 255, 0.4)";
+			break;
+        case 2:
+        	var backgroundColor = "rgba(255, 0, 0, 0.4)";
+            break;
+        case 3:
+        	var backgroundColor = "rgba(0, 255, 0, 0.4)";
+            break;
+        case 4:
+        	var backgroundColor = "rgba(0, 0, 0, 0.4)";
+            break;
+    	} 
+    	element.style.background = backgroundColor;
+	}
+	
+	
+	
+	
+//=====================================================================================
+// Cancel Booking
+//=====================================================================================		
+	$scope.cancelBooking = function(date, timeslot) 
+	{
+		document.getElementById('cancelOverlay').style.display = 'block';
+		var element = document.getElementById("cancelDateTime");
+		element.innerHTML = date + " at " + timeslot;		
+	}
+	
+	$scope.confirmCancel = function() 
+	{
+		document.getElementById('cancelOverlay').style.display = 'none';
+		
+		var deleteData = $.param({
+            employeeID: "swilson6",
+			date: date,
+            timeslot: timeslot
+        });
+		
+	      $http.delete('http://localhost:8080/CSCBikeHire/rest/todos/delete', deleteData, config)  
+	        .success(function (deleteData, status, headers, config) {
+	            $scope.PostDataResponse = deleteData;
+	        })
+	        .error(function (deleteData, status, header, config) {
+	            $scope.ResponseDetails = "Data: " + deleteData +
+	                "<hr />status: " + status +
+	                "<hr />headers: " + header +
+	                "<hr />config: " + config;
+	        });
+		
+		
+	}
+		
+	$scope.cancelCancel = function() 
+	{
+		document.getElementById('cancelOverlay').style.display = 'none';
+	}
+
+//=====================================================================================
+// END :: Cancel Booking 
+//=====================================================================================	
+	
+	
+	
+	
+	
+//=====================================================================================
+// Generate Array of Dates
+//=====================================================================================
+     var weekday = new Array(7);
+	 weekday[0]=  "Sun";
+	 weekday[1] = "Mon";
+	 weekday[2] = "Tue";
+	 weekday[3] = "Wed";
+	 weekday[4] = "Thu";
+	 weekday[5] = "Fri";
+	 weekday[6] = "Sat";
+	 
+	 var month = new Array();
+	 month[0] = "Jan";
+	 month[1] = "Feb";
+	 month[2] = "Mar";
+	 month[3] = "Apr";
+	 month[4] = "May";
+	 month[5] = "Jun";
+	 month[6] = "Jul";
+	 month[7] = "Aug";
+	 month[8] = "Sep";
+	 month[9] = "Oct";
+	 month[10] = "Nov";
+	 month[11] = "Dec";
+ 
+	
+	Date.prototype.addDays = function(days) {
+        var dat = new Date(this.valueOf())
+        dat.setDate(dat.getDate() + days);
+        return dat;
+    }
+	
+	function getFullDate(today){
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if(dd<10){
+		    dd='0'+dd
+		} 
+		if(mm<10){
+		    mm='0'+mm
+		} 
+		var today = dd+'/'+mm+'/'+yyyy;
+		return today;
+	}
+	
+
+    function getDates(startDate, stopDate) {
+       var dateArray = new Array();
+       var currentDate = startDate;
+       while (currentDate <= stopDate) 
+       {
+         dateArray.push({"fullDate":getFullDate(currentDate), "dayWord":weekday[currentDate.getDay()], "dayNum":currentDate.getDate(), "monthWord":month[currentDate.getMonth()]})
+         currentDate = currentDate.addDays(1);
+       }
+       return dateArray;
+     }
+
+ var dateArray = getDates(new Date(), (new Date()).addDays(60));
+  
+ $scope.dates = dateArray;
+//=====================================================================================
+//END :: Generate Array of Dates
+//=====================================================================================
+	
+
+	
+	
+	
+	
+	
+//=====================================================================================
+// Select Booking
+//=====================================================================================
+	
+	$scope.selectedBookings = [];
+	$scope.selectBooking = function(fullDate, timeslot) 
+	{
+    	var bookingID = fullDate+"-"+timeslot;
+    	var element= document.getElementById(bookingID);
+    	if(getComputedStyle(element).backgroundColor=="rgba(255, 255, 255, 0.4)")
+    	{
+      		element.style.background = "rgba(0, 0, 0, 0.4)";
+      		$scope.selectedBookings.push(bookingID);
+    	} 
+    	else if (getComputedStyle(element).backgroundColor=="rgba(0, 0, 0, 0.4)")
+    	{
+      		element.style.background = "rgba(255, 255, 255, 0.4)";
+      		var index = $scope.selectedBookings.indexOf(bookingID);
+      		if (index > -1) 
+      		{
+      			$scope.selectedBookings.splice(index, 1);
+      		} 
+    	}
+	}
+//=====================================================================================
+// END :: Select Booking
+//=====================================================================================
+	
+
+	
+//=====================================================================================
+// Popup Windows
+//=====================================================================================
+	$scope.makeBooking = function() 
+	{
+		document.getElementById('overlay').style.display = 'block';
+	}
+	
+	$scope.confirmConfirmation = function() 
+	{
+		document.getElementById('confirmBookingWindow').style.display = 'none';
+		document.getElementById('statDecWindow').style.display = 'block';
+	}
+		
+	$scope.cancelConfirmation = function() 
+	{
+		document.getElementById('overlay').style.display = 'none';
+		document.getElementById('confirmBookingWindow').style.display = 'block';
+		document.getElementById('statDecWindow').style.display = 'none';
+	}
+
+//=====================================================================================
+// END :: Popup Windows
+//=====================================================================================
+	 
+	
+//=====================================================================================
+// Change Tab
+//=====================================================================================
+	$scope.openTab = function (evt, tabName) 
+    {
+		  var i, x, tablinks;
+		  x = document.getElementsByClassName("tabBody");
+		  document.getElementById(tabName).style.display = "block";
+		  
+		  
+		  if(tabName=="HireABike")
+		  {
+       		  document.getElementById("MyBookings").style.display = "none";
+		      document.getElementById("HireABikeTab").style.background = "#333333";
+		      document.getElementById("MyBookingsTab").style.background = "#666666";
+		  } else {
+       		  document.getElementById("HireABike").style.display = "none";
+		      document.getElementById("HireABikeTab").style.background = "#666666";
+		      document.getElementById("MyBookingsTab").style.background = "#333333";
+		      $scope.displayMyBookingsContent();
+		  }
+		scroll();
+		  
+		}
+
+//=====================================================================================
+// END :: Change Tab
+//=====================================================================================	
+
+	
+	
+	window.addEventListener("scroll", scroll, false);
+	window.addEventListener("resize", scroll, false);
+	
+//=====================================================================================
+// Page Scroll
+//=====================================================================================		
+	function scroll() 
+	{
+		var navPanel = document.getElementById('navPanel');
+		var navPanelRect = navPanel.getBoundingClientRect();
+		
+		//Container
+		var navPanelContainer = document.getElementById('navPanelContainer');
+		var navPanelContainerRect = navPanelContainer.getBoundingClientRect();
+		navPanelContainer.style.height = navPanel.offsetHeight+"px";
+		
+		var headerElement = document.getElementById("header");
+		var headerRect = headerElement.getBoundingClientRect();
+		if(navPanelContainerRect.top <= 0)
+		{
+			navPanel.style.top = '0px';
+		}
+		if(document.body.scrollTop < headerRect.bottom)
+		{
+			navPanel.style.top = navPanelContainerRect.top+"px";
+		}
+	}
+//=====================================================================================
+// END :: Page Scroll
+//=====================================================================================
+
+	
+	
+	
+	
+
+	
+	
+});
+
+</script>
+
+
+</body>
+</html>

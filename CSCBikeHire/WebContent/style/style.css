@@ -1,0 +1,386 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+body{
+    
+}
+
+.header
+{
+	display: inline-block;
+	background: #333333;
+	width: 100%;
+	display: flex;
+
+}
+
+
+.header img
+{
+	display: flex;
+  	width:40%;
+  	height: 40%;
+}
+
+.header h1
+{
+	font-size: 80px;
+	float: left;
+		text-align: center;
+		color: #FFFFFF;
+		margin-top: 50px;
+
+}
+
+
+
+#HireABike
+{
+	background-color: #333333;
+	
+}
+
+
+#HireABike div p
+{
+	color: #FFFFFF;
+}
+
+#HireABike div p:nth-child(2)
+{
+		line-height: 70%;
+}
+
+
+
+
+/* Hire a Bike Days */
+.day
+{
+	border-bottom: 2px solid white;
+	height: 220px;
+}
+
+.day div p:nth-child(1)
+{
+	text-align: center;
+	margin-top: 80px;
+}
+
+.day div:nth-child(1) p:nth-child(1)
+{
+	text-align: center;
+	margin-top: 0px;
+}
+
+
+.day div p:nth-child(2), .day div p:nth-child(3)
+{
+	text-align: center;
+}
+
+.dayComponent
+{
+	display: inline-block;
+	font-size: 60px;
+}
+
+
+.dayComponent:nth-child(1)
+{
+	display: inline-block;
+	font-size: 60px;
+}
+
+.dayComponent:nth-child(1) p:nth-child(2)
+{
+	font-size: 90px;
+}
+
+.dayComponent:nth-child(1)
+{
+		 width: 24.25%;
+		 margin-right: 0.5%;
+		 height: 100%;
+
+}
+
+.dayComponent:nth-child(2)
+{
+		 width: 24.25%;
+		 margin-right: 0.5%;
+		 height: 100%;
+		 vertical-align:top;
+		 background: rgba(255, 255, 255, 0.4);
+
+}
+
+.dayComponent:nth-child(3)
+{
+		 width: 24.25%;
+		 height: 100%;
+		 vertical-align:top;
+		 background: rgba(255, 255, 255, 0.4);
+}
+
+
+.dayComponent:nth-child(4)
+{
+	width: 24.25%;
+	margin-left: 0.5%;
+	height: 100%;
+	vertical-align:top;
+	background: rgba(255, 255, 255, 0.4);
+}
+
+/* ------------------------ My Bookings Days ------------------------ */
+
+.mb-day
+{
+	border-bottom: 2px solid white;
+	height: 60px;
+	background: #333333;
+}
+
+
+.mb-day div:nth-child(1) p:nth-child(1)
+{
+	margin-top: 0px;
+}
+
+
+
+.mb-dayComponent
+{
+	display: inline-block;
+	font-size: 40px;
+}
+
+
+.mb-dayComponent:nth-child(1)
+{
+	display: inline-block;
+	font-size: 16px;
+}
+
+.mb-dayComponent:nth-child(1) p:nth-child(2)
+{
+	font-size: 90px;
+}
+
+.mb-dayComponent:nth-child(1)
+{
+		 width: 24.25%;
+		 margin-right: 0.5%;
+		 height: 100%;
+		 
+
+}
+
+.mb-dayComponent:nth-child(2)
+{
+		 display:none;
+		 width: 24.25%;
+		 margin-right: 0.5%;
+		 height: 100%;
+		 vertical-align:top;
+
+}
+.mb-dayComponent p:nth-child(1)
+{
+		float: left;
+}
+.mb-dayComponent p:nth-child(2)
+{
+		color: #FF0000;
+  		margin-left: 150px;
+}
+
+.mb-dayComponent:nth-child(3)
+{
+	display:none;
+		 width: 24.25%;
+		 height: 100%;
+		 vertical-align:top;
+}
+
+
+.mb-dayComponent:nth-child(4)
+{
+	display:none;
+	width: 24.25%;
+	margin-left: 0.5%;
+	height: 100%;
+	vertical-align:top;
+}
+
+
+
+
+
+
+/* ---------------------------- */
+
+.container {
+  cursor: pointer;
+  border: 2px black;
+  display: block;
+}
+
+.selected {
+  border: 2px solid red;
+} 
+
+
+.overlay, .cancelOverlay{
+	
+	position:fixed;
+	width: 100%;
+	height:100vh;
+	background: rgba(255, 255, 255, 0.4);
+	z-index: 10;
+	display: none;
+	         
+}
+
+.confirmBookingWindow, .cancelBookingWindow{
+	
+	width: 80%;
+	max-height:80%;
+	background: #333;
+	z-index: 10;
+	display: block;    
+	margin-top: auto;
+	position:fixed;    
+	 top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  color: #FFFFFF;
+}
+
+.statDecWindow{
+	
+	width: 80%;
+	max-height:80%;
+	background: #333;
+	z-index: 10;
+	display: none;    
+	margin-top: auto;
+	position:fixed;    
+	 top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  color: #FFFFFF;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.right-corder-container {
+    position:fixed;
+    right:20px;
+    bottom:20px;
+}
+
+
+.right-corder-container .right-corder-container-button {
+    height: 62px;
+    width: 62px;
+    border:none;
+    background-color:#6FB583;
+    border-radius: 62px;      
+    transition: all 300ms;    
+    box-shadow:2px 2px 5px rgb(25, 73, 15)  ;
+    cursor:pointer;
+}
+
+
+.right-corder-container .right-corder-container-button span {
+    font-size: 72px;
+    color:white;
+    position: absolute;
+    left: 10px;
+    top: 16px;
+    line-height: 28px;
+}
+
+
+
+
+.navPanelContainer {
+	height: 40px;
+	/* background: #333333; */ 
+	background: #FF0000;
+
+}
+
+
+.navPanel {
+	width: 100%;
+    position:fixed;
+    left: 0px;
+    right:0px;
+    top:0px;
+    background: #FFFF00;
+}
+
+
+.tabs
+{
+	background: #FFFF00;
+	margin:0;
+	padding:0;
+	display: flex;
+	width: 100%;
+	position: relative;
+}
+
+.tabs div
+{
+    font-size: 70px; 
+	border:0px;
+	width: 50%;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	background: #333333;
+	color: #FFFFFF;
+
+}
+
+.tabs div:nth-child(2)
+{
+	background-color: #666666;
+}
