@@ -465,7 +465,6 @@ $scope.orderByDate = function(item)
 	    			}
 	    			else if (obj.date == cancelDate) 
 	    			{
-	        			console.log("More than one entry for this one.");
 	        			var bookingElement = document.getElementById("mb-"+obj.date+"-"+cancelTime);
 	        			bookingElement.style.display = 'none';
 	        			
@@ -474,22 +473,21 @@ $scope.orderByDate = function(item)
 	        			var n = $scope.myBookingsArray[i].timeslots.indexOf(cancelTime);
 	        			$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n) + $scope.myBookingsArray[i].timeslots.slice(n+1);
 	        			
+	        			//First Timeslot Identifier
 	        			if(n == 0)
 	        				{
-	        					console.log("first element");
 		        				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 0) + $scope.myBookingsArray[i].timeslots.slice(1);
 	        				}
+	        			//Second Timeslot Identifier
 	        			else if (n == $scope.myBookingsArray[i].timeslots.length)
 	        				{
-	        				   console.log("last element");
 		        				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n-1);
 	        				}
+	        			//Third Timeslot Identifier
 	        			else
 	        				{
 	        					$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 1) + $scope.myBookingsArray[i].timeslots.slice(2);
 	        				}
-	        			console.log($scope.myBookingsArray[i].timeslots);
-	        			
 	        		}
 	    			
 				}
