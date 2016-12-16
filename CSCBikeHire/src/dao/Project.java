@@ -9,6 +9,7 @@ import com.mysql.jdbc.Statement;
 
 import dto.BookingObject;
 import dto.UserBookingObject;
+import dto.UserLoginObject;
 
 public class Project 
 {	
@@ -79,4 +80,36 @@ public class Project
 //===========================================================================================	
 // END :: Bookings for Current User 	
 //===========================================================================================	
+	
+	
+//===========================================================================================
+// User Login Information	
+//===========================================================================================	
+public ArrayList<UserLoginObject> GetUserLogin(Connection connection, String employeeID, String pin) throws Exception
+{
+	ArrayList<UserLoginObject> userBookingData = new ArrayList<UserLoginObject>();
+	try
+	{
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM bikehire.employee WHERE emailAddress = '"+employeeID+"' AND pin = " + pin);
+		ResultSet rs = ps.executeQuery();
+				
+		while(rs.next())
+		{
+			UserLoginObject userLoginObject = new UserLoginObject();
+			userLoginObject.setEmployeeID(rs.getString("emailAddress"));
+			userLoginObject.setPin(rs.getString("pin"));
+			userBookingData.add(userLoginObject);
+		}
+		return userBookingData;
+	}
+	catch(Exception e)
+	{
+		throw e;
+	}
+}
+//===========================================================================================	
+// END :: User Login Information
+//===========================================================================================	
+	
+	
 }

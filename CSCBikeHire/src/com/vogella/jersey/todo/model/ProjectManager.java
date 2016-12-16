@@ -9,6 +9,7 @@ import dao.Database;
 import dao.Project;
 import dto.BookingObject;
 import dto.UserBookingObject;
+import dto.UserLoginObject;
 
 public class ProjectManager {
 
@@ -61,6 +62,35 @@ public class ProjectManager {
 // END :: Get Current User Bookings	
 //==========================================================
 	
+		
+		
+		
+//==========================================================	
+// Get Current User Bookings	
+//==========================================================
+public ArrayList<UserLoginObject> GetUserLogin(String employeeID, String pin) throws Exception 
+{
+	ArrayList<UserLoginObject> feeds = null;
+	try 
+	{
+		Database database = new Database();
+		Connection connection = database.Get_Connection();
+		Project project = new Project();
+		feeds = project.GetUserLogin(connection, employeeID, pin);
+	}
+	catch (Exception e)
+	{
+		System.out.println("Exception Error"); //Console 
+		throw e;
+	}
+	return feeds;
+}
+//==========================================================	
+// END :: Get Current User Bookings	
+//==========================================================
+		
+		
+		
 		
 //==========================================================	
 // Add New Booking	

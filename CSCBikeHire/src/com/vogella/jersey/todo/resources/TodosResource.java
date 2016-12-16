@@ -24,6 +24,7 @@ import com.vogella.jersey.todo.model.ProjectManager;
 
 import dto.BookingObject;
 import dto.UserBookingObject;
+import dto.UserLoginObject;
 
 // Will map the resource to the URL todos
 @Path("/todos")
@@ -98,16 +99,42 @@ public class TodosResource {
              		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
              		.build();
              } 
-        
-        
-        
-
 //======================================================================
 // END :: Retrieve Current User Bookings        
 //======================================================================
         
         
-        
+//======================================================================
+// Retrieve Login Data For a User        
+//======================================================================
+@GET
+@Path("/userlogin/{employeeID}/{pin}")
+@Produces("application/json")
+@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+public Response userLoginFeed(@PathParam("employeeID") String employeeID, @PathParam("pin") String pin) throws IOException 
+{
+	String feeds = null;
+	try
+	{
+		System.out.println("HERE> "+pin);
+		ArrayList<UserLoginObject> feedData = null; 
+		ProjectManager projectManager= new ProjectManager();
+		feedData = projectManager.GetUserLogin(employeeID, pin);
+		Gson gson = new Gson();
+		feeds = gson.toJson(feedData);
+	}
+	catch (Exception e)
+	{
+		System.out.println("Exception Error");  
+	}
+return Response.ok().entity(feeds)
+		.header("Access-Control-Allow-Origin", "*")
+		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
+		.build();
+} 
+//======================================================================
+// END :: Retrieve Login Data For a User        
+//======================================================================     
         
 
         

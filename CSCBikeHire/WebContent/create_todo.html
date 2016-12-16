@@ -20,9 +20,9 @@
 <body ng-controller="HttpGetController">
 
   	<div class="login" id="login">
-  		<div class="header" id="header" >
-  			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
-		</div>
+  		 <!-- <div class="loginHeader" id="loginHeader" >
+  			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>-</h1>
+		</div>  -->
 		
 			<p>Email</p><input type="text" name="emailEntry" id="emailEntry"><p>@csc.com</p>
 		
@@ -72,7 +72,7 @@
 
 
 <div class="header" id="header" >
-  <img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
+  <img src="images/csc_logo_transparent.png" alt="Logo"><h1>-</h1>
   <button ng-click="logout()">Sign Out</button>
 </div>
 
@@ -198,10 +198,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		$cookieStore.put('currentUser',currentUser);
 		$scope.generateDates();
 		$scope.getBookings();
-		
-		//Get record for un and pin
-		
-		
+		scroll();
 	}
 	
 	$scope.logout = function()
@@ -216,13 +213,25 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		var enteredEmail = document.getElementById('emailEntry');
         pinEntered+=key;
         if(pinEntered.length == 4)
-        	{
-        console.log("Attempt Login For: "+enteredEmail.value+" - "+ pinEntered)
-        pinEntered = "";
+        {
+        	var data = $.param({employeeID: enteredEmail.value, pin: pinEntered});
+    	   
+        	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userlogin/'+enteredEmail.value+'/'+pinEntered, data)  
+        	.success(function(userLoginResponse)
+        	{	
+        		$scope.userLoginResult = userLoginResponse;
+        		$scope.userLoginResult.forEach(function(emailAddress) 
+        		{
+        			$scope.login(enteredEmail.value);
+        		});
+        		pinEntered="";
+        	});
+        	
+        	
+        	
+        	
 		}
 	}
-
-	  
  //=====================================================================================
  // Login
  //=====================================================================================
@@ -241,7 +250,6 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		$scope.result.forEach(function(date) {
 		    $scope.updadeBookingDisplay(date);
 		});
-		console.log("currentUser " + currentUser);
 		$scope.getUserBookings();
 	});
 }
@@ -790,6 +798,7 @@ $scope.orderByDate = function(item)
 //=====================================================================================		
 	function scroll() 
 	{
+	console.log("scroll");
 		var navPanel = document.getElementById('navPanel');
 		var navPanelRect = navPanel.getBoundingClientRect();
 		
