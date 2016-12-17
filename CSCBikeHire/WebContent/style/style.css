@@ -52,6 +52,142 @@ body{
 
 
 
+/* --------- Login --------- */
+.LoginHeader
+{
+	background: #333333;
+	height: 12.5%;
+}
+
+
+
+
+.loginContents
+{
+	background: #333333;
+	height: 100%;
+}
+
+
+.loginContents .emailEntry
+{
+	text-align:center;
+	height: 12.5%;
+    vertical-align: middle;
+}
+
+
+
+.loginContents .emailEntry p
+{
+	height: 100%;
+    vertical-align: middle;
+	float:left; 
+	width: 30%;
+	color: #FFFFFF;
+	
+}
+
+.loginContents .emailEntry input
+{
+	float:left; width: 39%;
+}
+
+.loginContents .loginActionDisplay
+{
+	color: #FFFFFF;
+	height: 12.5%;
+	text-align:center;
+}
+
+.loginContents .keypadLine
+{
+	width:100%;
+	height: 12.5%;
+	background: #666666;
+}
+
+.loginContents .keypadLine button
+{
+	width:33%;
+	height: 95%;
+	
+    display: block;
+    float:left;
+    padding-left: 10px;
+    padding-right: 10px;
+    -moz-transition: 1s linear;
+    -ms-transition: 1s linear;
+    -o-transition: 1s linear;
+    -webkit-transition: 1s linear;
+    transition: 1s linear;
+    
+    background-color: #333333;
+    border: 1px solid white;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 30px;
+}
+
+.loginContents .keypadLine button:nth-child(2)
+{
+		margin-left: 0.5%;
+}
+
+.loginContents .keypadLine button:nth-child(3)
+{
+		float:right;
+}
+
+.keypadLineFinal
+{
+ margin-left: 33.5%;
+}
+
+.loginAdditionalActions
+{
+	background: #00FF00;
+	width: 100%;
+	height: 12.5%;
+}
+
+.loginAdditionalActions button
+{
+		width:50%;
+	height: 100%;
+	
+    display: block;
+    float:left;
+    padding-left: 10px;
+    padding-right: 10px;
+    -moz-transition: 1s linear;
+    -ms-transition: 1s linear;
+    -o-transition: 1s linear;
+    -webkit-transition: 1s linear;
+    transition: 1s linear;
+    
+    background-color: #333333;
+    border: 1px solid white;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 30px;
+}
+/*
+.loginAdditionalActions button:nth-child(2)
+{
+	float: right;
+	width: 100%;
+}
+*/
+
+
+
+
+
+/* --------- Hire a Bike --------- */
+
 #HireABike
 {
 	background-color: #333333;

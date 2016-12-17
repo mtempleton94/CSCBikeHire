@@ -135,7 +135,36 @@ return Response.ok().entity(feeds)
 //======================================================================
 // END :: Retrieve Login Data For a User        
 //======================================================================     
-        
+   
+
+
+//======================================================================
+//Create a New User    
+//======================================================================      
+     @POST
+     @Path("/createuser")
+     @Produces(MediaType.TEXT_HTML)
+     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+     public void createUser(@FormParam("employeeID") String employeeID,
+                     @FormParam("pin") String pin,
+                     @Context HttpServletResponse servletResponse) throws IOException {
+     	try{
+     		System.out.println("Create New User: "+employeeID+"  "+pin);
+             ArrayList<UserLoginObject> feedData = null; 
+     		ProjectManager projectManager= new ProjectManager();
+     		feedData = projectManager.CreateUser(employeeID, pin);
+             //servletResponse.sendRedirect("../create_todo.html");
+     	} catch(Exception e) {
+     		System.out.println("Exception: " + e.getMessage());
+     	}
+     }
+//======================================================================
+//END :: Create a New User        
+//======================================================================
+
+
+
+
 
         
 //======================================================================

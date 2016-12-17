@@ -88,8 +88,38 @@ public ArrayList<UserLoginObject> GetUserLogin(String employeeID, String pin) th
 //==========================================================	
 // END :: Get Current User Bookings	
 //==========================================================
-		
-		
+
+
+
+//==========================================================	
+// Create a New user
+//==========================================================
+
+//==========================================================	
+// END :: Create a New user
+//==========================================================
+public ArrayList<UserLoginObject> CreateUser(String employee, String pin) throws Exception 
+{
+	ArrayList<UserLoginObject> feeds = null;
+	try 
+	{
+		Database database = new Database();
+		Connection connection = database.Get_Connection();
+		java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		connection.setAutoCommit(false);    
+		String insertEmp1 = "INSERT INTO `bikehire`.`employee` (`emailAddress`, `pin`, `accountVerified`) VALUES ('"+employee+"', '"+pin+"', '0');";
+		connection.setAutoCommit(false);
+		stmt.addBatch(insertEmp1);
+		stmt.executeBatch();
+		connection.commit();
+	}
+	catch (Exception e)
+	{
+		System.out.println("Exception Error Post"); //Console 
+		throw e;
+	}
+	return feeds;
+}		
 		
 		
 //==========================================================	

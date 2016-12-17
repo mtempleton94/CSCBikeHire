@@ -20,29 +20,56 @@
 <body ng-controller="HttpGetController">
 
   	<div class="login" id="login">
-  		 <!-- <div class="loginHeader" id="loginHeader" >
+  		   <div class="LoginHeader" id="loginHeader" >
   			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>-</h1>
-		</div>  -->
+		  </div>  
 		
-			<p>Email</p><input type="text" name="emailEntry" id="emailEntry"><p>@csc.com</p>
+		<div class="loginContents">
+			
+			<div class="emailEntry">
+				<p>Email</p>
+				<input type="text" name="emailEntry" id="emailEntry"  ng-model="confirmed" ng-change="emailTyped()">
+				<p class="atCSC">@csc.com</p>
+			</div>
+			
+			<div class="loginActionDisplay" id="loginActionDisplay">
+				Please Enter a CSC E-Mail Address
+			</div>
+			
+			<div class="keypadLine">
+				<button ng-click="loginKey('1')">1</button>
+				<button ng-click="loginKey('2')">2</button>
+				<button ng-click="loginKey('3')">3</button>
+			</div>
+			
+			<div class="keypadLine">
+				<button ng-click="loginKey('4')">4</button>
+				<button ng-click="loginKey('5')">5</button>
+				<button ng-click="loginKey('6')">6</button>
+			</div>
+			
+			<div class="keypadLine">
+				<button ng-click="loginKey('7')">7</button>
+				<button ng-click="loginKey('8')">8</button>
+				<button ng-click="loginKey('9')">9</button>
+			</div>
+			
+			<div class="keypadLine">
+				<button class="keypadLineFinal"ng-click="loginKey('0')">0</button><br>
+			</div>
+				
+			<div class="loginAdditionalActions">
+				<button ng-click="forgotPin()">Forgot your Pin?</button>
+				<button id="signUpButton" ng-click="signUp()">Sign Up</button>
+			</div>
 		
-			<button ng-click="loginKey('1')">1</button>
-			<button ng-click="loginKey('2')">2</button>
-			<button ng-click="loginKey('3')">3</button><br>
-			<button ng-click="loginKey('4')">4</button>
-			<button ng-click="loginKey('5')">5</button>
-			<button ng-click="loginKey('6')">6</button><br>
-			<button ng-click="loginKey('7')">7</button>
-			<button ng-click="loginKey('8')">8</button>
-			<button ng-click="loginKey('9')">9</button><br>
-			<button ng-click="loginKey('0')">0</button><br>
-		
-			<button ng-click="login('swilson6')">swilson6</button>
+		</div> 
+			<!--  <button ng-click="login('swilson6')">swilson6</button>
 			<button ng-click="login('kfrost1')">kfrost1</button>
 			<button ng-click="login('bwayne4')">bwayne4</button>
 			<button ng-click="login('dgracen2')">dgracen2</button>
 			<button ng-click="login('bspider8')">bspider8</button>
-			<button ng-click="login('dwayne4')">dwayne4</button>
+			<button ng-click="login('dwayne4')">dwayne4</button>  -->
 	</div> 
 
 
@@ -198,40 +225,232 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		$cookieStore.put('currentUser',currentUser);
 		$scope.generateDates();
 		$scope.getBookings();
+		 document.getElementById("HireABike").style.display = "block";
+		  document.getElementById("MyBookings").style.display = "block";
 		scroll();
 	}
+ //=====================================================================================
+ // END :: Login
+ //=====================================================================================
 	
+	 
+//=====================================================================================
+// Logout
+//=====================================================================================	 
 	$scope.logout = function()
 	{
 		document.getElementById('login').style.display='block';
+		//myBookingsArray = [];
+		$scope.myBookingsArray = [];
+		console.log("Empty?: "+$scope.myBookingsArray.length);
+		var x = document.getElementsByClassName("tabBody");
+		document.getElementById("HireABike").style.display = "none";
+		document.getElementById("MyBookings").style.display = "none";
+
+
 		$cookieStore.remove('currentUser');
+		$scope.clearLogin();
 	}
+//=====================================================================================
+// END :: Logout
+//=====================================================================================	
 	
+	//Mode
+	//1: General Log in
+	//2: Sign Up
+	var mode = 1;
 	var pinEntered = "";
+	var signUpPinEntered = "";
 	$scope.loginKey = function(key)
 	{
 		var enteredEmail = document.getElementById('emailEntry');
-        pinEntered+=key;
-        if(pinEntered.length == 4)
-        {
+		var loginActionDisplay = document.getElementById('loginActionDisplay');
+
+		pinEntered+=key;
+        
+		$scope.setPinDisplay(pinEntered.length);
+
+        	
+        	if(pinEntered.length == 4 && enteredEmail.value != "") //Pin and Email Address have been entered 
+            {
+        		if ($scope.validateEntry(enteredEmail))
+        			$scope.completeLogin(enteredEmail);
+            }	
+            else if (pinEntered.length == 4 && enteredEmail.value == "") //No Email Address Entered
+            {
+	    		pinEntered="";
+	    		loginActionDisplay.innerHTML = "Please Enter a CSC E-Mail Address"; 
+    		}
+
+            
+
+        }
+	
+	
+	
+	$scope.setPinDisplay = function(pinLength)
+	{
+    	switch(pinLength) 
+    	{
+    	case 1:
+    		loginActionDisplay.innerHTML = "."; 
+        	break;
+        case 2:
+        	loginActionDisplay.innerHTML = "..";             
+        	break;
+        case 3:
+        	loginActionDisplay.innerHTML = "...";             
+        	break;
+        case 4:
+        	loginActionDisplay.innerHTML = "....";             
+        	break;
+    	} 
+	}
+	
+	
+	$scope.completeLogin = function(enteredEmail) //User has entered an email address and pin
+	{
+		if(mode == 1) // log in
+		{
         	var data = $.param({employeeID: enteredEmail.value, pin: pinEntered});
-    	   
         	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userlogin/'+enteredEmail.value+'/'+pinEntered, data)  
         	.success(function(userLoginResponse)
         	{	
         		$scope.userLoginResult = userLoginResponse;
+        		
+        		if(userLoginResponse.length < 1) //Incorrect Pin Entered
+        		{
+        			loginActionDisplay.innerHTML = "Incorrect Pin"; 
+        		}
+        			
         		$scope.userLoginResult.forEach(function(emailAddress) 
         		{
         			$scope.login(enteredEmail.value);
         		});
         		pinEntered="";
         	});
-        	
-        	
-        	
-        	
+		} 
+    	else if (mode == 2) //Sign Up
+    	{
+    		if(signUpPinEntered == pinEntered)
+    		{
+				$scope.createNewUser(enteredEmail.value, pinEntered);
+				$scope.clearLogin();
+    		} 
+    		else if (signUpPinEntered == "")
+    		{
+        		loginActionDisplay.innerHTML = "Please Re-Enter your Pin";
+        		signUpPinEntered = pinEntered;
+        		pinEntered="";
+    		}
+    		else
+    		{
+        		loginActionDisplay.innerHTML = "Pins do not Match. Try Again";
+        		pinEntered = "";
+        		signUpPinEntered = "";
+
+    		}
+    	}
+	}
+	
+	
+	$scope.validateEntry = function(emailAddress)
+	{
+		var validateSearch = emailAddress.value.search(/[^a-z0-9]/gi);
+
+		if(validateSearch >= 0)
+		{
+		alert("Invalid Entry. please use your CSC E-Mail Address");
+		$scope.clearLogin();
+		return false;
+		}
+		else
+			{
+			return true
+			}
+	}
+	
+	
+	
+	$scope.createNewUser = function(emailAddress, pin)
+	{
+			alert("Create new user");
+    		var data = $.param({
+	            employeeID: emailAddress,
+	            pin: pin
+	        });
+	        
+	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/createuser', data, config)  
+	        .success(function (data, status, headers, config) {
+	            $scope.PostDataResponse = data;
+	        })
+	        .error(function (data, status, header, config) {
+	            $scope.ResponseDetails = "Data: " + data +
+	                "<hr />status: " + status +
+	                "<hr />headers: " + header +
+	                "<hr />config: " + config;
+	        });
+	}
+	
+	
+	$scope.clearLogin = function()
+	{
+		mode = 1;
+	    pinEntered = "";
+		signUpPinEntered = "";
+		loginActionDisplay.innerHTML = "Please Enter a CSC E-Mail Address"; 
+		document.getElementById('emailEntry').value = "";
+		document.getElementById("signUpButton").firstChild.data = "Sign Up"
+	}
+	
+	
+	
+
+	$scope.emailTyped = function()
+	{
+		var enteredEmail = document.getElementById('emailEntry');
+		if(enteredEmail.value.length > 0)
+		{
+			if(mode == 1)
+        		loginActionDisplay.innerHTML = "Please Enter your 4 Digit Pin"; 
+			else
+        		loginActionDisplay.innerHTML = "Please Enter a 4 Digit Pin"; 
+		}
+		else
+		{
+			loginActionDisplay.innerHTML = "Please Enter a CSC E-Mail Address"; 
 		}
 	}
+	
+	$scope.signUp = function()
+	{
+		   var text = document.getElementById("signUpButton").firstChild;
+				text.data = text.data == "Sign Up" ? "Cancel Sign Up" : "Sign Up";
+		
+		if(mode==1)
+		{
+			mode = 2;
+			pinEntered="";
+			var enteredEmail = document.getElementById('emailEntry');
+			var loginActionDisplay = document.getElementById('loginActionDisplay');
+	        
+			if (enteredEmail.value == "") //No Email Address Entered
+			{
+	        	loginActionDisplay.innerHTML = "Please Enter a CSC E-Mail Address"; 
+			}
+			else //Email Has been entered
+			{
+				loginActionDisplay.innerHTML = "Please Enter a Pin"; 
+			}
+		} 
+		else 
+		{
+			mode = 1;
+		}
+
+	}
+	
+
  //=====================================================================================
  // Login
  //=====================================================================================
@@ -409,14 +628,14 @@ $scope.orderByDate = function(item)
 
 		//Timeslot 2
 		bookingID = date.date+"-2";
-		if(date.timeslot1 < 5)
+		if(date.timeslot2 < 5)
 			$scope.changeTimeslotColour(document.getElementById(bookingID),1);
 		else
 			$scope.changeTimeslotColour(document.getElementById(bookingID),2);
 		
 		//Timeslot 3
 		bookingID = date.date+"-3";
-		if(date.timeslot1 < 5)
+		if(date.timeslot3 < 5)
 			$scope.changeTimeslotColour(document.getElementById(bookingID),1);
 		else
 			$scope.changeTimeslotColour(document.getElementById(bookingID),2);
@@ -427,10 +646,8 @@ $scope.orderByDate = function(item)
 //=====================================================================================
 // Create array of user bookings 
 //=====================================================================================	
-	//var lastDate = "00/00/0000";
 	var found = false;
 	$scope.myBookingsArray = new Array();
-	//var arrayCount = -1;
 	$scope.updadeBookingDisplayUser = function(date) 
 	{
 		var formattedDate = convertDateJS(date.date);		
@@ -451,8 +668,9 @@ $scope.orderByDate = function(item)
 		}
 		if(found == false)
 			{
-			
+				
 				$scope.myBookingsArray.push({"date":formattedDate, "timeslots":date.timeslot});
+				console.log($scope.myBookingsArray.length);
 			}
 		found = false;
 		/*
@@ -555,7 +773,6 @@ $scope.orderByDate = function(item)
 
 	    			if(obj.date == cancelDate && obj.timeslots.indexOf("-") == -1) 
 	    			{
-	    				alert("Last entry for this day");
 	    				var bookingID = $scope.myBookingsArray[i].date+"-"+$scope.myBookingsArray[i].timeslots;
 	    				$scope.changeTimeslotColour(document.getElementById(bookingID),1); // Manually set timeslot colour
 	    				$scope.myBookingsArray.splice(i, 1);
@@ -798,7 +1015,6 @@ $scope.orderByDate = function(item)
 //=====================================================================================		
 	function scroll() 
 	{
-	console.log("scroll");
 		var navPanel = document.getElementById('navPanel');
 		var navPanelRect = navPanel.getBoundingClientRect();
 		
