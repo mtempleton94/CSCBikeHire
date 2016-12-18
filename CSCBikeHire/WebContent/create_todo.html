@@ -13,6 +13,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+		<script src="js/generate-md5.js"></script>
 		
 		
 		<font face="arial black,arial">
@@ -374,10 +375,14 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	
 	$scope.createNewUser = function(emailAddress, pin)
 	{
-			alert("Create new user");
-    		var data = $.param({
+		var randomNumber = Math.floor(Math.random() * (5000 - 1000) + 1000);
+		var randomString = randomNumber.toString();
+		var hash = MD5(randomString)
+			
+			var data = $.param({
 	            employeeID: emailAddress,
-	            pin: pin
+	            pin: pin,
+	            hash: hash
 	        });
 	        
 	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/createuser', data, config)  
@@ -391,6 +396,8 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	                "<hr />config: " + config;
 	        });
 	}
+	
+
 	
 	
 	$scope.clearLogin = function()

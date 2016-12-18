@@ -91,14 +91,41 @@ public ArrayList<UserLoginObject> GetUserLogin(String employeeID, String pin) th
 
 
 
+
+//==========================================================	
+// Get User Hash
+//==========================================================
+public ArrayList<UserLoginObject> GetUserHash(String employeeID, String hash) throws Exception 
+{
+	ArrayList<UserLoginObject> feeds = null;
+	try 
+	{
+		System.out.println("GET HASH: "+employeeID+" - "+hash);
+		Database database = new Database();
+		Connection connection = database.Get_Connection();
+		Project project = new Project();
+		feeds = project.GetUserHash(connection, employeeID, hash);
+	}
+	catch (Exception e)
+	{
+		System.out.println("Exception Error: " + e.getMessage()); //Console 
+		throw e;
+	}
+	return feeds;
+}
+//==========================================================	
+//END :: Get User Hash	
+//==========================================================
+
+
+
+
 //==========================================================	
 // Create a New user
 //==========================================================
 
-//==========================================================	
-// END :: Create a New user
-//==========================================================
-public ArrayList<UserLoginObject> CreateUser(String employee, String pin) throws Exception 
+
+public ArrayList<UserLoginObject> CreateUser(String employee, String pin, String hash) throws Exception 
 {
 	ArrayList<UserLoginObject> feeds = null;
 	try 
@@ -107,7 +134,7 @@ public ArrayList<UserLoginObject> CreateUser(String employee, String pin) throws
 		Connection connection = database.Get_Connection();
 		java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		connection.setAutoCommit(false);    
-		String insertEmp1 = "INSERT INTO `bikehire`.`employee` (`emailAddress`, `pin`, `accountVerified`) VALUES ('"+employee+"', '"+pin+"', '0');";
+		String insertEmp1 = "INSERT INTO `bikehire`.`employee` (`emailAddress`, `pin`, `accountVerified`, `hash`) VALUES ('"+employee+"', '"+pin+"', '0', '"+hash+"');";
 		connection.setAutoCommit(false);
 		stmt.addBatch(insertEmp1);
 		stmt.executeBatch();
@@ -120,7 +147,11 @@ public ArrayList<UserLoginObject> CreateUser(String employee, String pin) throws
 	}
 	return feeds;
 }		
-		
+
+//==========================================================	
+//END :: Create a New user
+//==========================================================
+
 		
 //==========================================================	
 // Add New Booking	
@@ -152,6 +183,38 @@ public ArrayList<UserLoginObject> CreateUser(String employee, String pin) throws
 // END :: Add New Booking	
 //==========================================================
 	
+		
+		//==========================================================	
+		// Add New Booking	
+		//==========================================================
+				public ArrayList<UserLoginObject> UpdateVerified(String employee) throws Exception 
+				{
+					ArrayList<UserLoginObject> feeds = null;
+					try 
+					{
+						Database database = new Database();
+						Connection connection = database.Get_Connection();
+						java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+						connection.setAutoCommit(false);    
+						String insertEmp1 = "UPDATE employee SET accountverified=1 WHERE emailAddress='"+employee+"'; ";
+						System.out.println("Insert: " + insertEmp1);
+						connection.setAutoCommit(false);
+						stmt.addBatch(insertEmp1);
+						stmt.executeBatch();
+						connection.commit();
+					}
+					catch (Exception e)
+					{
+						System.out.println("Exception Error Post"); //Console 
+						throw e;
+					}
+					return feeds;
+				}
+		//==========================================================	
+		// END :: Add New Booking	
+		//==========================================================
+		
+		
 		
 //==========================================================	
 // Add New Booking	

@@ -82,6 +82,39 @@ public class Project
 //===========================================================================================	
 	
 	
+	
+//===========================================================================================
+// User Hash
+//===========================================================================================	
+		public ArrayList<UserLoginObject> GetUserHash(Connection connection, String employeeID, String hash) throws Exception
+		{
+			ArrayList<UserLoginObject> userHashData = new ArrayList<UserLoginObject>();
+			try
+			{
+				PreparedStatement ps = connection.prepareStatement("SELECT * FROM bikehire.employee WHERE emailAddress = '"+employeeID+"' AND hash = '"+ hash+"'");
+				System.out.println(ps);
+				ResultSet rs = ps.executeQuery();
+				
+				while(rs.next())
+				{
+					UserLoginObject userLoginObject = new UserLoginObject();
+					userLoginObject.setEmployeeID(rs.getString("emailAddress"));
+					userLoginObject.setHash(rs.getString("hash"));
+					userHashData.add(userLoginObject);
+				}
+				return userHashData;
+			}
+			catch(Exception e)
+			{
+				throw e;
+			}
+		}
+//===========================================================================================	
+// END :: User Hash	
+//===========================================================================================	
+	
+	
+	
 //===========================================================================================
 // User Login Information	
 //===========================================================================================	
