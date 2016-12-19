@@ -22,7 +22,7 @@
 
   	<div class="login" id="login">
   		   <div class="LoginHeader" id="loginHeader" >
-  			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>-</h1>
+  			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>CSC Bike Hire</h1>
 		  </div>  
 		
 		<div class="loginContents">
@@ -65,18 +65,16 @@
 			</div>
 		
 		</div> 
-			<!--  <button ng-click="login('swilson6')">swilson6</button>
-			<button ng-click="login('kfrost1')">kfrost1</button>
-			<button ng-click="login('bwayne4')">bwayne4</button>
-			<button ng-click="login('dgracen2')">dgracen2</button>
-			<button ng-click="login('bspider8')">bspider8</button>
-			<button ng-click="login('dwayne4')">dwayne4</button>  -->
+
 	</div> 
 
 
   	<div class="overlay" id="overlay">
  		<div  class="confirmBookingWindow" id="confirmBookingWindow">
- 			<div ng-repeat="booking in selectedBookings">{{booking}}</div>
+ 			<p>Hire Bike For:</p>
+ 			<div ng-repeat="booking in selectedBookings">{{formatSelectedBooking(booking)}}
+ 				<!--  <p>{{formatDate(booking.date).dayWord}}</p><p>{{formatDate(booking.date).dayNum}}</p><p>{{formatDate(booking.date).monthWord}}</p>  -->
+ 			</div>
  			<button ng-click="confirmConfirmation()">Confirm</button>
 			<button ng-click="cancelConfirmation()">Cancel</button>
  		</div>
@@ -96,12 +94,20 @@
 			<button ng-click="cancelCancel()">Cancel</button>
  		</div>
 	</div> 
+	
+	  <div class="optionsOverlay" id="optionsOverlay">
+ 		<div  class="optionsWindow" id="optionsWindow">
+ 			<button ng-click="logout()">Sign Out</button>
+			<button ng-click="deleteAccount()">Delete Account</button>
+			<button ng-click="cancelOptions()">Cancel</button>
+ 		</div>
+	</div> 
  
 
 
 <div class="header" id="header" >
-  <img src="images/csc_logo_transparent.png" alt="Logo"><h1>-</h1>
-  <button ng-click="logout()">Sign Out</button>
+  <img src="images/csc_logo_transparent.png" alt="Logo"><h1>CSC Bike Hire</h1>
+  <button ng-click="displayOptions()">.</br>.</br>.</br></button>
 </div>
 
 
@@ -170,8 +176,8 @@
               
              <div class= "myBookingEntry" id="{{booking.date}}">        
                <div class="mb-day">   
-					<div class= "mb-dayComponent">        
-            			<p>{{booking.date}}</p>
+               		<div class= "mb-dayIdentifier">        
+            			<p>{{formatDate(booking.date).dayWord}}</p><p>{{formatDate(booking.date).dayNum}}</p><p>{{formatDate(booking.date).monthWord}}</p>
          			</div>
 
             		<div class= "mb-dayComponent" id="mb-{{booking.date}}-1">        
@@ -240,10 +246,10 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 //=====================================================================================	 
 	$scope.logout = function()
 	{
+		document.getElementById('optionsOverlay').style.display='none';
 		document.getElementById('login').style.display='block';
 		//myBookingsArray = [];
 		$scope.myBookingsArray = [];
-		console.log("Empty?: "+$scope.myBookingsArray.length);
 		var x = document.getElementsByClassName("tabBody");
 		document.getElementById("HireABike").style.display = "none";
 		document.getElementById("MyBookings").style.display = "none";
@@ -255,6 +261,11 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 //=====================================================================================
 // END :: Logout
 //=====================================================================================	
+	
+	
+
+	
+	
 	
 	//Mode
 	//1: General Log in
@@ -570,6 +581,20 @@ $scope.orderByDate = function(item)
 // END :: SendData 
 //=====================================================================================	 
 	
+	$scope.formatSelectedBooking = function(booking)
+	{
+		var dateTimeslot = booking.split("-"); 
+		var formattedDate = $scope.formatDate(dateTimeslot[0])
+		var timeslot = "8 - 11";
+		if(dateTimeslot[1] == 2)
+			timeslot = "11 - 2";
+		if(dateTimeslot[1] == 3)
+			timeslot = "2 - 5";
+		return formattedDate.dayWord+" "+formattedDate.dayNum+" "+formattedDate.monthWord+" from "+timeslot;
+	}
+	
+	
+	
 	
 	
 	$scope.updateDisplay = function()
@@ -677,26 +702,8 @@ $scope.orderByDate = function(item)
 			{
 				
 				$scope.myBookingsArray.push({"date":formattedDate, "timeslots":date.timeslot});
-				console.log($scope.myBookingsArray.length);
 			}
 		found = false;
-		/*
-		$scope.myBookingsArray.sort(function(a,b) { 
-		    return new Date(a.formattedDate).getTime() - new Date(b.formattedDate).getTime() 
-		});
-		*/
-		
-		/*if(lastDate != formattedDate)
-			{
-			arrayCount++;
-			$scope.myBookingsArray.push({"date":formattedDate, "timeslots":date.timeslot});
-			}
-		else
-			{
-			console.log(arrayCount);
-			$scope.myBookingsArray[arrayCount].timeslots += "-"+date.timeslot;
-			}
-		lastDate = formattedDate; */
 	}
 //=====================================================================================
 // END :: Create array of user bookings 
@@ -757,7 +764,7 @@ $scope.orderByDate = function(item)
 	{
 		document.getElementById('cancelOverlay').style.display = 'block';
 		var element = document.getElementById("cancelDateTime");
-		element.innerHTML = date + " at " + timeslot;
+		element.innerHTML = $scope.formatSelectedBooking(date + "-" + timeslot);
 		cancelDate = date;
 		cancelTime = timeslot;
 	}
@@ -788,9 +795,7 @@ $scope.orderByDate = function(item)
 	    			{
 	        			var bookingElement = document.getElementById("mb-"+obj.date+"-"+cancelTime);
 	        			bookingElement.style.display = 'none';
-	        			
-	        			console.log($scope.myBookingsArray[i].timeslots);
-	        			
+	        				        			
 	        			var n = $scope.myBookingsArray[i].timeslots.indexOf(cancelTime);
 	        			$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n) + $scope.myBookingsArray[i].timeslots.slice(n+1);
 	        			
@@ -910,6 +915,16 @@ $scope.orderByDate = function(item)
 //=====================================================================================
 
 	
+	
+	$scope.formatDate = function(date)
+	{
+		var newDate = new Date(convertDateSQL(date));
+		 return ({"dayWord":weekday[newDate.getDay()], "dayNum":newDate.getDate(), "monthWord":month[newDate.getMonth()]});
+	}
+	
+	
+	
+	
 //=====================================================================================
 // Check if user is logged in
 //=====================================================================================
@@ -983,6 +998,19 @@ $scope.orderByDate = function(item)
 //=====================================================================================
 	 
 	
+	$scope.displayOptions = function() 
+	{
+		document.getElementById('optionsOverlay').style.display = 'block';
+	}
+	
+	$scope.cancelOptions = function() 
+	{
+		document.getElementById('optionsOverlay').style.display = 'none';
+	}
+		
+	
+	
+	
 //=====================================================================================
 // Change Tab
 //=====================================================================================
@@ -996,12 +1024,12 @@ $scope.orderByDate = function(item)
 		  if(tabName=="HireABike")
 		  {
        		  document.getElementById("MyBookings").style.display = "none";
-		      document.getElementById("HireABikeTab").style.background = "#333333";
-		      document.getElementById("MyBookingsTab").style.background = "#666666";
+		      document.getElementById("HireABikeTab").style.background = "#14141f";
+		      document.getElementById("MyBookingsTab").style.background = "#32324e";
 		  } else {
        		  document.getElementById("HireABike").style.display = "none";
-		      document.getElementById("HireABikeTab").style.background = "#666666";
-		      document.getElementById("MyBookingsTab").style.background = "#333333";
+		      document.getElementById("HireABikeTab").style.background = "#32324e";
+		      document.getElementById("MyBookingsTab").style.background = "#14141f";
 		      $scope.displayMyBookingsContent();
 		  }
 		scroll();

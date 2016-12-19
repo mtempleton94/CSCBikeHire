@@ -210,18 +210,14 @@ return Response.ok().entity(feeds)
 //END :: Create a New User        
 //======================================================================
 
-     
- 	static Properties mailServerProperties;
- 	static Session getMailSession;
- 	static MimeMessage generateMailMessage;
+static Properties mailServerProperties;
+static Session getMailSession;
+static MimeMessage generateMailMessage;
      
 public static void sendVerificationEmail(String employeeID, String hash) throws AddressException, MessagingException
 {
 	//String verifyLink = "http://localhost:8080/CSCBikeHire/verifyaccount.html?employeeID="+employeeID+"&hash="+hash;
 	//generateAndSendEmail();
-	
-
-
 }
 
 public static void generateAndSendEmail() throws AddressException, MessagingException {
