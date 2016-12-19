@@ -101,6 +101,38 @@
 			<button ng-click="deleteAccount()">Delete Account</button>
 			<button ng-click="cancelOptions()">Cancel</button>
  		</div>
+ 		
+ 		<div  class="deleteAccountWindow" id="deleteAccountWindow">
+ 			<p id="deleteAccountMessage">Delete your Account</p>
+ 			
+ 			<div class="deleteActionDisplay" id="deleteActionDisplay">
+				<p>Enter your Pin</p>
+			</div>
+			
+			<div class="deleteKeypadLine">
+				<button ng-click="deleteKey('1')">1</button>
+				<button ng-click="deleteKey('2')">2</button>
+				<button ng-click="deleteKey('3')">3</button>
+			</div>
+			
+			<div class="deleteKeypadLine">
+				<button ng-click="deleteKey('4')">4</button>
+				<button ng-click="deleteKey('5')">5</button>
+				<button ng-click="deleteKey('6')">6</button>
+			</div>
+			
+			<div class="deleteKeypadLine">
+				<button ng-click="deleteKey('7')">7</button>
+				<button ng-click="deleteKey('8')">8</button>
+				<button ng-click="deleteKey('9')">9</button>
+			</div>
+			
+			<div class="deleteKeypadLine">
+				<button class="deleteKeypadLineFinal"ng-click="deleteKey('0')">0</button>
+			</div></br>
+			<button class="cancelDeleteButton" ng-click="cancelConfirmation()">Cancel</button>
+ 		</div>
+ 		
 	</div> 
  
 
@@ -254,7 +286,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		document.getElementById("HireABike").style.display = "none";
 		document.getElementById("MyBookings").style.display = "none";
 
-
+		$scope.deletePinEntered = '';
 		$cookieStore.remove('currentUser');
 		$scope.clearLogin();
 	}
@@ -297,6 +329,81 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
             
 
         }
+	
+	
+	
+	$scope.deletePinEntered='';
+	$scope.deleteKey = function(key)
+	{
+		
+		var deleteActionDisplay = document.getElementById('deleteActionDisplay');
+		$scope.deletePinEntered+=key;
+		console.log($scope.deletePinEntered.length);
+		switch($scope.deletePinEntered.length) 
+    	{
+    	case 1:
+    		deleteActionDisplay.innerHTML = "."; 
+        	break;
+        case 2:
+        	deleteActionDisplay.innerHTML = "..";             
+        	break;
+        case 3:
+        	deleteActionDisplay.innerHTML = "...";             
+        	break;
+        case 4:
+        	deleteActionDisplay.innerHTML = "...."; 
+        	$scope.verifyAccount($scope.deletePinEntered);
+        	break;
+    	} 
+    }
+	$scope.verifyAccount = function(deletePinEntered) // Used to verify account for deletion
+	{
+    	var data = $.param({employeeID: currentUser, pin: deletePinEntered});
+		var deleteActionDisplay = document.getElementById('deleteActionDisplay');
+    	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userlogin/'+currentUser+'/'+deletePinEntered, data)   
+    	.success(function(userLoginResponse)
+    	{	
+    		$scope.userLoginResult = userLoginResponse;
+    		
+    		if(userLoginResponse.length < 1) //Incorrect Pin Entered
+    		{
+    			deleteActionDisplay.innerHTML = "Incorrect Pin";
+    			$scope.deletePinEntered='';
+    		}
+    		else
+    			{
+    			deleteActionDisplay.innerHTML = "Please Enter your Pin";
+    			$scope.deleteUser(currentUser, deletePinEntered);
+    			}
+    		pinEntered="";
+    	});
+	}
+	
+	
+	
+	$scope.deleteUser = function(user, pin) 
+	{
+		var deleteData = $.param({
+            employeeID: user,
+			pin: pin
+        });
+	      $http.delete('http://localhost:8080/CSCBikeHire/rest/todos/deleteuser/'+user+'/'+pin, deleteData, config)      
+	        .success(function (deleteData, status, headers, config) {
+	            $scope.PostDataResponse = deleteData; 
+	    		$cookieStore.remove('currentUser');
+	            $scope.logout();
+	        })
+	        .error(function (deleteData, status, header, config) {
+	            $scope.ResponseDetails = "Data: " + deleteData +
+	                "<hr />status: " + status +
+	                "<hr />headers: " + header +
+	                "<hr />config: " + config;
+	        });
+		
+		
+	}
+	
+	
 	
 	
 	
@@ -399,6 +506,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/createuser', data, config)  
 	        .success(function (data, status, headers, config) {
 	            $scope.PostDataResponse = data;
+	            console.log("http://localhost:8080/CSCBikeHire/verifyaccount.html?employeeID="+emailAddress+"&hash="+hash)
 	        })
 	        .error(function (data, status, header, config) {
 	            $scope.ResponseDetails = "Data: " + data +
@@ -746,7 +854,7 @@ $scope.orderByDate = function(item)
             break;
         case 4:
         	var backgroundColor = "rgba(0, 0, 0, 0.4)";
-            break;
+            break;e
     	} 
     	element.style.background = backgroundColor;
 	}
@@ -985,22 +1093,44 @@ $scope.orderByDate = function(item)
 		document.getElementById('confirmBookingWindow').style.display = 'none';
 		document.getElementById('statDecWindow').style.display = 'block';
 	}
+	
+	$scope.deleteAccount = function() 
+	{
+		document.getElementById('optionsWindow').style.display = 'none';
+		document.getElementById('deleteAccountWindow').style.display = 'block';
+	}
 		
 	$scope.cancelConfirmation = function() 
 	{
 		document.getElementById('overlay').style.display = 'none';
+		document.getElementById('optionsOverlay').style.display = 'none';
 		document.getElementById('confirmBookingWindow').style.display = 'block';
 		document.getElementById('statDecWindow').style.display = 'none';
+		document.getElementById('deleteAccountWindow').style.display = 'none';
+		$scope.deletePinEntered = '';
+		deleteActionDisplay.innerHTML = "Please Enter your Pin";
 	}
+	
+
 
 //=====================================================================================
 // END :: Popup Windows
 //=====================================================================================
 	 
+	$scope.confirmDelete = function()
+	{
+		document.getElementById('optionsOverlay').style.display = 'none';
+		document.getElementById('deleteAccountWindow').style.display = 'none';
+		alert("Delete Account");
+	}
+	
+	
+	
 	
 	$scope.displayOptions = function() 
 	{
 		document.getElementById('optionsOverlay').style.display = 'block';
+		document.getElementById('optionsWindow').style.display = 'block';
 	}
 	
 	$scope.cancelOptions = function() 
@@ -1008,6 +1138,7 @@ $scope.orderByDate = function(item)
 		document.getElementById('optionsOverlay').style.display = 'none';
 	}
 		
+	
 	
 	
 	

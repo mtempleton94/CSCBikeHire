@@ -337,6 +337,37 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
 //======================================================================
 // END :: Delete a Booking      
 //======================================================================
+             
+             
+//======================================================================
+// Delete a Booking      
+//======================================================================      
+@DELETE
+@Path("/deleteuser/{employeeID}/{pin}")
+@Produces(MediaType.TEXT_HTML)
+@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+public void deleteAccount(@PathParam("employeeID") String employeeID,
+		@PathParam("pin") String pin,
+        @Context HttpServletResponse servletResponse) throws IOException 
+		{
+	       	try
+	       	{
+	       		System.out.println("Delete User: "+employeeID+" - "+pin);
+	            ArrayList<UserLoginObject> feedData = null; 
+	            ProjectManager projectManager= new ProjectManager();
+	                       feedData = projectManager.DeleteAccount(employeeID, pin);
+	       	} 
+	       	catch(Exception e) 
+	       	{
+	       		System.out.println("Exception: " + e.getMessage());
+	        }
+		}
+//======================================================================
+// END :: Delete a Booking      
+//======================================================================          
+             
+             
+             
         
         
         
