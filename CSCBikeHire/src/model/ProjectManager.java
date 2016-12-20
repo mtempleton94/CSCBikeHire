@@ -155,12 +155,10 @@ public class ProjectManager {
 				Connection connection = database.Get_Connection();
 				java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 				
-				
 				String insertEmp1 = "INSERT INTO bikehire.booking (booking.emailAddress, booking.date, booking.timeslot, booking.bikeNumber) "
-						+ "SELECT '"+employee+"', '"+date+"', '"+timeslot+"',  "
-						+ "IF((SELECT MAX(bikeNumber) FROM  booking WHERE date = '"+date+"' AND timeslot = '"+timeslot+"')>0, MAX(bikeNumber)+1, '1') "
-						+ "FROM  booking "
-						+ "WHERE booking.date = '"+date+"' AND timeslot = '"+timeslot+"';";
+						+ "SELECT '"+employee+"', '"+date+"', "+timeslot+",  "
+						+ "AssignBikeNum((SELECT COUNT(*) FROM bikehire.booking WHERE date='"+date+"' AND timeslot="+timeslot+"), "
+						+ "(SELECT MAX(bikeNumber) FROM  booking WHERE booking.date = '"+date+"' AND timeslot = "+timeslot+"))";
 				
 				connection.setAutoCommit(false);
 				stmt.addBatch(insertEmp1);

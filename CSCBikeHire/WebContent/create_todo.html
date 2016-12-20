@@ -22,7 +22,7 @@
 
   	<div class="login" id="login">
   		   <div class="LoginHeader" id="loginHeader" >
-  			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>CSC Bike Hire</h1>
+  			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
 		  </div>  
 		
 		<div class="loginContents">
@@ -138,7 +138,7 @@
 
 
 <div class="header" id="header" >
-  <img src="images/csc_logo_transparent.png" alt="Logo"><h1>CSC Bike Hire</h1>
+  <img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
   <button ng-click="displayOptions()">.</br>.</br>.</br></button>
 </div>
 
@@ -213,15 +213,15 @@
          			</div>
 
             		<div class= "mb-dayComponent" id="mb-{{booking.date}}-1">        
-		               <p> 8 - 11 </p> <p ng-click="cancelBooking(booking.date, 1);">X</p>
+		               <p> 8 - 11 </p> <p ng-click="cancelBooking(booking.date, 1);">X</p> <p id="mb_bn-{{booking.date}}-1">Bike No. 0</p>
 		           	</div>
 
 		            <div class= "mb-dayComponent" id="mb-{{booking.date}}-2" ng-style="setBackground">        
-		             	<p> 11 - 2 </p> <p ng-click="cancelBooking(booking.date, 2);">X</p>
+		             	<p> 11 - 2 </p> <p ng-click="cancelBooking(booking.date, 2);">X</p> <p id="mb_bn-{{booking.date}}-2">Bike No. 0</p>
 		       		</div>
 
 		            <div class= "mb-dayComponent" id="mb-{{booking.date}}-3" ng-style="setBackground">        
-		              <p> 2 - 5 </p>  <p ng-click="cancelBooking(booking.date, 3);">X</p>
+		              <p> 2 - 5 </p>  <p ng-click="cancelBooking(booking.date, 3);">X</p> <p id="mb_bn-{{booking.date}}-3">Bike No. 0</p>
 		         	</div>
      			</div>
            	</div>
@@ -337,7 +337,6 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		
 		var deleteActionDisplay = document.getElementById('deleteActionDisplay');
 		$scope.deletePinEntered+=key;
-		console.log($scope.deletePinEntered.length);
 		switch($scope.deletePinEntered.length) 
     	{
     	case 1:
@@ -801,13 +800,14 @@ $scope.orderByDate = function(item)
 		        if($scope.myBookingsArray[i].timeslots.indexOf(date.timeslot) == -1) 
 		        {
 		        	$scope.myBookingsArray[i].timeslots += "-"+date.timeslot;
+		        	$scope.myBookingsArray[i].bikeNumbers += "/"+date.bikeNumber;
 		        }
 		        break;
 		    }
 		}
 		if(found == false)
 			{
-				$scope.myBookingsArray.push({"date":formattedDate, "timeslots":date.timeslot});
+				$scope.myBookingsArray.push({"date":formattedDate, "timeslots":date.timeslot, "bikeNumbers":date.bikeNumber});
 			}
 		found = false;
 	}
@@ -825,11 +825,15 @@ $scope.orderByDate = function(item)
 		for (var i in $scope.myBookingsArray) 
 		{
 			var timeslots = $scope.myBookingsArray[i].timeslots.split("-"); 
+			var bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.split("/"); 
     		
 			for (var j in timeslots) 
 			{
 				document.getElementById("mb-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).style.display = 'inline-block';
+				document.getElementById("mb_bn-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).innerHTML = "Bike No. "+bikeNumbers[j];
+
 			}
+
 		}
 	}
 //=====================================================================================
@@ -891,35 +895,40 @@ $scope.orderByDate = function(item)
 	            {
     			var obj = $scope.myBookingsArray[i];
 
-	    			if(obj.date == cancelDate && obj.timeslots.indexOf("-") == -1) 
+	    			if(obj.date == cancelDate && obj.timeslots.indexOf("-") == -1) // Final booking for the day
 	    			{
 	    				var bookingID = $scope.myBookingsArray[i].date+"-"+$scope.myBookingsArray[i].timeslots;
-	    				$scope.changeTimeslotColour(document.getElementById(bookingID),1); // Manually set timeslot colour
+	    				$scope.changeTimeslotColour(document.getElementById(bookingID),1); 
 	    				$scope.myBookingsArray.splice(i, 1);
 	    			}
-	    			else if (obj.date == cancelDate) 
+	    			else if (obj.date == cancelDate) // Not final booking for the day
 	    			{
 	        			var bookingElement = document.getElementById("mb-"+obj.date+"-"+cancelTime);
 	        			bookingElement.style.display = 'none';
 	        				        			
 	        			var n = $scope.myBookingsArray[i].timeslots.indexOf(cancelTime);
 	        			$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n) + $scope.myBookingsArray[i].timeslots.slice(n+1);
-	        			
+	        			$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, n) + $scope.myBookingsArray[i].bikeNumbers.slice(n+1);
+
 	        			//First Timeslot Identifier
 	        			if(n == 0)
 	        				{
 		        				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 0) + $scope.myBookingsArray[i].timeslots.slice(1);
+		        				$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, 0) + $scope.myBookingsArray[i].bikeNumbers.slice(1);
 	        				}
 	        			//Second Timeslot Identifier
 	        			else if (n == $scope.myBookingsArray[i].timeslots.length)
 	        				{
 		        				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n-1);
+		        				$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, n-1);
 	        				}
 	        			//Third Timeslot Identifier
 	        			else
 	        				{
 	        					$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 1) + $scope.myBookingsArray[i].timeslots.slice(2);
+	        					$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, 1) + $scope.myBookingsArray[i].bikeNumbers.slice(2);
 	        				}
+	        			console.log($scope.myBookingsArray[i]);
 	        		}
 	    			
 				}

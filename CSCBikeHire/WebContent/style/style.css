@@ -75,40 +75,47 @@ body #content h1
 
 .header img
 {
-	display: flex;
-  	width:40%;
-  	height: 40%;
+  display: block;
+  max-width:350px;
+  max-height:200px;
+  width: auto;
+  height: auto;
 }
 
 .header h1
 {
-	font-size: 80px;
+	font-size: 90px;
 	float: left;
-		/*text-align: center;*/
-		color: #FFFFFF;
-		margin-top: 50px;
+	color: #FFFFFF;
+	margin-top: 30px;
 
 }
 
 .header button
 {
 	width:5%;
+	height: 100px;
     display: block;
-    float:right;
+    text-align:right;
     padding-left: 10px;
-    padding-right: 10px;
+    padding-right: 30px;
+    padding-bottom: 150px;
     -moz-transition: 1s linear;
     -ms-transition: 1s linear;
     -o-transition: 1s linear;
     -webkit-transition: 1s linear;
     transition: 1s linear;
     
+    margin-right:1px;
     background: rgba(255, 255, 255, 0);
     border: none;
     color: white;
-    text-align: center;
     text-decoration: none;
-    font-size: 30px;
+    font-size: 100px;
+    line-height: 30px;
+    margin-top: 15px;
+    position:absolute; 
+    right:25px; 
 }
 
 
@@ -379,9 +386,13 @@ body #content h1
 
 .mb-dayComponent /* Booking Identifiers */
 {
+	padding-left: 10px;
+	padding-right: 5px;
 	display: inline-block;
 	font-size: 60px;
+	vertical-align: top; 
 }
+
 
 .mb-dayComponent:nth-child(1)
 {
@@ -394,12 +405,12 @@ body #content h1
 		 display:none;
 		 width: 24.25%;
 		 height: 100%;
-		 vertical-align:middle;
 
 }
 
 .mb-dayComponent p:nth-child(1) /* Timeslot */
 {
+	margin-top: 40px;
 		float: left;
 		color: #FFFFFF;
 		padding-right: 20px;
@@ -407,8 +418,15 @@ body #content h1
 
 .mb-dayComponent p:nth-child(2) /* Delete Button (X) */
 {
-		color: #FF0000;
+		margin-top: 40px;
+			color: #FF0000;
   		margin-left: 150px;
+}
+
+.mb-dayComponent p:nth-child(3) /* Bike Number */
+{
+		color: #FFFFFF;
+  		font-size: 40px;
 }
 
 
