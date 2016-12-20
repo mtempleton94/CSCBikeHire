@@ -16,9 +16,9 @@ public class Project
 //===========================================================================================
 // All User Bookings 	
 //===========================================================================================	
-	public ArrayList<BookingObject> GetFeeds(Connection connection) throws Exception
+	public ArrayList<BookingObject> GetAllBookings(Connection connection) throws Exception
 	{
-		ArrayList<BookingObject> feedData = new ArrayList<BookingObject>();
+		ArrayList<BookingObject> bookingsData = new ArrayList<BookingObject>();
 		try
 		{
 			PreparedStatement ps = connection.prepareStatement("select DATE_FORMAT(date,'%d/%m/%Y') AS date, "
@@ -31,14 +31,14 @@ public class Project
 			
 			while(rs.next())
 			{
-				BookingObject feedObject = new BookingObject();
-				feedObject.setDate(rs.getString("date"));
-				feedObject.setTimeslot1(rs.getString("Timeslot1"));
-				feedObject.setTimeslot2(rs.getString("Timeslot2"));
-				feedObject.setTimeslot3(rs.getString("Timeslot3"));
-				feedData.add(feedObject);
+				BookingObject bookingsObject = new BookingObject();
+				bookingsObject.setDate(rs.getString("date"));
+				bookingsObject.setTimeslot1(rs.getString("Timeslot1"));
+				bookingsObject.setTimeslot2(rs.getString("Timeslot2"));
+				bookingsObject.setTimeslot3(rs.getString("Timeslot3"));
+				bookingsData.add(bookingsObject);
 			}
-			return feedData;
+			return bookingsData;
 		}
 		catch(Exception e)
 		{
@@ -59,7 +59,6 @@ public class Project
 		try
 		{
 			PreparedStatement ps = connection.prepareStatement("SELECT date, timeslot, bikeNumber FROM bikehire.booking WHERE emailAddress = '"+employeeID+"' AND date >= now()-1;");
-			System.out.println(ps);
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next())
@@ -84,33 +83,32 @@ public class Project
 	
 	
 //===========================================================================================
-// User Hash
+// User Hash for Account Verification
 //===========================================================================================	
-		public ArrayList<UserLoginObject> GetUserHash(Connection connection, String employeeID, String hash) throws Exception
+	public ArrayList<UserLoginObject> GetUserHash(Connection connection, String employeeID, String hash) throws Exception
+	{
+		ArrayList<UserLoginObject> userHashData = new ArrayList<UserLoginObject>();
+		try
 		{
-			ArrayList<UserLoginObject> userHashData = new ArrayList<UserLoginObject>();
-			try
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM bikehire.employee WHERE emailAddress = '"+employeeID+"' AND hash = '"+ hash+"'");
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next())
 			{
-				PreparedStatement ps = connection.prepareStatement("SELECT * FROM bikehire.employee WHERE emailAddress = '"+employeeID+"' AND hash = '"+ hash+"'");
-				System.out.println(ps);
-				ResultSet rs = ps.executeQuery();
-				
-				while(rs.next())
-				{
-					UserLoginObject userLoginObject = new UserLoginObject();
-					userLoginObject.setEmployeeID(rs.getString("emailAddress"));
-					userLoginObject.setHash(rs.getString("hash"));
-					userHashData.add(userLoginObject);
-				}
-				return userHashData;
+				UserLoginObject userLoginObject = new UserLoginObject();
+				userLoginObject.setEmployeeID(rs.getString("emailAddress"));
+				userLoginObject.setHash(rs.getString("hash"));
+				userHashData.add(userLoginObject);
 			}
-			catch(Exception e)
-			{
-				throw e;
-			}
+			return userHashData;
 		}
+		catch(Exception e)
+		{
+			throw e;
+		}
+	}
 //===========================================================================================	
-// END :: User Hash	
+// END :: User Hash for Account Verification	
 //===========================================================================================	
 	
 	
@@ -118,28 +116,28 @@ public class Project
 //===========================================================================================
 // User Login Information	
 //===========================================================================================	
-public ArrayList<UserLoginObject> GetUserLogin(Connection connection, String employeeID, String pin) throws Exception
-{
-	ArrayList<UserLoginObject> userBookingData = new ArrayList<UserLoginObject>();
-	try
+	public ArrayList<UserLoginObject> GetUserLogin(Connection connection, String employeeID, String pin) throws Exception
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM bikehire.employee WHERE emailAddress = '"+employeeID+"' AND pin = " + pin);
-		ResultSet rs = ps.executeQuery();
-				
-		while(rs.next())
+		ArrayList<UserLoginObject> userBookingData = new ArrayList<UserLoginObject>();
+		try
 		{
-			UserLoginObject userLoginObject = new UserLoginObject();
-			userLoginObject.setEmployeeID(rs.getString("emailAddress"));
-			userLoginObject.setPin(rs.getString("pin"));
-			userBookingData.add(userLoginObject);
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM bikehire.employee WHERE emailAddress = '"+employeeID+"' AND pin = " + pin);
+			ResultSet rs = ps.executeQuery();
+					
+			while(rs.next())
+			{
+				UserLoginObject userLoginObject = new UserLoginObject();
+				userLoginObject.setEmployeeID(rs.getString("emailAddress"));
+				userLoginObject.setPin(rs.getString("pin"));
+				userBookingData.add(userLoginObject);
+			}
+			return userBookingData;
 		}
-		return userBookingData;
+		catch(Exception e)
+		{
+			throw e;
+		}
 	}
-	catch(Exception e)
-	{
-		throw e;
-	}
-}
 //===========================================================================================	
 // END :: User Login Information
 //===========================================================================================	

@@ -264,8 +264,8 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		$cookieStore.put('currentUser',currentUser);
 		$scope.generateDates();
 		$scope.getBookings();
-		 document.getElementById("HireABike").style.display = "block";
-		  document.getElementById("MyBookings").style.display = "block";
+		document.getElementById("HireABike").style.display = "block";
+		document.getElementById("MyBookings").style.display = "block";
 		scroll();
 	}
  //=====================================================================================
@@ -280,7 +280,6 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	{
 		document.getElementById('optionsOverlay').style.display='none';
 		document.getElementById('login').style.display='block';
-		//myBookingsArray = [];
 		$scope.myBookingsArray = [];
 		var x = document.getElementsByClassName("tabBody");
 		document.getElementById("HireABike").style.display = "none";
@@ -808,7 +807,6 @@ $scope.orderByDate = function(item)
 		}
 		if(found == false)
 			{
-				
 				$scope.myBookingsArray.push({"date":formattedDate, "timeslots":date.timeslot});
 			}
 		found = false;

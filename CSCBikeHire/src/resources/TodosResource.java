@@ -1,4 +1,4 @@
-package com.vogella.jersey.todo.resources;
+package resources;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,13 +19,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import com.google.gson.Gson;
-import com.vogella.jersey.todo.model.ProjectManager;
 
 import dto.BookingObject;
 import dto.UserBookingObject;
 import dto.UserLoginObject;
-
-
+import model.ProjectManager;
 
 import java.util.Properties;
 import javax.mail.Message;
@@ -60,7 +58,7 @@ public class TodosResource {
         	{
         		ArrayList<BookingObject> feedData = null; 
         		ProjectManager projectManager= new ProjectManager();
-        		feedData = projectManager.GetFeeds();
+        		feedData = projectManager.GetAllBookings();
         		Gson gson = new Gson();
         		System.out.println(gson.toJson(feedData));
         		feeds = gson.toJson(feedData);
@@ -246,7 +244,7 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
 
 	// Enter your correct gmail UserID and Password
 	// if you have 2FA enabled then provide App Specific Password
-	transport.connect("smtp.gmail.com", "mitchelltempleton94", "Civic333");
+	transport.connect("smtp.gmail.com", "un", "pw");
 	transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
 	transport.close();
 }
@@ -268,7 +266,6 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
                 ArrayList<BookingObject> feedData = null; 
         		ProjectManager projectManager= new ProjectManager();
         		feedData = projectManager.PostFeeds(employeeID, date, timeslot);
-                servletResponse.sendRedirect("../create_todo.html");
         	} catch(Exception e) {
         		System.out.println("Exception: " + e.getMessage());
         	}
@@ -277,11 +274,7 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
 // END :: Add a New Booking      
 //======================================================================
        
-   
-        
-        
-        
-        
+
 //======================================================================
 // Update Account verified Field for User      
 //======================================================================     

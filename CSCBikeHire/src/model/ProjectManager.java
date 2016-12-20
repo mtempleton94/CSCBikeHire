@@ -1,4 +1,4 @@
-package com.vogella.jersey.todo.model;
+package model;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import dto.UserLoginObject;
 public class ProjectManager {
 
 //==========================================================	
-// GET	
+// Get All Bookings	
 //==========================================================
-	public ArrayList<BookingObject> GetFeeds() throws Exception 
+	public ArrayList<BookingObject> GetAllBookings() throws Exception 
 	{
 		ArrayList<BookingObject> feeds = null;
 		try 
@@ -24,11 +24,11 @@ public class ProjectManager {
 			Database database = new Database();
 			Connection connection = database.Get_Connection();
 			Project project = new Project();
-			feeds = project.GetFeeds(connection);
+			feeds = project.GetAllBookings(connection);
 		}
 		catch (Exception e)
 		{
-			System.out.println("Exception Error 3"); //Console 
+			System.out.println("Exception: " + e.getMessage()); //Console 
 			throw e;
 		}
 		return feeds;
@@ -41,113 +41,103 @@ public class ProjectManager {
 //==========================================================	
 // Get Current User Bookings	
 //==========================================================
-		public ArrayList<UserBookingObject> GetUserBookings(String employeeID) throws Exception 
+	public ArrayList<UserBookingObject> GetUserBookings(String employeeID) throws Exception 
+	{
+		ArrayList<UserBookingObject> feeds = null;
+		try 
 		{
-			ArrayList<UserBookingObject> feeds = null;
-			try 
-			{
-				Database database = new Database();
-				Connection connection = database.Get_Connection();
-				Project project = new Project();
-				feeds = project.GetUserBookings(connection, employeeID);
-			}
-			catch (Exception e)
-			{
-				System.out.println("Exception Error 3"); //Console 
-				throw e;
-			}
-			return feeds;
+			Database database = new Database();
+			Connection connection = database.Get_Connection();
+			Project project = new Project();
+			feeds = project.GetUserBookings(connection, employeeID);
 		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage()); //Console 
+			throw e;
+		}
+		return feeds;
+	}
 //==========================================================	
 // END :: Get Current User Bookings	
 //==========================================================
 	
-		
-		
-		
+	
 //==========================================================	
-// Get Current User Bookings	
+// Get User Login Info	
 //==========================================================
-public ArrayList<UserLoginObject> GetUserLogin(String employeeID, String pin) throws Exception 
-{
-	ArrayList<UserLoginObject> feeds = null;
-	try 
+	public ArrayList<UserLoginObject> GetUserLogin(String employeeID, String pin) throws Exception 
 	{
-		Database database = new Database();
-		Connection connection = database.Get_Connection();
-		Project project = new Project();
-		feeds = project.GetUserLogin(connection, employeeID, pin);
+		ArrayList<UserLoginObject> feeds = null;
+		try 
+		{
+			Database database = new Database();
+			Connection connection = database.Get_Connection();
+			Project project = new Project();
+			feeds = project.GetUserLogin(connection, employeeID, pin);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage()); //Console 
+			throw e;
+		}
+		return feeds;
 	}
-	catch (Exception e)
-	{
-		System.out.println("Exception Error"); //Console 
-		throw e;
-	}
-	return feeds;
-}
 //==========================================================	
-// END :: Get Current User Bookings	
+// END :: Get User Login Info
 //==========================================================
-
-
 
 
 //==========================================================	
 // Get User Hash
 //==========================================================
-public ArrayList<UserLoginObject> GetUserHash(String employeeID, String hash) throws Exception 
-{
-	ArrayList<UserLoginObject> feeds = null;
-	try 
+	public ArrayList<UserLoginObject> GetUserHash(String employeeID, String hash) throws Exception 
 	{
-		System.out.println("GET HASH: "+employeeID+" - "+hash);
-		Database database = new Database();
-		Connection connection = database.Get_Connection();
-		Project project = new Project();
-		feeds = project.GetUserHash(connection, employeeID, hash);
+		ArrayList<UserLoginObject> feeds = null;
+		try 
+		{
+			Database database = new Database();
+			Connection connection = database.Get_Connection();
+			Project project = new Project();
+			feeds = project.GetUserHash(connection, employeeID, hash);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage()); 
+			throw e;
+		}
+		return feeds;
 	}
-	catch (Exception e)
-	{
-		System.out.println("Exception Error: " + e.getMessage()); //Console 
-		throw e;
-	}
-	return feeds;
-}
 //==========================================================	
 //END :: Get User Hash	
 //==========================================================
 
 
-
-
 //==========================================================	
 // Create a New user
 //==========================================================
-
-
-public ArrayList<UserLoginObject> CreateUser(String employee, String pin, String hash) throws Exception 
-{
-	ArrayList<UserLoginObject> feeds = null;
-	try 
+	public ArrayList<UserLoginObject> CreateUser(String employee, String pin, String hash) throws Exception 
 	{
-		Database database = new Database();
-		Connection connection = database.Get_Connection();
-		java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		connection.setAutoCommit(false);    
-		String insertEmp1 = "INSERT INTO `bikehire`.`employee` (`emailAddress`, `pin`, `accountVerified`, `hash`) VALUES ('"+employee+"', '"+pin+"', '0', '"+hash+"');";
-		connection.setAutoCommit(false);
-		stmt.addBatch(insertEmp1);
-		stmt.executeBatch();
-		connection.commit();
-	}
-	catch (Exception e)
-	{
-		System.out.println("Exception Error Post"); //Console 
-		throw e;
-	}
-	return feeds;
-}		
-
+		ArrayList<UserLoginObject> feeds = null;
+		try 
+		{
+			Database database = new Database();
+			Connection connection = database.Get_Connection();
+			java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			connection.setAutoCommit(false);    
+			String insertEmp1 = "INSERT INTO `bikehire`.`employee` (`emailAddress`, `pin`, `accountVerified`, `hash`) VALUES ('"+employee+"', '"+pin+"', '0', '"+hash+"');";
+			connection.setAutoCommit(false);
+			stmt.addBatch(insertEmp1);
+			stmt.executeBatch();
+			connection.commit();
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage()); 
+			throw e;
+		}
+		return feeds;
+	}		
 //==========================================================	
 //END :: Create a New user
 //==========================================================
@@ -164,9 +154,14 @@ public ArrayList<UserLoginObject> CreateUser(String employee, String pin, String
 				Database database = new Database();
 				Connection connection = database.Get_Connection();
 				java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-				connection.setAutoCommit(false);    
-				String insertEmp1 = "INSERT INTO bikehire.booking (booking.emailAddress, booking.date, booking.timeslot) VALUES ('"+employee+"', '"+date+"', '"+timeslot+"'); ";
-				System.out.println("Insert: " + insertEmp1);
+				
+				
+				String insertEmp1 = "INSERT INTO bikehire.booking (booking.emailAddress, booking.date, booking.timeslot, booking.bikeNumber) "
+						+ "SELECT '"+employee+"', '"+date+"', '"+timeslot+"',  "
+						+ "IF((SELECT MAX(bikeNumber) FROM  booking WHERE date = '"+date+"' AND timeslot = '"+timeslot+"')>0, MAX(bikeNumber)+1, '1') "
+						+ "FROM  booking "
+						+ "WHERE booking.date = '"+date+"' AND timeslot = '"+timeslot+"';";
+				
 				connection.setAutoCommit(false);
 				stmt.addBatch(insertEmp1);
 				stmt.executeBatch();
@@ -174,7 +169,7 @@ public ArrayList<UserLoginObject> CreateUser(String employee, String pin, String
 			}
 			catch (Exception e)
 			{
-				System.out.println("Exception Error Post"); //Console 
+				System.out.println("Exception: " + e.getMessage()); 
 				throw e;
 			}
 			return feeds;
@@ -184,35 +179,34 @@ public ArrayList<UserLoginObject> CreateUser(String employee, String pin, String
 //==========================================================
 	
 		
-		//==========================================================	
-		// Add New Booking	
-		//==========================================================
-				public ArrayList<UserLoginObject> UpdateVerified(String employee) throws Exception 
-				{
-					ArrayList<UserLoginObject> feeds = null;
-					try 
-					{
-						Database database = new Database();
-						Connection connection = database.Get_Connection();
-						java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-						connection.setAutoCommit(false);    
-						String insertEmp1 = "UPDATE employee SET accountverified=1 WHERE emailAddress='"+employee+"'; ";
-						System.out.println("Insert: " + insertEmp1);
-						connection.setAutoCommit(false);
-						stmt.addBatch(insertEmp1);
-						stmt.executeBatch();
-						connection.commit();
-					}
-					catch (Exception e)
-					{
-						System.out.println("Exception Error Post"); //Console 
-						throw e;
-					}
-					return feeds;
-				}
-		//==========================================================	
-		// END :: Add New Booking	
-		//==========================================================
+//==========================================================	
+// Verify Employee Account	
+//==========================================================
+		public ArrayList<UserLoginObject> UpdateVerified(String employee) throws Exception 
+		{
+			ArrayList<UserLoginObject> feeds = null;
+			try 
+			{
+				Database database = new Database();
+				Connection connection = database.Get_Connection();
+				java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				connection.setAutoCommit(false);    
+				String insertEmp1 = "UPDATE employee SET accountverified=1 WHERE emailAddress='"+employee+"'; ";
+				connection.setAutoCommit(false);
+				stmt.addBatch(insertEmp1);
+				stmt.executeBatch();
+				connection.commit();
+			}
+			catch (Exception e)
+			{
+				System.out.println("Exception: " + e.getMessage()); 
+				throw e;
+			}
+			return feeds;
+		}
+//==========================================================	
+// END :: Verify Employee Account	
+//==========================================================
 		
 		
 		
@@ -237,7 +231,7 @@ public ArrayList<BookingObject> DeleteBooking(String employee, String date, Stri
 	}
 	catch (Exception e)
 	{
-		System.out.println("Error: " + e.getMessage());
+		System.out.println("Exception: " + e.getMessage()); 
 		throw e;
 	}
 	return feeds;
@@ -268,7 +262,7 @@ public ArrayList<UserLoginObject> DeleteAccount(String employee, String pin) thr
 	}
 	catch (Exception e)
 	{
-		System.out.println("Error: " + e.getMessage());
+		System.out.println("Exception: " + e.getMessage()); 
 		throw e;
 	}
 	return feeds;
