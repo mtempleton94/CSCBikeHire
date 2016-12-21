@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+<meta charset="ISO-8859-1">
+<title>My Client</title>
+<link rel="stylesheet" href="style/style.css">
+
+<!--  <script type="text/javascript" src="js/angular.min.js"></script>  -->
+		
+
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+		
+		
+		<font face="arial black,arial">
+</head>
+<body ng-controller="HttpGetController">
+
+<div id="resetContent">
+	<h1 id="verifyText" class="verifyText"></h1>
+	<a href="http://localhost:8080/CSCBikeHire/create_todo.html" class="button" id="goToLoginButton">Go to Login</a>
+
+   	<div class="confirmPinOverlay" id="confirmPinOverlay">
+ 			
+ 		<div  class="confirmPinWindow" id="confirmPinWindow">
+ 			<p id="confirmPinMessage">Set this as your new Pin?</p>
+ 			<button ng-click="setPin()">Set New Pin</button>
+			<button ng-click="cancelConfirmPin()">Cancel</button>
+ 		</div>
+	</div> 
+
+<div class="resetLoginContents" id="resetLoginContents" >
+			
+				<p id="emailDisplay"></p>
+			
+			<div class="resetActionDisplay" id="resetActionDisplay">
+				Please Enter a New Pin
+			</div>   
+			
+			 <div class="keypadLine">
+				<button ng-click="resetKey('1')">1</button>
+				<button ng-click="resetKey('2')">2</button>
+				<button ng-click="resetKey('3')">3</button>
+			</div>
+			
+			<div class="keypadLine">
+				<button ng-click="resetKey('4')">4</button>
+				<button ng-click="resetKey('5')">5</button>
+				<button ng-click="resetKey('6')">6</button>
+			</div>
+			
+			<div class="keypadLine">
+				<button ng-click="resetKey('7')">7</button>
+				<button ng-click="resetKey('8')">8</button>
+				<button ng-click="resetKey('9')">9</button>
+			</div>
+			
+			<div class="keypadLine">
+				<button class="keypadLineFinal"ng-click="resetKey('0')">0</button><br>
+			</div>
+		</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+var app = angular.module("app", []);
+app.controller("HttpGetController", function ($scope, $http) 
+{
+	
+		  var idAndHash = {};
+		  var query = window.location.search.substring(1);
+		  var vars = query.split("&");
+		  for (var i=0;i<vars.length;i++) 
+		  {
+		    var pair = vars[i].split("=");
+		    idAndHash[pair[0]] = decodeURIComponent(pair[1]);
+
+		  } 
+		  
+		  //Display user's email address 
+		  document.getElementById("emailDisplay").innerHTML = idAndHash.employeeID+"@csc.com";
+		  
+		  
+		// Get Hash for User
+		var data = $.param({employeeID: idAndHash.employeeID, hash: idAndHash.hash});
+		
+			$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userverify/'+idAndHash.employeeID+'/'+idAndHash.hash, data)   
+			.success(function(response)
+			{	
+				$scope.result = response;
+				if($scope.result.length > 0)
+				{
+					$scope.updateVerification(idAndHash.employeeID);
+				} 
+				else 
+				{
+					document.getElementById("resetLoginContents").style.display = 'none';
+					document.getElementById("verifyText").innerHTML = "There was a issue processing your request. Please ensure you are using the correct link or try generating a new one.";
+					document.getElementById("goToLoginButton").style.display = 'block';
+				}
+			});
+			
+			
+			var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
+			$scope.updateVerification = function(employeeID) 
+			{
+	    		var data = $.param({employeeID: employeeID});
+	    	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/updateverified', data, config)  
+	    	        .success(function (data, status, headers, config)
+	    	        		{ 
+	    	        	$scope.PostDataResponse = data;
+	    	        		
+	    	        })
+	    	        .error(function (data, status, header, config) {
+	    	            $scope.ResponseDetails = "Data: " + data +
+	    	                "<hr />status: " + status +
+	    	                "<hr />headers: " + header +
+	    	                "<hr />config: " + config;
+	    	        });
+
+			}
+			
+			var pinEntered1 = '';
+			var pinEntered2 = '';
+			$scope.resetKey = function(key)
+			{
+				if(pinEntered1.length < 4) // Entering first pin
+				{
+					pinEntered1+=key;
+					$scope.setPinDisplay(pinEntered1.length);
+					if(pinEntered1.length == 4 ) // Completed entry of pin 1 
+					{
+						document.getElementById('resetActionDisplay').innerHTML = "Please Re-Enter Your New Pin"; 
+					}
+				}
+				else 
+				{
+					pinEntered2+=key;
+					$scope.setPinDisplay(pinEntered2.length);
+				}
+				
+
+				
+				
+				if (pinEntered1.length == 4 && pinEntered2.length == 4) //Completed entry of pin 2 
+				{
+					if(pinEntered1 == pinEntered2)
+						{
+							document.getElementById("confirmPinOverlay").style.display = 'block';
+						}
+					else
+						{
+							document.getElementById('resetActionDisplay').innerHTML = "Pins do not match. Try Again"; 
+							pinEntered1 = '';
+							pinEntered2 = '';
+						}
+				}
+			}
+			
+			
+			
+			
+			
+			$scope.cancelConfirmPin = function()
+			{
+				document.getElementById("confirmPinOverlay").style.display = 'none';
+				document.getElementById('resetActionDisplay').innerHTML = "Please Enter a New Pin"; 
+				pinEntered1 = '';
+				pinEntered2 = '';
+			}
+			
+			
+			
+			$scope.setPin = function()
+			{
+					var data = $.param({
+						employeeID: idAndHash.employeeID,
+						pin: pinEntered2
+				        });
+				        
+				$http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatepin', data, config)  
+				        .success(function (data, status, headers, config) {
+				            $scope.PostDataResponse = data;
+				            
+				        })
+				        .error(function (data, status, header, config) {
+				            $scope.ResponseDetails = "Data: " + data +
+				                "<hr />status: " + status +
+				                "<hr />headers: " + header +
+				                "<hr />config: " + config;
+				        });
+				
+				
+				//Remove hash from DB so reset can nolonger be accessed
+				$scope.updateHash();
+				
+				
+				
+				
+				window.location.href = 'http://localhost:8080/CSCBikeHire/create_todo.html'; // Redirect user to login page
+			}
+			
+			
+//=====================================================================================
+// Clear Stored Hash for user 
+//=====================================================================================
+	$scope.updateHash = function()
+	{
+			var data = $.param({
+				   employeeID: idAndHash.employeeID,
+				   hash: ''
+				  });
+				        
+			$http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatehash', data, config)  
+				 .success(function (data, status, headers, config) {
+				      $scope.PostDataResponse = data;
+				      console.log("http://localhost:8080/CSCBikeHire/resetpin.html?employeeID="+emailAddress+"&hash="+hash)
+				   })
+				        .error(function (data, status, header, config) {
+				            $scope.ResponseDetails = "Data: " + data +
+				                "<hr />status: " + status +
+				                "<hr />headers: " + header +
+				                "<hr />config: " + config;
+				    });
+	}
+//=====================================================================================
+// END :: Clear Stored Hash for user 
+//=====================================================================================
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			$scope.setPinDisplay = function(pinLength)
+			{
+				var resetActionDisplay = document.getElementById('resetActionDisplay');
+		    	switch(pinLength) 
+		    	{
+		    	case 1:
+		    		resetActionDisplay.innerHTML = "."; 
+		        	break;
+		        case 2:
+		        	resetActionDisplay.innerHTML = "..";             
+		        	break;
+		        case 3:
+		        	resetActionDisplay.innerHTML = "...";             
+		        	break;
+		        case 4:
+		        	resetActionDisplay.innerHTML = "....";             
+		        	break;
+		    	} 
+			}
+			
+			
+		
+		
+	
+});
+
+</script>
+
+
+</body>
+</html>

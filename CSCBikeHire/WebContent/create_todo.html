@@ -4,6 +4,7 @@
 <meta charset="ISO-8859-1">
 <title>My Client</title>
 <link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
 
 <!--  <script type="text/javascript" src="js/angular.min.js"></script>  -->
 		
@@ -21,7 +22,7 @@
 <body ng-controller="HttpGetController">
 
   	<div class="login" id="login">
-  		   <div class="LoginHeader" id="loginHeader" >
+  		   <div class="header" id="loginHeader" >
   			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
 		  </div>  
 		
@@ -84,6 +85,19 @@
 			<button ng-click="cancelConfirmation()">I Do Not Agree</button>
  		</div>
 	</div> 
+ 
+ 
+   	<div class="forgotPinOverlay" id="forgotPinOverlay">
+ 			
+ 		<div  class="forgotPinWindow" id="forgotPinWindow">
+ 			<p id="forgotPinMessage">Enter your CSC ID</p>
+ 				<input type="text" name="forgotPinEmailEntry" id="forgotPinEmailEntry"  ng-model="confirmed">
+				<p class="atCSCForgot">@csc.com</p>
+ 			<button ng-click="sendForgotPinEmail()">Send Reset Link</button>
+			<button ng-click="cancelForgotPin()">Cancel</button>
+ 		</div>
+	</div> 
+	
  
  
   	<div class="cancelOverlay" id="cancelOverlay">
@@ -323,10 +337,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
             {
 	    		pinEntered="";
 	    		loginActionDisplay.innerHTML = "Please Enter a CSC E-Mail Address"; 
-    		}
-
-            
-
+    		}   
         }
 	
 	
@@ -574,6 +585,58 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 
 	}
 	
+	
+	$scope.forgotPin = function()
+	{
+		document.getElementById('forgotPinOverlay').style.display = 'block';
+	}
+	
+	$scope.sendForgotPinEmail = function()
+	{
+		var enteredEmail = document.getElementById('forgotPinEmailEntry').value;
+		document.getElementById('forgotPinOverlay').style.display = 'none';
+		alert("Pin Reset Email Sent to "+enteredEmail+"@csc.com");
+		$scope.updateHash(enteredEmail);
+	}
+	
+	
+	
+//=====================================================================================
+// Update hash for User - Used when user has forgotten their pin
+//=====================================================================================
+	$scope.updateHash = function(emailAddress)
+	{
+		var randomNumber = Math.floor(Math.random() * (5000 - 1000) + 1000);
+		var randomString = randomNumber.toString();
+		var hash = MD5(randomString)
+			
+			var data = $.param({
+	            employeeID: emailAddress,
+	            hash: hash
+	        });
+	        
+	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatehash', data, config)  
+	        .success(function (data, status, headers, config) {
+	            $scope.PostDataResponse = data;
+	            console.log("http://localhost:8080/CSCBikeHire/resetpin.html?employeeID="+emailAddress+"&hash="+hash)
+	        })
+	        .error(function (data, status, header, config) {
+	            $scope.ResponseDetails = "Data: " + data +
+	                "<hr />status: " + status +
+	                "<hr />headers: " + header +
+	                "<hr />config: " + config;
+	        });
+	}
+//=====================================================================================
+// Update hash for User - Used when user has forgotten their pin
+//=====================================================================================
+	
+	
+	
+	
+	
+	
+	
 
  //=====================================================================================
  // Login
@@ -602,7 +665,25 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	
 
 	
-	
+//=====================================================================================
+// Check if a user exists in the DB 
+//=====================================================================================	 
+	$scope.checkUserExists = function (employeeID) 
+    {
+
+	var data = $.param({employeeID: currentUser});
+	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/finduser/'+currentUser, data)  
+	.success(function(userBookingResponse)
+	{	
+		$scope.userBookingResult = userBookingResponse;
+		$scope.userBookingResult.forEach(function(date) {
+			console.log(date.emailAddress);
+		});
+	});
+    };
+//=====================================================================================
+// END :: Check if a user exists in the DB  
+//=====================================================================================	 	
 
 	
 	

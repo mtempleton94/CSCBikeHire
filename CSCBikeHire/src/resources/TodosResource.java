@@ -181,6 +181,41 @@ return Response.ok().entity(feeds)
 
 
 //======================================================================
+// Check if a DB record already exists for a user        
+//======================================================================
+@GET
+@Path("/finduser/{employeeID}")
+@Produces("application/json")
+@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+public Response userExistsFeed(@PathParam("employeeID") String employeeID) throws IOException 
+{
+	String feeds = null;
+	try
+	{
+		ArrayList<UserLoginObject> feedData = null; 
+		ProjectManager projectManager= new ProjectManager();
+		feedData = projectManager.GetUserExists(employeeID);
+		Gson gson = new Gson();
+		feeds = gson.toJson(feedData);
+	}
+	catch (Exception e)
+	{
+		System.out.println("Exception Error");  
+	}
+return Response.ok().entity(feeds)
+		.header("Access-Control-Allow-Origin", "*")
+		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
+		.build();
+} 
+//======================================================================
+//END :: Check if a DB record already exists for a user       
+//====================================================================== 
+
+
+
+
+
+//======================================================================
 //Create a New User    
 //======================================================================      
      @POST
@@ -249,6 +284,59 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
 	transport.close();
 }
 
+
+
+//======================================================================
+// Update Hash for a user    
+//======================================================================      
+   @POST
+   @Path("/updatehash")
+   @Produces(MediaType.TEXT_HTML)
+   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+   public void updateHash(@FormParam("employeeID") String employeeID,
+                   @FormParam("hash") String hash,
+                   @Context HttpServletResponse servletResponse) throws IOException {
+   	try{
+   		//Send Verification Email to the user
+   		sendVerificationEmail(employeeID, hash);
+   		
+   		System.out.println("Update Hash: "+employeeID);
+           ArrayList<UserLoginObject> feedData = null; 
+   		ProjectManager projectManager= new ProjectManager();
+   		feedData = projectManager.UpdateHash(employeeID, hash);
+   	} catch(Exception e) {
+   		System.out.println("Exception: " + e.getMessage());
+   	}
+   }
+//======================================================================
+//END :: Update Hash for a user        
+//======================================================================
+
+
+   
+   
+//======================================================================
+// Update Pin for a user    
+//======================================================================      
+   @POST
+   @Path("/updatepin")
+   @Produces(MediaType.TEXT_HTML)
+   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+   public void updatepin(@FormParam("employeeID") String employeeID,
+                   @FormParam("pin") String pin,
+                   @Context HttpServletResponse servletResponse) throws IOException {
+   	try{
+        ArrayList<UserLoginObject> feedData = null; 
+   		ProjectManager projectManager= new ProjectManager();
+   		feedData = projectManager.UpdatePin(employeeID, pin);
+   	} catch(Exception e) {
+   		System.out.println("Exception: " + e.getMessage());
+   	}
+   }
+//======================================================================
+//END :: Update Pin for a user        
+//======================================================================
+   
 
         
 //======================================================================
@@ -333,7 +421,7 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
              
              
 //======================================================================
-// Delete a Booking      
+// Delete a User      
 //======================================================================      
 @DELETE
 @Path("/deleteuser/{employeeID}/{pin}")
@@ -356,7 +444,7 @@ public void deleteAccount(@PathParam("employeeID") String employeeID,
 	        }
 		}
 //======================================================================
-// END :: Delete a Booking      
+// END :: Delete a User       
 //======================================================================          
              
              

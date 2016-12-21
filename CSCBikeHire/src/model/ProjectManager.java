@@ -89,6 +89,33 @@ public class ProjectManager {
 
 
 //==========================================================	
+// Check if a user already exists	
+//==========================================================
+	public ArrayList<UserLoginObject> GetUserExists(String employeeID) throws Exception 
+	{
+		ArrayList<UserLoginObject> feeds = null;
+		try 
+		{
+			Database database = new Database();
+			Connection connection = database.Get_Connection();
+			Project project = new Project();
+			feeds = project.GetUserExists(connection, employeeID);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage()); //Console 
+			throw e;
+		}
+		return feeds;
+	}
+//==========================================================	
+// END :: Check if a user already exists
+//==========================================================
+	
+	
+	
+	
+//==========================================================	
 // Get User Hash
 //==========================================================
 	public ArrayList<UserLoginObject> GetUserHash(String employeeID, String hash) throws Exception 
@@ -142,7 +169,69 @@ public class ProjectManager {
 //END :: Create a New user
 //==========================================================
 
-		
+//==========================================================	
+// Update hash for a user
+//==========================================================
+	public ArrayList<UserLoginObject> UpdateHash(String employee, String hash) throws Exception 
+	{
+		ArrayList<UserLoginObject> feeds = null;
+		try 
+		{
+			Database database = new Database();
+			Connection connection = database.Get_Connection();
+			java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			connection.setAutoCommit(false);    
+			String updatehashStr = "UPDATE bikehire.employee SET hash='"+hash+"' WHERE emailAddress = '"+employee+"';";
+			connection.setAutoCommit(false);
+			stmt.addBatch(updatehashStr);
+			stmt.executeBatch();
+			connection.commit();
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage()); 
+			throw e;
+		}
+		return feeds;
+	}		
+//==========================================================	
+//END :: Update hash for a user
+//==========================================================
+	
+	
+	
+	
+//==========================================================	
+// Update hash for a user
+//==========================================================
+	public ArrayList<UserLoginObject> UpdatePin(String employee, String pin) throws Exception 
+	{
+		ArrayList<UserLoginObject> feeds = null;
+		try 
+		{
+			Database database = new Database();
+			Connection connection = database.Get_Connection();
+			java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			connection.setAutoCommit(false);    
+			String updatePinStr = "UPDATE bikehire.employee SET pin='"+pin+"' WHERE emailAddress = '"+employee+"';";
+			connection.setAutoCommit(false);
+			stmt.addBatch(updatePinStr);
+			stmt.executeBatch();
+			connection.commit();
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception: " + e.getMessage()); 
+			throw e;
+		}
+		return feeds;
+	}		
+//==========================================================	
+//END :: Update hash for a user
+//==========================================================
+	
+	
+	
 //==========================================================	
 // Add New Booking	
 //==========================================================
