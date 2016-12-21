@@ -143,4 +143,34 @@ public class Project
 //===========================================================================================	
 	
 	
+	
+//===========================================================================================
+// Retrieve user ID to check if they exist
+//===========================================================================================	
+	public ArrayList<UserLoginObject> GetUserExists(Connection connection, String employeeID) throws Exception
+	{
+		ArrayList<UserLoginObject> userBookingData = new ArrayList<UserLoginObject>();
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT emailAddress FROM bikehire.employee WHERE emailAddress = '"+employeeID+"'");
+			ResultSet rs = ps.executeQuery();
+					
+			while(rs.next())
+			{
+				UserLoginObject userLoginObject = new UserLoginObject();
+				userLoginObject.setEmployeeID(rs.getString("emailAddress"));
+				userBookingData.add(userLoginObject);
+			}
+			return userBookingData;
+		}
+		catch(Exception e)
+		{
+			throw e;
+		}
+	}
+//===========================================================================================	
+// END :: Retrieve user ID to check if they exist
+//===========================================================================================
+	
+	
 }
