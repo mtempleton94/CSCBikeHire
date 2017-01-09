@@ -124,7 +124,6 @@ public Response userLoginFeed(@PathParam("employeeID") String employeeID, @PathP
 	String feeds = null;
 	try
 	{
-		System.out.println("HERE> "+pin);
 		ArrayList<UserLoginObject> feedData = null; 
 		ProjectManager projectManager= new ProjectManager();
 		feedData = projectManager.GetUserLogin(employeeID, pin);
@@ -192,6 +191,7 @@ public Response userExistsFeed(@PathParam("employeeID") String employeeID) throw
 	String feeds = null;
 	try
 	{
+		System.out.println("Find User "+ employeeID); 
 		ArrayList<UserLoginObject> feedData = null; 
 		ProjectManager projectManager= new ProjectManager();
 		feedData = projectManager.GetUserExists(employeeID);
@@ -226,16 +226,12 @@ return Response.ok().entity(feeds)
                      @FormParam("pin") String pin,
                      @FormParam("hash") String hash,
                      @Context HttpServletResponse servletResponse) throws IOException {
-     	try{
-     		//Send Verification Email to the user
+     	try
+     	{
      		sendVerificationEmail(employeeID, hash);
-     		
-     		System.out.println("Create New User: "+employeeID+"  "+pin);
-             ArrayList<UserLoginObject> feedData = null; 
-     		ProjectManager projectManager= new ProjectManager();
-     		feedData = projectManager.CreateUser(employeeID, pin, hash);
-             //servletResponse.sendRedirect("../create_todo.html");
-     	} catch(Exception e) {
+     		ProjectManager.CreateUser(employeeID, pin, hash);
+     	} 
+     	catch(Exception e) {
      		System.out.println("Exception: " + e.getMessage());
      	}
      }
@@ -299,11 +295,7 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
    	try{
    		//Send Verification Email to the user
    		sendVerificationEmail(employeeID, hash);
-   		
-   		System.out.println("Update Hash: "+employeeID);
-           ArrayList<UserLoginObject> feedData = null; 
-   		ProjectManager projectManager= new ProjectManager();
-   		feedData = projectManager.UpdateHash(employeeID, hash);
+   		ProjectManager.UpdateHash(employeeID, hash);
    	} catch(Exception e) {
    		System.out.println("Exception: " + e.getMessage());
    	}
@@ -326,9 +318,7 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
                    @FormParam("pin") String pin,
                    @Context HttpServletResponse servletResponse) throws IOException {
    	try{
-        ArrayList<UserLoginObject> feedData = null; 
-   		ProjectManager projectManager= new ProjectManager();
-   		feedData = projectManager.UpdatePin(employeeID, pin);
+   		ProjectManager.UpdatePin(employeeID, pin);
    	} catch(Exception e) {
    		System.out.println("Exception: " + e.getMessage());
    	}
@@ -350,10 +340,7 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
                         @FormParam("timeslot") String timeslot,
                         @Context HttpServletResponse servletResponse) throws IOException {
         	try{
-        		System.out.println("POST " + employeeID +" "+ date +" "+ timeslot);
-                ArrayList<BookingObject> feedData = null; 
-        		ProjectManager projectManager= new ProjectManager();
-        		feedData = projectManager.PostFeeds(employeeID, date, timeslot);
+        		ProjectManager.PostFeeds(employeeID, date, timeslot);
         	} catch(Exception e) {
         		System.out.println("Exception: " + e.getMessage());
         	}
@@ -374,14 +361,11 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
              @Context HttpServletResponse servletResponse) throws IOException {
         	try{
                 ArrayList<UserLoginObject> feedData = null; 
-        		ProjectManager projectManager= new ProjectManager();
-        		feedData = projectManager.UpdateVerified(employeeID);
+        		ProjectManager.UpdateVerified(employeeID);
         	} catch(Exception e) {
         		System.out.println("Exception: " + e.getMessage());
         	}
         }      
-        
-        
 //======================================================================
 // END :: Update Account verified Field for User      
 //======================================================================
@@ -406,11 +390,7 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
             		 @PathParam("timeslot") String timeslot,
                      @Context HttpServletResponse servletResponse) throws IOException {
              	try{
-             		System.out.println("DELETE " + employeeID +" "+ date +" "+ timeslot);
-                     ArrayList<BookingObject> feedData = null; 
-             		ProjectManager projectManager= new ProjectManager();
-             		feedData = projectManager.DeleteBooking(employeeID, date, timeslot);
-                    // servletResponse.sendRedirect("../../../create_todo.html");
+             		ProjectManager.DeleteBooking(employeeID, date, timeslot);
              	} catch(Exception e) {
              		System.out.println("Exception: " + e.getMessage());
              	}
@@ -433,10 +413,7 @@ public void deleteAccount(@PathParam("employeeID") String employeeID,
 		{
 	       	try
 	       	{
-	       		System.out.println("Delete User: "+employeeID+" - "+pin);
-	            ArrayList<UserLoginObject> feedData = null; 
-	            ProjectManager projectManager= new ProjectManager();
-	                       feedData = projectManager.DeleteAccount(employeeID, pin);
+	            ProjectManager.DeleteAccount(employeeID, pin);
 	       	} 
 	       	catch(Exception e) 
 	       	{

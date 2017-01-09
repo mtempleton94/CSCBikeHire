@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
 import com.mysql.jdbc.ResultSet;
@@ -143,27 +144,35 @@ public class ProjectManager {
 //==========================================================	
 // Create a New user
 //==========================================================
-	public ArrayList<UserLoginObject> CreateUser(String employee, String pin, String hash) throws Exception 
+	public static void CreateUser(String employee, String pin, String hash) throws Exception 
 	{
-		ArrayList<UserLoginObject> feeds = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
 		try 
 		{
 			Database database = new Database();
-			Connection connection = database.Get_Connection();
-			java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			connection.setAutoCommit(false);    
-			String insertEmp1 = "INSERT INTO `bikehire`.`employee` (`emailAddress`, `pin`, `accountVerified`, `hash`) VALUES ('"+employee+"', '"+pin+"', '0', '"+hash+"');";
-			connection.setAutoCommit(false);
-			stmt.addBatch(insertEmp1);
-			stmt.executeBatch();
-			connection.commit();
+			connection = database.Get_Connection();
+			String query = "INSERT INTO `bikehire`.`employee` (`emailAddress`, `pin`, `accountVerified`, `hash`) VALUES (?, ?, '0', ?);";
+			ps = connection.prepareStatement(query);
+			ps.setString(1, employee);
+			ps.setString(2, pin);
+			ps.setString(3, hash);
+			ps.executeUpdate();
 		}
 		catch (Exception e)
 		{
 			System.out.println("Exception: " + e.getMessage()); 
 			throw e;
 		}
-		return feeds;
+		finally 
+		{
+			if (ps != null) {
+				ps.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		}
 	}		
 //==========================================================	
 //END :: Create a New user
@@ -172,27 +181,34 @@ public class ProjectManager {
 //==========================================================	
 // Update hash for a user
 //==========================================================
-	public ArrayList<UserLoginObject> UpdateHash(String employee, String hash) throws Exception 
+	public static void UpdateHash(String employee, String hash) throws Exception 
 	{
-		ArrayList<UserLoginObject> feeds = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
 		try 
 		{
 			Database database = new Database();
-			Connection connection = database.Get_Connection();
-			java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			connection.setAutoCommit(false);    
-			String updatehashStr = "UPDATE bikehire.employee SET hash='"+hash+"' WHERE emailAddress = '"+employee+"';";
-			connection.setAutoCommit(false);
-			stmt.addBatch(updatehashStr);
-			stmt.executeBatch();
-			connection.commit();
+			connection = database.Get_Connection();
+			String query = "UPDATE bikehire.employee SET hash=? WHERE emailAddress = ?;";
+			ps = connection.prepareStatement(query);
+			ps.setString(1, hash);
+			ps.setString(2, employee);
+			ps.executeUpdate();
 		}
 		catch (Exception e)
 		{
 			System.out.println("Exception: " + e.getMessage()); 
 			throw e;
 		}
-		return feeds;
+		finally 
+		{
+			if (ps != null) {
+				ps.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		}
 	}		
 //==========================================================	
 //END :: Update hash for a user
@@ -202,32 +218,39 @@ public class ProjectManager {
 	
 	
 //==========================================================	
-// Update hash for a user
+// Update pin for a user
 //==========================================================
-	public ArrayList<UserLoginObject> UpdatePin(String employee, String pin) throws Exception 
+	public static void UpdatePin(String employee, String pin) throws Exception 
 	{
-		ArrayList<UserLoginObject> feeds = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
 		try 
 		{
 			Database database = new Database();
-			Connection connection = database.Get_Connection();
-			java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			connection.setAutoCommit(false);    
-			String updatePinStr = "UPDATE bikehire.employee SET pin='"+pin+"' WHERE emailAddress = '"+employee+"';";
-			connection.setAutoCommit(false);
-			stmt.addBatch(updatePinStr);
-			stmt.executeBatch();
-			connection.commit();
+			connection = database.Get_Connection();
+			String query = "UPDATE bikehire.employee SET pin= ? WHERE emailAddress = ?;";
+			ps = connection.prepareStatement(query);
+			ps.setString(1, pin);
+			ps.setString(2, employee);
+			ps.executeUpdate();
 		}
 		catch (Exception e)
 		{
 			System.out.println("Exception: " + e.getMessage()); 
 			throw e;
 		}
-		return feeds;
+		finally 
+		{
+			if (ps != null) {
+				ps.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		}
 	}		
 //==========================================================	
-//END :: Update hash for a user
+//END :: Update pin for a user
 //==========================================================
 	
 	
@@ -235,31 +258,43 @@ public class ProjectManager {
 //==========================================================	
 // Add New Booking	
 //==========================================================
-		public ArrayList<BookingObject> PostFeeds(String employee, String date, String timeslot) throws Exception 
+		public static void PostFeeds(String employee, String date, String timeslot) throws Exception 
 		{
-			ArrayList<BookingObject> feeds = null;
+			Connection connection = null;
+			PreparedStatement ps = null;
 			try 
 			{
 				Database database = new Database();
-				Connection connection = database.Get_Connection();
-				java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				connection = database.Get_Connection();
+				String query = "INSERT INTO bikehire.booking (booking.emailAddress, booking.date, booking.timeslot, booking.bikeNumber) "
+						+ "SELECT ?, ?, ?,  "
+						+ "AssignBikeNum((SELECT COUNT(*) FROM bikehire.booking WHERE date=? AND timeslot=?), "
+						+ "(SELECT MAX(bikeNumber) FROM  booking WHERE booking.date = ? AND timeslot = ?))";
 				
-				String insertEmp1 = "INSERT INTO bikehire.booking (booking.emailAddress, booking.date, booking.timeslot, booking.bikeNumber) "
-						+ "SELECT '"+employee+"', '"+date+"', "+timeslot+",  "
-						+ "AssignBikeNum((SELECT COUNT(*) FROM bikehire.booking WHERE date='"+date+"' AND timeslot="+timeslot+"), "
-						+ "(SELECT MAX(bikeNumber) FROM  booking WHERE booking.date = '"+date+"' AND timeslot = "+timeslot+"))";
-				
-				connection.setAutoCommit(false);
-				stmt.addBatch(insertEmp1);
-				stmt.executeBatch();
-				connection.commit();
+				ps = connection.prepareStatement(query);
+				ps.setString(1, employee);
+				ps.setString(2, date);
+				ps.setString(3, timeslot);
+				ps.setString(4, date);
+				ps.setString(5, timeslot);
+				ps.setString(6, date);
+				ps.setString(7, timeslot);
+				ps.executeUpdate();
 			}
 			catch (Exception e)
 			{
 				System.out.println("Exception: " + e.getMessage()); 
 				throw e;
 			}
-			return feeds;
+			finally 
+			{
+				if (ps != null) {
+					ps.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			}
 		}
 //==========================================================	
 // END :: Add New Booking	
@@ -269,27 +304,33 @@ public class ProjectManager {
 //==========================================================	
 // Verify Employee Account	
 //==========================================================
-		public ArrayList<UserLoginObject> UpdateVerified(String employee) throws Exception 
+		public static void UpdateVerified(String employee) throws Exception 
 		{
-			ArrayList<UserLoginObject> feeds = null;
+			Connection connection = null;
+			PreparedStatement ps = null;
 			try 
 			{
 				Database database = new Database();
-				Connection connection = database.Get_Connection();
-				java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-				connection.setAutoCommit(false);    
-				String insertEmp1 = "UPDATE employee SET accountverified=1 WHERE emailAddress='"+employee+"'; ";
-				connection.setAutoCommit(false);
-				stmt.addBatch(insertEmp1);
-				stmt.executeBatch();
-				connection.commit();
+				connection = database.Get_Connection();
+				String query = "UPDATE employee SET accountverified=1 WHERE emailAddress= ?; ";
+				ps = connection.prepareStatement(query);
+				ps.setString(1, employee);
+				ps.executeUpdate();
 			}
 			catch (Exception e)
 			{
 				System.out.println("Exception: " + e.getMessage()); 
 				throw e;
 			}
-			return feeds;
+			finally 
+			{
+				if (ps != null) {
+					ps.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			}
 		}
 //==========================================================	
 // END :: Verify Employee Account	
@@ -300,28 +341,35 @@ public class ProjectManager {
 //==========================================================	
 // Delete a Booking	
 //==========================================================
-public ArrayList<BookingObject> DeleteBooking(String employee, String date, String timeslot) throws Exception 
+public static void DeleteBooking(String employee, String date, String timeslot) throws Exception 
 {
-	ArrayList<BookingObject> feeds = null;
+	Connection connection = null;
+	PreparedStatement ps = null;
 	try 
 	{
 		Database database = new Database();
-		Connection connection = database.Get_Connection();
-		java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		connection.setAutoCommit(false);    
-		String deleteStatement = "DELETE FROM bikehire.booking WHERE emailAddress='"+employee+"' AND date='"+date+"' AND timeslot='"+timeslot+"';";
-		System.out.println("Delete: " + deleteStatement);
-		connection.setAutoCommit(false);
-		stmt.addBatch(deleteStatement);
-		stmt.executeBatch();
-		connection.commit();
+		connection = database.Get_Connection();
+		String query = "DELETE FROM bikehire.booking WHERE emailAddress=? AND date=? AND timeslot=?;";
+		ps = connection.prepareStatement(query);
+		ps.setString(1, employee);
+		ps.setString(2, date);
+		ps.setString(3, timeslot);
+		ps.executeUpdate();
 	}
 	catch (Exception e)
 	{
 		System.out.println("Exception: " + e.getMessage()); 
 		throw e;
 	}
-	return feeds;
+	finally 
+	{
+		if (ps != null) {
+			ps.close();
+		}
+		if (connection != null) {
+			connection.close();
+		}
+	}
 }
 //==========================================================	
 // END :: Delete a Booking	
@@ -332,27 +380,34 @@ public ArrayList<BookingObject> DeleteBooking(String employee, String date, Stri
 //==========================================================	
 //Delete a User Account	
 //==========================================================
-public ArrayList<UserLoginObject> DeleteAccount(String employee, String pin) throws Exception 
+public static void DeleteAccount(String employee, String pin) throws Exception 
 {
-	ArrayList<UserLoginObject> feeds = null;
+	Connection connection = null;
+	PreparedStatement ps = null;
 	try 
 	{
 		Database database = new Database();
-		Connection connection = database.Get_Connection();
-		java.sql.Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		connection.setAutoCommit(false);    
-		String deleteStatement = "DELETE FROM bikehire.employee WHERE emailAddress='"+employee+"' AND pin='"+pin+"';";
-		connection.setAutoCommit(false);
-		stmt.addBatch(deleteStatement);
-		stmt.executeBatch();
-		connection.commit();
+		connection = database.Get_Connection();
+		String query = "DELETE FROM bikehire.employee WHERE emailAddress= ? AND pin= ?;";
+		ps = connection.prepareStatement(query);
+		ps.setString(1, employee);
+		ps.setString(2, pin);
+		ps.executeUpdate();
 	}
 	catch (Exception e)
 	{
 		System.out.println("Exception: " + e.getMessage()); 
 		throw e;
 	}
-	return feeds;
+	finally 
+	{
+		if (ps != null) {
+			ps.close();
+		}
+		if (connection != null) {
+			connection.close();
+		}
+	}
 }
 //==========================================================	
 //END :: Delete a User Account	

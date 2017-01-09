@@ -86,7 +86,6 @@ app.controller("HttpGetController", function ($scope, $http)
 		  {
 		    var pair = vars[i].split("=");
 		    idAndHash[pair[0]] = decodeURIComponent(pair[1]);
-
 		  } 
 		  
 		  //Display user's email address 
@@ -114,23 +113,6 @@ app.controller("HttpGetController", function ($scope, $http)
 			
 			
 			var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
-			$scope.updateVerification = function(employeeID) 
-			{
-	    		var data = $.param({employeeID: employeeID});
-	    	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/updateverified', data, config)  
-	    	        .success(function (data, status, headers, config)
-	    	        		{ 
-	    	        	$scope.PostDataResponse = data;
-	    	        		
-	    	        })
-	    	        .error(function (data, status, header, config) {
-	    	            $scope.ResponseDetails = "Data: " + data +
-	    	                "<hr />status: " + status +
-	    	                "<hr />headers: " + header +
-	    	                "<hr />config: " + config;
-	    	        });
-
-			}
 			
 			var pinEntered1 = '';
 			var pinEntered2 = '';
@@ -208,7 +190,7 @@ app.controller("HttpGetController", function ($scope, $http)
 				
 				
 				
-				
+				alert("Your pin has been reset");
 				window.location.href = 'http://localhost:8080/CSCBikeHire/create_todo.html'; // Redirect user to login page
 			}
 			

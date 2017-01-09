@@ -30,7 +30,7 @@
 			
 			<div class="emailEntry">
 				<p>Email</p>
-				<input type="text" name="emailEntry" id="emailEntry"  ng-model="confirmed" ng-change="emailTyped()">
+				<input type="text" name="emailEntry" id="emailEntry"  ng-model="confirmed" >
 				<p class="atCSC">@csc.com</p>
 			</div>
 			
@@ -74,7 +74,6 @@
  		<div  class="confirmBookingWindow" id="confirmBookingWindow">
  			<p>Hire Bike For:</p>
  			<div ng-repeat="booking in selectedBookings">{{formatSelectedBooking(booking)}}
- 				<!--  <p>{{formatDate(booking.date).dayWord}}</p><p>{{formatDate(booking.date).dayNum}}</p><p>{{formatDate(booking.date).monthWord}}</p>  -->
  			</div>
  			<button ng-click="confirmConfirmation()">Confirm</button>
 			<button ng-click="cancelConfirmation()">Cancel</button>
@@ -91,7 +90,7 @@
  			
  		<div  class="forgotPinWindow" id="forgotPinWindow">
  			<p id="forgotPinMessage">Enter your CSC ID</p>
- 				<input type="text" name="forgotPinEmailEntry" id="forgotPinEmailEntry"  ng-model="confirmed">
+ 				<input type="text" name="forgotPinEmailEntry" id="forgotPinEmailEntry">
 				<p class="atCSCForgot">@csc.com</p>
  			<button ng-click="sendForgotPinEmail()">Send Reset Link</button>
 			<button ng-click="cancelForgotPin()">Cancel</button>
@@ -108,11 +107,14 @@
 			<button ng-click="cancelCancel()">Cancel</button>
  		</div>
 	</div> 
-	
+
+
+<!--==================== Options Overlay ====================-->
 	  <div class="optionsOverlay" id="optionsOverlay">
  		<div  class="optionsWindow" id="optionsWindow">
  			<button ng-click="logout()">Sign Out</button>
 			<button ng-click="deleteAccount()">Delete Account</button>
+			<button ng-click="reportIssue()">Report an Issue</button>
 			<button ng-click="cancelOptions()">Cancel</button>
  		</div>
  		
@@ -143,11 +145,24 @@
 			
 			<div class="deleteKeypadLine">
 				<button class="deleteKeypadLineFinal"ng-click="deleteKey('0')">0</button>
-			</div></br>
+			</div><br>
 			<button class="cancelDeleteButton" ng-click="cancelConfirmation()">Cancel</button>
  		</div>
  		
+ 		<!-- Report an Issue -->
+ 	 	<div  class="reportIssueWindow" id="reportIssueWindow">
+ 			<p>Report an Issue</p>
+ 			
+ 			<div class="deleteActionDisplay" id="deleteActionDisplay">
+				<p>Please give as much detail about the issue as possible</p>
+			</div>
+			<textarea id="reportIssueTextArea"></textarea>
+			<br>
+			<button class="cancelIssueButton" ng-click="cancelConfirmation()">Cancel</button>
+			<button class="submitIssueButton" ng-click="submitIssueReport()">Submit</button>
+ 		</div>
 	</div> 
+<!--==================== END : Options Overlay ====================-->
  
 
 
@@ -167,8 +182,8 @@
 
 <div class="navPanel" id="navPanel">
 	<div class="tabs" id="tabs">
-  		<div class="tablink" id="HireABikeTab" ng-click="openTab(event, 'HireABike');">Hire a Bike</div>
-  		<div class="tablink" id="MyBookingsTab" ng-click="openTab(event, 'MyBookings');">My Bookings</div>
+  		<div class="tablink" id="HireABikeTab" ng-click="openTab('HireABike');">Hire a Bike</div>
+  		<div class="tablink" id="MyBookingsTab" ng-click="openTab('MyBookings');">My Bookings</div>
 	</div>
   </div>
 
@@ -276,10 +291,12 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		document.getElementById('login').style.display='none';
 		currentUser = user;
 		$cookieStore.put('currentUser',currentUser);
+		$cookieStore.put('currentTab','hireabike');
 		$scope.generateDates();
 		$scope.getBookings();
 		document.getElementById("HireABike").style.display = "block";
 		document.getElementById("MyBookings").style.display = "block";
+		window.location.hash='hireabike';
 		scroll();
 	}
  //=====================================================================================
@@ -298,9 +315,10 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 		var x = document.getElementsByClassName("tabBody");
 		document.getElementById("HireABike").style.display = "none";
 		document.getElementById("MyBookings").style.display = "none";
-
+		history.pushState('', document.title, window.location.pathname); //Revove hashed index
 		$scope.deletePinEntered = '';
 		$cookieStore.remove('currentUser');
+		$cookieStore.remove('currentTab');
 		$scope.clearLogin();
 	}
 //=====================================================================================
@@ -400,6 +418,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	        .success(function (deleteData, status, headers, config) {
 	            $scope.PostDataResponse = deleteData; 
 	    		$cookieStore.remove('currentUser');
+	    		$cookieStore.remove('currentTab');
 	            $scope.logout();
 	        })
 	        .error(function (deleteData, status, header, config) {
@@ -453,7 +472,15 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
         			
         		$scope.userLoginResult.forEach(function(emailAddress) 
         		{
-        			$scope.login(enteredEmail.value);
+        			console.log(emailAddress.verified);
+        			if(emailAddress.verified == 1)
+        			{
+            			$scope.login(enteredEmail.value);
+        			}
+        			else
+        			{
+        				loginActionDisplay.innerHTML = "Your Account has not been Verified. Please check your Email or Sign Up again.";
+        			}
         		});
         		pinEntered="";
         	});
@@ -462,8 +489,12 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
     	{
     		if(signUpPinEntered == pinEntered)
     		{
-				$scope.createNewUser(enteredEmail.value, pinEntered);
-				$scope.clearLogin();
+    		 	$scope.checkUserExists(enteredEmail.value, "signUp");
+    			
+
+    			
+    			
+    			
     		} 
     		else if (signUpPinEntered == "")
     		{
@@ -515,6 +546,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/createuser', data, config)  
 	        .success(function (data, status, headers, config) {
 	            $scope.PostDataResponse = data;
+	            alert("A Verification E-Mail has been sent to "+emailAddress+"@csc.com");
 	            console.log("http://localhost:8080/CSCBikeHire/verifyaccount.html?employeeID="+emailAddress+"&hash="+hash)
 	        })
 	        .error(function (data, status, header, config) {
@@ -594,9 +626,20 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	$scope.sendForgotPinEmail = function()
 	{
 		var enteredEmail = document.getElementById('forgotPinEmailEntry').value;
+		if(enteredEmail.length > 0)
+		{
+			$scope.checkUserExists(enteredEmail, "forgotPin");
+		}
+		else
+		{
+			alert("Email address cannot be blank");
+		}
+	}
+	
+	$scope.cancelForgotPin = function()
+	{
 		document.getElementById('forgotPinOverlay').style.display = 'none';
-		alert("Pin Reset Email Sent to "+enteredEmail+"@csc.com");
-		$scope.updateHash(enteredEmail);
+		document.getElementById('forgotPinEmailEntry').value = '';
 	}
 	
 	
@@ -604,7 +647,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 //=====================================================================================
 // Update hash for User - Used when user has forgotten their pin
 //=====================================================================================
-	$scope.updateHash = function(emailAddress)
+	$scope.updateHash = function(emailAddress, callingFunction)
 	{
 		var randomNumber = Math.floor(Math.random() * (5000 - 1000) + 1000);
 		var randomString = randomNumber.toString();
@@ -618,7 +661,14 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatehash', data, config)  
 	        .success(function (data, status, headers, config) {
 	            $scope.PostDataResponse = data;
-	            console.log("http://localhost:8080/CSCBikeHire/resetpin.html?employeeID="+emailAddress+"&hash="+hash)
+	            if(callingFunction == "signUp")
+	            {
+		            console.log("http://localhost:8080/CSCBikeHire/verifyaccount.html?employeeID="+emailAddress+"&hash="+hash)
+	            }
+	            else if (callingFunction == "forgotPin")
+	            {
+		            console.log("http://localhost:8080/CSCBikeHire/resetpin.html?employeeID="+emailAddress+"&hash="+hash)
+	            }
 	        })
 	        .error(function (data, status, header, config) {
 	            $scope.ResponseDetails = "Data: " + data +
@@ -630,13 +680,6 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 //=====================================================================================
 // Update hash for User - Used when user has forgotten their pin
 //=====================================================================================
-	
-	
-	
-	
-	
-	
-	
 
  //=====================================================================================
  // Login
@@ -668,29 +711,96 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 //=====================================================================================
 // Check if a user exists in the DB 
 //=====================================================================================	 
-	$scope.checkUserExists = function (employeeID) 
+	$scope.checkUserExists = function (employeeID, callingFunction) 
     {
+		var userFound = false;
+		var data = $.param({employeeID: employeeID});
+		$http.get('http://localhost:8080/CSCBikeHire/rest/todos/finduser/'+employeeID, data)  
+		.success(function(userBookingResponse)
+		{	
+			var accountVerified = 0;
+			$scope.userBookingResult = userBookingResponse;	
+			$scope.userBookingResult.forEach(function(result) {
+				accountVerified = result.verified;
 
-	var data = $.param({employeeID: currentUser});
-	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/finduser/'+currentUser, data)  
-	.success(function(userBookingResponse)
-	{	
-		$scope.userBookingResult = userBookingResponse;
-		$scope.userBookingResult.forEach(function(date) {
-			console.log(date.emailAddress);
+			  
+			});
+			
+			if(callingFunction == "signUp")
+			{
+				if($scope.userBookingResult.length > 0)
+				{
+					//check if the account has been verified
+					if(accountVerified == 1)
+					{
+						alert("An account already exists for this user")
+						$scope.clearLogin();
+					}
+					else
+					{
+						//Generate a new hash and send a new verification email
+						$scope.updateHash(employeeID, callingFunction);
+						$scope.setPin(employeeID, pinEntered);
+			            alert("A Verification E-Mail has been sent to "+employeeID+"@csc.com");
+					}
+				}
+				else
+				{
+					$scope.createNewUser(employeeID, pinEntered); 
+					$scope.clearLogin();
+				}
+			}
+			
+			else if(callingFunction == "forgotPin")
+			{
+				if($scope.userBookingResult.length == 0)
+				{
+					alert("This User Does Not Exist")
+					document.getElementById('forgotPinEmailEntry').value = '';
+				}
+				else
+				{
+					var enteredEmail = document.getElementById('forgotPinEmailEntry').value;
+					document.getElementById('forgotPinOverlay').style.display = 'none';
+					alert("Pin Reset Email Sent to "+enteredEmail+"@csc.com");
+					$scope.updateHash(enteredEmail, callingFunction);
+					document.getElementById('forgotPinEmailEntry').value = '';
+				}
+			}
+			
+			
+
+
 		});
-	});
+	
     };
 //=====================================================================================
 // END :: Check if a user exists in the DB  
 //=====================================================================================	 	
 
+
+//=====================================================================================
+// Set a New Pin for a user
+//=====================================================================================	 	
+$scope.setPin = function(employeeID, pinEntered)
+{
+	var data = $.param({
+			employeeID: employeeID,
+			pin: pinEntered
+		});
+				        
+		$http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatepin', data, config)  
+				.success(function (data, status, headers, config) {
+				      $scope.PostDataResponse = data;
+				        })
+				.error(function (data, status, header, config) {
+				       $scope.ResponseDetails = "Data: " + data +
+				        "<hr />status: " + status +
+				        "<hr />headers: " + header +
+				        "<hr />config: " + config;
+				        });
 	
-	
-	
-	
-	
-	
+			}
 	
 //=====================================================================================
 // Get Current User Bookings 
@@ -910,6 +1020,7 @@ $scope.orderByDate = function(item)
     		
 			for (var j in timeslots) 
 			{
+				console.log("Add something to the mybookings tab");
 				document.getElementById("mb-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).style.display = 'inline-block';
 				document.getElementById("mb_bn-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).innerHTML = "Bike No. "+bikeNumbers[j];
 
@@ -1037,6 +1148,7 @@ $scope.orderByDate = function(item)
 // END :: Cancel Booking 
 //=====================================================================================	
 	
+
 	
 	
 	
@@ -1121,20 +1233,7 @@ $scope.orderByDate = function(item)
 	
 	
 	
-//=====================================================================================
-// Check if user is logged in
-//=====================================================================================
-	var cookieUser = $cookieStore.get('currentUser');
-	if(!angular.isUndefined(cookieUser))
-	{
-		document.getElementById('login').style.display='none';
-		currentUser = cookieUser;
-		$scope.generateDates();
-		$scope.getBookings();
-	}
-//=====================================================================================
-// END :: Check if user is logged in
-//=====================================================================================
+
 
 	
 	
@@ -1187,6 +1286,12 @@ $scope.orderByDate = function(item)
 		document.getElementById('optionsWindow').style.display = 'none';
 		document.getElementById('deleteAccountWindow').style.display = 'block';
 	}
+	
+	$scope.reportIssue = function() 
+	{
+		document.getElementById('optionsWindow').style.display = 'none';
+		document.getElementById('reportIssueWindow').style.display = 'block';
+	}
 		
 	$scope.cancelConfirmation = function() 
 	{
@@ -1195,12 +1300,17 @@ $scope.orderByDate = function(item)
 		document.getElementById('confirmBookingWindow').style.display = 'block';
 		document.getElementById('statDecWindow').style.display = 'none';
 		document.getElementById('deleteAccountWindow').style.display = 'none';
+		document.getElementById('reportIssueWindow').style.display = 'none';
+		document.getElementById('reportIssueTextArea').value = '';
 		$scope.deletePinEntered = '';
 		deleteActionDisplay.innerHTML = "Please Enter your Pin";
 	}
 	
 
 
+	
+	
+	
 //=====================================================================================
 // END :: Popup Windows
 //=====================================================================================
@@ -1209,11 +1319,15 @@ $scope.orderByDate = function(item)
 	{
 		document.getElementById('optionsOverlay').style.display = 'none';
 		document.getElementById('deleteAccountWindow').style.display = 'none';
-		alert("Delete Account");
 	}
 	
-	
-	
+	$scope.submitIssueReport = function()
+	{
+		document.getElementById('optionsOverlay').style.display = 'none';
+		document.getElementById('reportIssueWindow').style.display = 'none';
+		alert(document.getElementById('reportIssueTextArea').value+"\n Thanks"); //Send an Email with the issue to me
+		document.getElementById('reportIssueTextArea').value = '';
+	}
 	
 	$scope.displayOptions = function() 
 	{
@@ -1233,7 +1347,7 @@ $scope.orderByDate = function(item)
 //=====================================================================================
 // Change Tab
 //=====================================================================================
-	$scope.openTab = function (evt, tabName) 
+	$scope.openTab = function (tabName) 
     {
 		  var i, x, tablinks;
 		  x = document.getElementsByClassName("tabBody");
@@ -1242,10 +1356,14 @@ $scope.orderByDate = function(item)
 		  
 		  if(tabName=="HireABike")
 		  {
+		 	window.location.hash='hireabike';
+			$cookieStore.put('currentTab','hireabike');
        		  document.getElementById("MyBookings").style.display = "none";
 		      document.getElementById("HireABikeTab").style.background = "#14141f";
 		      document.getElementById("MyBookingsTab").style.background = "#32324e";
 		  } else {
+			  window.location.hash='mybookings';
+			$cookieStore.put('currentTab','mybookings');
        		  document.getElementById("HireABike").style.display = "none";
 		      document.getElementById("HireABikeTab").style.background = "#32324e";
 		      document.getElementById("MyBookingsTab").style.background = "#14141f";
@@ -1259,6 +1377,36 @@ $scope.orderByDate = function(item)
 // END :: Change Tab
 //=====================================================================================	
 
+	
+	//=====================================================================================
+// Check if user is logged in
+//=====================================================================================
+	var cookieUser = $cookieStore.get('currentUser');
+	if(!angular.isUndefined(cookieUser))
+	{
+		document.getElementById('login').style.display='none';
+		var cookieCurrentTab = $cookieStore.get('currentTab');
+		window.location.hash= cookieCurrentTab;
+		currentUser = cookieUser;
+		$scope.generateDates();
+		$scope.getBookings();
+		
+		if(cookieCurrentTab == 'hireabike')
+			{
+			$scope.openTab("HireABike");
+			}
+		else if(cookieCurrentTab == 'mybookings')
+			{
+			$scope.openTab("MyBookings");
+			}
+		
+
+	}
+//=====================================================================================
+// END :: Check if user is logged in
+//=====================================================================================
+	
+	
 	
 	
 	window.addEventListener("scroll", scroll, false);

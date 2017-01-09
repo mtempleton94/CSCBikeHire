@@ -513,7 +513,7 @@ body #content h1
 }
 
 
-.confirmBookingWindow, .cancelBookingWindow, .optionsWindow, .statDecWindow, .deleteAccountWindow, .forgotPinWindow, .confirmPinWindow
+.confirmBookingWindow, .cancelBookingWindow, .optionsWindow, .statDecWindow, .deleteAccountWindow, .forgotPinWindow, .confirmPinWindow, .reportIssueWindow
 {
 	
 	width: 90%;
@@ -529,15 +529,29 @@ body #content h1
   	color: #FFFFFF;
   	
 }
- .statDecWindow, .deleteAccountWindow
+ .statDecWindow, .deleteAccountWindow, .reportIssueWindow
  {
  	display: none;    
+ }
+ 
+ .reportIssueWindow
+ {
+ 	/*height: 75%;*/
+ }
+ 
+ 
+ .reportIssueWindow textarea
+ {
+ 	resize: none;
+ 	width: 98%;
+ 	height: 500px;
+ 	margin-left: 1%;
  }
 
 
 
 
-.confirmBookingWindow button, .cancelBookingWindow button, .statDecWindow button, .deleteAccountWindow button, .forgotPinWindow button, .confirmPinWindow button
+.confirmBookingWindow button, .cancelBookingWindow button, .statDecWindow button, .deleteAccountWindow button, .forgotPinWindow button, .confirmPinWindow button, .reportIssueWindow button 
 {
 	width:50%;
     display: block;
