@@ -694,7 +694,6 @@ width: 100%;
     bottom:20px;
 }
 
-
 .right-corder-container .right-corder-container-button {
     height: 62px;
     width: 62px;
@@ -706,7 +705,6 @@ width: 100%;
     cursor:pointer;
 }
 
-
 .right-corder-container .right-corder-container-button span {
     font-size: 72px;
     color:white;
@@ -716,16 +714,10 @@ width: 100%;
     line-height: 28px;
 }
 
-
-
-
 .navPanelContainer {
 	height: 40px;
-	/* background: #333333; */ 
-	background: #FF0000;
-
+	background: #14141f;
 }
-
 
 .navPanel {
 	width: 100%;
@@ -735,7 +727,6 @@ width: 100%;
     top:0px;
     background: #FFFF00;
 }
-
 
 .tabs
 {  
@@ -755,7 +746,6 @@ width: 100%;
 	padding-bottom: 20px;
 	background: #14141f;
 	color: #FFFFFF;
-
 }
 
 .tabs div:nth-child(2)

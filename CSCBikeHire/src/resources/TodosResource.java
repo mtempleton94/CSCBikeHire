@@ -360,7 +360,6 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
         public void updateVerified(@FormParam("employeeID") String employeeID,
              @Context HttpServletResponse servletResponse) throws IOException {
         	try{
-                ArrayList<UserLoginObject> feedData = null; 
         		ProjectManager.UpdateVerified(employeeID);
         	} catch(Exception e) {
         		System.out.println("Exception: " + e.getMessage());

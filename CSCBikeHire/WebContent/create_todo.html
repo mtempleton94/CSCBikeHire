@@ -5,21 +5,17 @@
 <title>My Client</title>
 <link rel="stylesheet" href="style/style.css">
 <link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
-
-<!--  <script type="text/javascript" src="js/angular.min.js"></script>  -->
 		
-
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
-		<script src="js/generate-md5.js"></script>
+   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
+   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+	<script src="js/generate-md5.js"></script>
 		
-		
-		<font face="arial black,arial">
+	<font face="arial black,arial">
 </head>
-<body ng-controller="HttpGetController">
+<body ng-controller="AppController">
 
   	<div class="login" id="login">
   		   <div class="header" id="loginHeader" >
@@ -277,7 +273,7 @@
 <script type="text/javascript">
 
 var app = angular.module("app", ['ngCookies']);
-app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies, $cookieStore) 
+app.controller("AppController", function ($scope, $http, $timeout, $cookies, $cookieStore) 
 {
 	var currentUser;
 
@@ -427,8 +423,6 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	                "<hr />headers: " + header +
 	                "<hr />config: " + config;
 	        });
-		
-		
 	}
 	
 	
@@ -457,10 +451,16 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
 	
 	$scope.completeLogin = function(enteredEmail) //User has entered an email address and pin
 	{
-		if(mode == 1) // log in
+		var enteredEmailValue = enteredEmail.value;
+		if(enteredEmailValue.indexOf("@") > 0)
 		{
-        	var data = $.param({employeeID: enteredEmail.value, pin: pinEntered});
-        	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userlogin/'+enteredEmail.value+'/'+pinEntered, data)  
+			enteredEmailValue = enteredEmailValue.split("@")[0];
+		}
+		
+		if(mode == 1) // Log In
+		{
+        	var data = $.param({employeeID: enteredEmailValue, pin: pinEntered});
+        	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userlogin/'+enteredEmailValue+'/'+pinEntered, data)  
         	.success(function(userLoginResponse)
         	{	
         		$scope.userLoginResult = userLoginResponse;
@@ -475,7 +475,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
         			console.log(emailAddress.verified);
         			if(emailAddress.verified == 1)
         			{
-            			$scope.login(enteredEmail.value);
+            			$scope.login(enteredEmailValue);
         			}
         			else
         			{
@@ -489,12 +489,7 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
     	{
     		if(signUpPinEntered == pinEntered)
     		{
-    		 	$scope.checkUserExists(enteredEmail.value, "signUp");
-    			
-
-    			
-    			
-    			
+    		 	$scope.checkUserExists(enteredEmailValue, "signUp");	
     		} 
     		else if (signUpPinEntered == "")
     		{
@@ -507,26 +502,41 @@ app.controller("HttpGetController", function ($scope, $http, $timeout, $cookies,
         		loginActionDisplay.innerHTML = "Pins do not Match. Try Again";
         		pinEntered = "";
         		signUpPinEntered = "";
-
     		}
     	}
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
 	$scope.validateEntry = function(emailAddress)
 	{
 		var validateSearch = emailAddress.value.search(/[^a-z0-9]/gi);
-
 		if(validateSearch >= 0)
 		{
-		alert("Invalid Entry. please use your CSC E-Mail Address");
-		$scope.clearLogin();
-		return false;
+			if(emailAddress.value.indexOf("@") > 0)
+				{
+					var host = (emailAddress.value.split("@")[1]); //get name of host from value after '@' (should be CSC or blank)
+					if(host.toUpperCase() === "CSC.COM" || host.toUpperCase() === "CSC")
+					{
+						return true; //csc email used
+					}
+				
+				}
+			alert("Invalid Entry. please use your CSC E-Mail Address");
+			$scope.clearLogin();
+			return false;
 		}
 		else
-			{
-			return true
-			}
+		{
+			return true;
+		}
 	}
 	
 	
@@ -814,7 +824,7 @@ $scope.setPin = function(employeeID, pinEntered)
 	{	
 		$scope.userBookingResult = userBookingResponse;
 		$scope.userBookingResult.forEach(function(date) {
-			    $scope.updadeBookingDisplayUser(date);
+			    $scope.updateBookingDisplayUser(date);
 			    scroll();
 		});
 	});
@@ -906,7 +916,7 @@ $scope.orderByDate = function(item)
 	        		$scope.result.forEach(function(date) {
 	        		    $scope.updadeBookingDisplay(date);
 	        		});
-
+	        		$scope.displayMyBookingsContent();
 	        		$scope.getUserBookings(); //Get the current user's bookings
 	        		$scope.selectedBookings = []; //Clear the array of selected items
 		    	});
@@ -977,7 +987,7 @@ $scope.orderByDate = function(item)
 //=====================================================================================	
 	var found = false;
 	$scope.myBookingsArray = new Array();
-	$scope.updadeBookingDisplayUser = function(date) 
+	$scope.updateBookingDisplayUser = function(date) 
 	{
 		var formattedDate = convertDateJS(date.date);		
 		var bookingID = formattedDate+"-"+date.timeslot;
@@ -1013,6 +1023,13 @@ $scope.orderByDate = function(item)
 //=====================================================================================		
 	$scope.displayMyBookingsContent = function() 
 	{
+	console.log($scope.myBookingsArray.length);
+	  
+	  
+	  if($scope.myBookingsArray.length === 0)
+		  {
+		  $scope.updateDisplay();
+		  }
 		for (var i in $scope.myBookingsArray) 
 		{
 			var timeslots = $scope.myBookingsArray[i].timeslots.split("-"); 
@@ -1023,9 +1040,7 @@ $scope.orderByDate = function(item)
 				console.log("Add something to the mybookings tab");
 				document.getElementById("mb-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).style.display = 'inline-block';
 				document.getElementById("mb_bn-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).innerHTML = "Bike No. "+bikeNumbers[j];
-
 			}
-
 		}
 	}
 //=====================================================================================
@@ -1033,6 +1048,8 @@ $scope.orderByDate = function(item)
 //=====================================================================================		
 	
 
+	
+	
 	$scope.changeTimeslotColour = function(element, color) 
 	{
     	switch(color) 
@@ -1325,7 +1342,14 @@ $scope.orderByDate = function(item)
 	{
 		document.getElementById('optionsOverlay').style.display = 'none';
 		document.getElementById('reportIssueWindow').style.display = 'none';
-		alert(document.getElementById('reportIssueTextArea').value+"\n Thanks"); //Send an Email with the issue to me
+		var unsafeEntry = document.getElementById('reportIssueTextArea').value;
+		var escapedEntry = unsafeEntry
+		         .replace(/&/g, "&amp;")
+		         .replace(/</g, "&lt;")
+		         .replace(/>/g, "&gt;")
+		         .replace(/"/g, "&quot;")
+		         .replace(/'/g, "&#039;");
+		alert(escapedEntry+"\n Thanks"); //Placeholder: Send an Email with the issue to me
 		document.getElementById('reportIssueTextArea').value = '';
 	}
 	
@@ -1362,6 +1386,7 @@ $scope.orderByDate = function(item)
 		      document.getElementById("HireABikeTab").style.background = "#14141f";
 		      document.getElementById("MyBookingsTab").style.background = "#32324e";
 		  } else {
+			  console.log("on mybookings");
 			  window.location.hash='mybookings';
 			$cookieStore.put('currentTab','mybookings');
        		  document.getElementById("HireABike").style.display = "none";
@@ -1371,7 +1396,7 @@ $scope.orderByDate = function(item)
 		  }
 		scroll();
 		  
-		}
+	}
 
 //=====================================================================================
 // END :: Change Tab
@@ -1384,6 +1409,7 @@ $scope.orderByDate = function(item)
 	var cookieUser = $cookieStore.get('currentUser');
 	if(!angular.isUndefined(cookieUser))
 	{
+		console.log("User already logged in");
 		document.getElementById('login').style.display='none';
 		var cookieCurrentTab = $cookieStore.get('currentTab');
 		window.location.hash= cookieCurrentTab;
