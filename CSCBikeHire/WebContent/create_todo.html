@@ -1,122 +1,149 @@
 <!DOCTYPE html>
 <html ng-app="app">
 <head>
-<meta charset="ISO-8859-1">
-<title>My Client</title>
-<link rel="stylesheet" href="style/style.css">
-<link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
-		
-   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
-   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
+	<meta charset="ISO-8859-1">
+	<title>My Client</title>
+	<link rel="stylesheet" href="style/style.css">
+	<link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
+	<link rel="stylesheet" media="screen and (max-device-width: 1060px)" href="style/1060.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
 	<script src="js/generate-md5.js"></script>
 	<script src="js/appcontroller.js"></script>
-		
 	<font face="arial black,arial">
 </head>
+
 <body ng-controller="AppController">
 
+<!--========================= Login Screen =========================-->
   	<div class="login" id="login">
   		   <div class="header" id="loginHeader" >
   			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
 		  </div>  
-		
 		<div class="loginContents">
-			
 			<div class="emailEntry">
-				<p>Email</p>
-				<input type="text" name="emailEntry" id="emailEntry"  ng-model="confirmed" >
-				<p class="atCSC">@csc.com</p>
+				<!-- <p>Email</p>   --><p class="atCSC">@csc.com</p>
+				<input type="text" name="emailEntry" id="emailEntry"  ng-model="confirmed" placeholder="Email">
 			</div>
 			
 			<div class="loginActionDisplay" id="loginActionDisplay">
 				Please Enter a CSC E-Mail Address
 			</div>
 			
-			<div class="keypadLine">
-				<button ng-click="loginKey('1')">1</button>
-				<button ng-click="loginKey('2')">2</button>
-				<button ng-click="loginKey('3')">3</button>
-			</div>
-			
-			<div class="keypadLine">
-				<button ng-click="loginKey('4')">4</button>
-				<button ng-click="loginKey('5')">5</button>
-				<button ng-click="loginKey('6')">6</button>
-			</div>
-			
-			<div class="keypadLine">
-				<button ng-click="loginKey('7')">7</button>
-				<button ng-click="loginKey('8')">8</button>
-				<button ng-click="loginKey('9')">9</button>
-			</div>
-			
-			<div class="keypadLine">
-				<button class="keypadLineFinal"ng-click="loginKey('0')">0</button><br>
-			</div>
+			<!-- Keypad -->
+			<div class="keypad">
+				 <div class="keypadLine">
+					<button ng-click="loginKey('1')">1</button>
+					<button ng-click="loginKey('2')">2</button>
+					<button ng-click="loginKey('3')">3</button>
+				</div>
 				
+				<div class="keypadLine">
+					<button ng-click="loginKey('4')">4</button>
+					<button ng-click="loginKey('5')">5</button>
+					<button ng-click="loginKey('6')">6</button>
+				</div>
+				
+				<div class="keypadLine">
+					<button ng-click="loginKey('7')">7</button>
+					<button ng-click="loginKey('8')">8</button>
+					<button ng-click="loginKey('9')">9</button>
+				</div> 
+				
+				<div class="keypadLine">
+					<button class="keypadLineFinal"ng-click="loginKey('0')">0</button><br>
+				</div> 
+			</div>
+			<!-- End : Keypad -->	
+			
 			<div class="loginAdditionalActions">
 				<button ng-click="forgotPin()">Forgot your Pin?</button>
 				<button id="signUpButton" ng-click="signUp()">Sign Up</button>
 			</div>
-		
 		</div> 
-
 	</div> 
+<!--========================= END : Login Screen =========================-->
 
 
+
+
+
+<!--======================= Confirm Bookings Window ======================-->
   	<div class="overlay" id="overlay">
  		<div  class="confirmBookingWindow" id="confirmBookingWindow">
  			<p>Hire Bike For:</p>
- 			<div ng-repeat="booking in selectedBookings">{{formatSelectedBooking(booking)}}
+ 			<div class="selectedBookings" ng-repeat="booking in selectedBookings">
+ 				<p>{{formatSelectedBooking(booking)}}</p>
  			</div>
  			<button ng-click="confirmConfirmation()">Confirm</button>
 			<button ng-click="cancelConfirmation()">Cancel</button>
  		</div>
  		<div  class="statDecWindow" id="statDecWindow">
- 			<p>I will not sell the bike in exchange for magic beans.</p>
+ 			<p>Statutory Declaration</p>
+ 			<textarea readonly>I do solemnly and sincerely declare that I am responsible for all hired equipment... </textarea>
+			<br>
  			<button ng-click="agreeStatDec()">I Agree</button>
 			<button ng-click="cancelConfirmation()">I Do Not Agree</button>
  		</div>
 	</div> 
+<!--==================== END : Confirm Bookings Window ====================-->
  
  
+ 
+ 
+ 
+<!--=========================== Forgot Pin Window ==========================-->
    	<div class="forgotPinOverlay" id="forgotPinOverlay">
- 			
  		<div  class="forgotPinWindow" id="forgotPinWindow">
- 			<p id="forgotPinMessage">Enter your CSC ID</p>
+ 			<p id="forgotPinMessage">Enter your CSC E-Mail Address</p>
  				<input type="text" name="forgotPinEmailEntry" id="forgotPinEmailEntry">
 				<p class="atCSCForgot">@csc.com</p>
  			<button ng-click="sendForgotPinEmail()">Send Reset Link</button>
 			<button ng-click="cancelConfirmation()">Cancel</button>
  		</div>
 	</div> 
-	
+<!--======================== END : Forgot Pin Window =======================-->
  
  
+
+
+
+<!--============================= Cancel Booking Window ============================-->
   	<div class="cancelOverlay" id="cancelOverlay">
  		<div  class="cancelBookingWindow" id="cancelBookingWindow">
- 			<p id="cancelBookingMessage">Are you sure you want to cancel this booking?</p>
+ 			<p id="cancelBookingMessage">Cancel this booking?</p>
  			<p id="cancelDateTime"></p>
  			<button ng-click="confirmCancel()">Confirm</button>
 			<button ng-click="cancelCancel()">Cancel</button>
  		</div>
 	</div> 
+<!--=========================== END : Cancel Booking Window ==========================-->
+
+
+
 
 
 <!--==================== Options Overlay ====================-->
 	  <div class="optionsOverlay" id="optionsOverlay">
+ 				
+ 		<!-- ----------------- Additional Options Window ----------------- -->
  		<div  class="optionsWindow" id="optionsWindow">
  			<button ng-click="logout()">Sign Out</button>
 			<button ng-click="deleteAccount()">Delete Account</button>
 			<button ng-click="reportIssue()">Report an Issue</button>
 			<button ng-click="cancelConfirmation()">Cancel</button>
  		</div>
+ 		<!-- ----------------- Additional Options Window ----------------- -->
  		
+ 		
+ 		
+ 		
+ 		<!-- ----------------- Delete Account Window ----------------- -->
  		<div  class="deleteAccountWindow" id="deleteAccountWindow">
- 			<p id="deleteAccountMessage">Delete your Account</p>
+ 			<p id="deleteAccountMessage">Delete Account</p>
  			
  			<div class="deleteActionDisplay" id="deleteActionDisplay">
 				<p>Enter your Pin</p>
@@ -145,19 +172,23 @@
 			</div><br>
 			<button class="cancelDeleteButton" ng-click="cancelConfirmation()">Cancel</button>
  		</div>
+ 		<!-- -------------- END : Delete Account Window -------------- -->
  		
- 		<!-- Report an Issue -->
+ 		
+ 		
+ 		
+ 		
+ 		<!------------------ Report an Issue Window ------------------ -->
  	 	<div  class="reportIssueWindow" id="reportIssueWindow">
  			<p>Report an Issue</p>
- 			
- 			<div class="deleteActionDisplay" id="deleteActionDisplay">
-				<p>Please give as much detail about the issue as possible</p>
-			</div>
+			<p>Please give as much detail about the issue as possible</p>
 			<textarea id="reportIssueTextArea"></textarea>
 			<br>
 			<button class="cancelIssueButton" ng-click="cancelConfirmation()">Cancel</button>
 			<button class="submitIssueButton" ng-click="submitIssueReport()">Submit</button>
  		</div>
+ 		<!--------------- END : Report an Issue Window --------------- -->
+ 		
 	</div> 
 <!--==================== END : Options Overlay ====================-->
  
@@ -187,12 +218,9 @@
 
 
 
-
+<!--=========================== Hire a Bike Tab ==========================-->
 <div id="HireABike" class="tabBody">
-
-
-
-  <div ng-repeat="date in dates">
+	<div ng-repeat="date in dates">
   		<div class="day">   
 			<div class= "dayComponent">        
             	<p>{{date.dayWord}}</p><p>{{date.dayNum}}</p><p>{{date.monthWord}}</p>
@@ -207,55 +235,42 @@
        		</div>
 
             <div class= "dayComponent" id="{{date.fullDate}}-3" ng-style="setBackground" ng-click="selectBooking(date.fullDate, 3);">        
-              <p> 2 - 5 </p>
+            	<p> 2 - 5 </p>
          	</div>
-     	</div>
-  </div>
+    	</div>
+  	</div>
   
-  <div class="right-corder-container">
-    <button class="right-corder-container-button" ng-click="makeBooking();">
-        <span class="short-text">+</span>
-    </button>
+  	<div class="makeBookingContainer">
+	    <button class="makeBookingButton" ng-click="makeBooking();">
+	        <span class="short-text">+</span>
+	    </button>
+	</div> 
+</div> 
+<!--========================= END : Hire a Bike Tab =========================-->
+  
+  
+<!--============================ My Bookings Tab ============================-->
+<div id="MyBookings" class="tabBody">
+	<div ng-repeat="booking in myBookingsArray | orderBy : orderByDate">
+		<div class= "myBookingEntry" id="{{booking.date}}">        
+			<div class="mb-day">   
+				<div class= "mb-dayIdentifier">        
+					<p>{{formatDate(booking.date).dayWord}}</p><p>{{formatDate(booking.date).dayNum}}</p><p>{{formatDate(booking.date).monthWord}}</p>
+				</div>
+				<div class= "mb-dayComponent" id="mb-{{booking.date}}-1">        
+					<p> 8 - 11 </p> <p ng-click="cancelBooking(booking.date, 1);">X</p> <p id="mb_bn-{{booking.date}}-1">Bike No. 0</p>
+				</div>
+				<div class= "mb-dayComponent" id="mb-{{booking.date}}-2" ng-style="setBackground">        
+					<p> 11 - 2 </p> <p ng-click="cancelBooking(booking.date, 2);">X</p> <p id="mb_bn-{{booking.date}}-2">Bike No. 0</p>
+				</div>
+				<div class= "mb-dayComponent" id="mb-{{booking.date}}-3" ng-style="setBackground">        
+					<p> 2 - 5 </p>  <p ng-click="cancelBooking(booking.date, 3);">X</p> <p id="mb_bn-{{booking.date}}-3">Bike No. 0</p>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
-
-
-
-
- 
- </div> 
-  
-  
-  
-
-  <div id="MyBookings" class="tabBody">
-      
-      <div ng-repeat="booking in myBookingsArray | orderBy : orderByDate">
-              
-             <div class= "myBookingEntry" id="{{booking.date}}">        
-               <div class="mb-day">   
-               		<div class= "mb-dayIdentifier">        
-            			<p>{{formatDate(booking.date).dayWord}}</p><p>{{formatDate(booking.date).dayNum}}</p><p>{{formatDate(booking.date).monthWord}}</p>
-         			</div>
-
-            		<div class= "mb-dayComponent" id="mb-{{booking.date}}-1">        
-		               <p> 8 - 11 </p> <p ng-click="cancelBooking(booking.date, 1);">X</p> <p id="mb_bn-{{booking.date}}-1">Bike No. 0</p>
-		           	</div>
-
-		            <div class= "mb-dayComponent" id="mb-{{booking.date}}-2" ng-style="setBackground">        
-		             	<p> 11 - 2 </p> <p ng-click="cancelBooking(booking.date, 2);">X</p> <p id="mb_bn-{{booking.date}}-2">Bike No. 0</p>
-		       		</div>
-
-		            <div class= "mb-dayComponent" id="mb-{{booking.date}}-3" ng-style="setBackground">        
-		              <p> 2 - 5 </p>  <p ng-click="cancelBooking(booking.date, 3);">X</p> <p id="mb_bn-{{booking.date}}-3">Bike No. 0</p>
-		         	</div>
-     			</div>
-           	</div>
-         
-         
-     	</div>
-    
-  </div>
+<!--========================= END : My Bookings Tab =========================-->
   
 
 </body>

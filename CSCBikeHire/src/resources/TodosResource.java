@@ -60,7 +60,6 @@ public class TodosResource {
         		ProjectManager projectManager= new ProjectManager();
         		feedData = projectManager.GetAllBookings();
         		Gson gson = new Gson();
-        		System.out.println(gson.toJson(feedData));
         		feeds = gson.toJson(feedData);
         	}
         	catch (Exception e)
@@ -90,12 +89,10 @@ public class TodosResource {
              String feeds = null;
              	try
              	{
-             		System.out.println(employeeID);
              		ArrayList<UserBookingObject> feedData = null; 
              		ProjectManager projectManager= new ProjectManager();
              		feedData = projectManager.GetUserBookings(employeeID);
              		Gson gson = new Gson();
-             		System.out.println(gson.toJson(feedData));
              		feeds = gson.toJson(feedData);
              	}
              	catch (Exception e)
@@ -191,7 +188,6 @@ public Response userExistsFeed(@PathParam("employeeID") String employeeID) throw
 	String feeds = null;
 	try
 	{
-		System.out.println("Find User "+ employeeID); 
 		ArrayList<UserLoginObject> feedData = null; 
 		ProjectManager projectManager= new ProjectManager();
 		feedData = projectManager.GetUserExists(employeeID);

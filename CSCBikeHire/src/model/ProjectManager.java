@@ -269,7 +269,8 @@ public class ProjectManager {
 				String query = "INSERT INTO bikehire.booking (booking.emailAddress, booking.date, booking.timeslot, booking.bikeNumber) "
 						+ "SELECT ?, ?, ?,  "
 						+ "AssignBikeNum((SELECT COUNT(*) FROM bikehire.booking WHERE date=? AND timeslot=?), "
-						+ "(SELECT MAX(bikeNumber) FROM  booking WHERE booking.date = ? AND timeslot = ?))";
+						+ "(SELECT MAX(bikeNumber) FROM  booking WHERE booking.date = ? AND timeslot = ?),?,?)";
+				
 				
 				ps = connection.prepareStatement(query);
 				ps.setString(1, employee);
@@ -279,6 +280,11 @@ public class ProjectManager {
 				ps.setString(5, timeslot);
 				ps.setString(6, date);
 				ps.setString(7, timeslot);
+				ps.setString(8, date);
+				ps.setString(9, timeslot);
+				
+				System.out.println(ps);
+
 				ps.executeUpdate();
 			}
 			catch (Exception e)

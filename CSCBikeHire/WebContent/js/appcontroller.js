@@ -2,26 +2,17 @@ var app = angular.module("app", ['ngCookies']);
 app.controller("AppController", function ($scope, $http, $timeout, $cookies, $cookieStore) 
 {
 	var currentUser;
-
-	//=========================
-	//Mode
-	//1: General Log in
-	//2: Sign Up
-	var mode = 1;
+	var mode = 1; //1: General Log in / 2: Sign Up
 	var pinEntered = ""; //Store pin entered
 	var signUpPinEntered = ""; // Store pin entered during sign up
-	//=========================
-	
 	$scope.deletePinEntered=''; //Store pin entered when user deletes account
 	$scope.selectedBookings = []; //Store all booking times that are currently selected by the user
+	$scope.myBookingsArray = new Array(); // Array to store all user bookings 
+	var found = false; // Booking record for a particular date exists in array
 	
 	window.addEventListener("scroll", scroll, false);
 	window.addEventListener("resize", scroll, false);
 
-	
-
-	
-	
 	
 	
 	
@@ -41,10 +32,13 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 		window.location.hash='hireabike';
 		scroll();
 	}
- //=====================================================================================
- // END :: Login
- //=====================================================================================
+//=====================================================================================
+// END :: Login
+//=====================================================================================
 	
+    
+    
+    
 	 
 //=====================================================================================
 // Logout
@@ -132,6 +126,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	
 	
 	
+	
 //=====================================================================================
 // Verify Account Details During Deletion
 //=====================================================================================	
@@ -162,6 +157,9 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================		
 	
 	
+	
+	
+	
 //=====================================================================================
 // Trigger Database Deletion (User)
 //=====================================================================================		
@@ -187,6 +185,8 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================
 // END :: Trigger Database Deletion (User)
 //=====================================================================================	
+	
+	
 	
 	
 	
@@ -245,7 +245,6 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
         			
         		$scope.userLoginResult.forEach(function(emailAddress) 
         		{
-        			console.log(emailAddress.verified);
         			if(emailAddress.verified == 1)
         			{
             			$scope.login(enteredEmailValue);
@@ -352,6 +351,9 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================
 
 	
+	
+	
+	
 //=====================================================================================
 // Reset Login Screen to Initial State
 //=====================================================================================
@@ -367,25 +369,11 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================
 // END :: Reset Login Screen to Initial State
 //=====================================================================================
+
 	
 	
-/*
-	$scope.emailTyped = function()
-	{
-		var enteredEmail = document.getElementById('emailEntry');
-		if(enteredEmail.value.length > 0)
-		{
-			if(mode == 1)
-        		loginActionDisplay.innerHTML = "Please Enter your 4 Digit Pin"; 
-			else
-        		loginActionDisplay.innerHTML = "Please Enter a 4 Digit Pin"; 
-		}
-		else
-		{
-			loginActionDisplay.innerHTML = "Please Enter a CSC E-Mail Address"; 
-		}
-	}*/
 	
+
 //=====================================================================================
 // Sign Up Button Pressed (Switch Login Screen to Sign Up State)
 //=====================================================================================	
@@ -626,7 +614,7 @@ $scope.orderByDate = function(item)
 
 
 //=====================================================================================
-// SendData 
+// Add a New Booking  
 //=====================================================================================
 	var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
 	$scope.agreeStatDec = function () 
@@ -661,7 +649,7 @@ $scope.orderByDate = function(item)
     	$scope.updateDisplay();
     };
 //=====================================================================================
-// END :: SendData 
+// END :: Add a New Booking  
 //=====================================================================================	 
 	
     
@@ -680,7 +668,7 @@ $scope.orderByDate = function(item)
 			timeslot = "11 - 2";
 		if(dateTimeslot[1] == 3)
 			timeslot = "2 - 5";
-		return formattedDate.dayWord+" "+formattedDate.dayNum+" "+formattedDate.monthWord+" from "+timeslot;
+		return formattedDate.dayWord+" "+formattedDate.dayNum+" "+formattedDate.monthWord+" at "+timeslot;
 	}
 //=====================================================================================   
 // END :: Format Dates for Display in the Selection Confirmation Window  
@@ -705,7 +693,12 @@ $scope.orderByDate = function(item)
 	        		$scope.result.forEach(function(date) {
 	        		    $scope.updadeBookingDisplay(date);
 	        		});
-	        		//$scope.displayMyBookingsContent();
+	        		
+	        		if(initialMyBookings === true)
+	        		{
+	        			initialMyBookings = false;
+		        		$scope.displayMyBookingsContent();
+	        		}
 	        		$scope.getUserBookings(); //Get the current user's bookings
 	        		$scope.selectedBookings = []; //Clear the array of selected items
 		    	});
@@ -743,7 +736,12 @@ $scope.orderByDate = function(item)
 	$scope.formatDate = function(date)
 	{
 		var newDate = new Date(convertDateSQL(date));
-		return ({"dayWord":weekday[newDate.getDay()], "dayNum":newDate.getDate(), "monthWord":month[newDate.getMonth()]});
+		var dayNum = newDate.getDate();
+		if (dayNum < 10)
+		{
+			dayNum = "0"+dayNum;
+		}
+		return ({"dayWord":weekday[newDate.getDay()], "dayNum":dayNum, "monthWord":month[newDate.getMonth()]});
 	}
 //=====================================================================================
 // END :: Convert Dates to appropriate format
@@ -790,8 +788,6 @@ $scope.orderByDate = function(item)
 //=====================================================================================
 // Create array of user bookings 
 //=====================================================================================	
-	var found = false;
-	$scope.myBookingsArray = new Array();
 	$scope.updateBookingDisplayUser = function(date) 
 	{
 		var formattedDate = convertDateJS(date.date);		
@@ -840,7 +836,6 @@ $scope.orderByDate = function(item)
     		
 			for (var j in timeslots) 
 			{
-				console.log("Add something to the mybookings tab");
 				document.getElementById("mb-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).style.display = 'inline-block';
 				document.getElementById("mb_bn-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).innerHTML = "Bike No. "+bikeNumbers[j];
 			}
@@ -951,7 +946,6 @@ $scope.orderByDate = function(item)
 	        					$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 1) + $scope.myBookingsArray[i].timeslots.slice(2);
 	        					$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, 1) + $scope.myBookingsArray[i].bikeNumbers.slice(2);
 	        				}
-	        			console.log($scope.myBookingsArray[i]);
 	        		}
 				}
 	            $scope.updateDisplay();
@@ -1030,7 +1024,12 @@ $scope.orderByDate = function(item)
        var currentDate = startDate;
        while (currentDate <= stopDate) 
        {
-         dateArray.push({"fullDate":getFullDate(currentDate), "dayWord":weekday[currentDate.getDay()], "dayNum":currentDate.getDate(), "monthWord":month[currentDate.getMonth()]})
+    	 var dayNum = currentDate.getDate();
+    	 if(dayNum < 10)
+    	 {
+    		 dayNum = "0"+dayNum;
+    	 }
+         dateArray.push({"fullDate":getFullDate(currentDate), "dayWord":weekday[currentDate.getDay()], "dayNum":dayNum, "monthWord":month[currentDate.getMonth()]})
          currentDate = currentDate.addDays(1);
        }
        return dateArray;
@@ -1163,7 +1162,7 @@ $scope.orderByDate = function(item)
 	
 	
 //=====================================================================================
-//Send Email to User who has forgotten their Pin
+// Send Email to User who has forgotten their Pin
 //=====================================================================================
 	$scope.sendForgotPinEmail = function()
 	{
@@ -1203,7 +1202,6 @@ $scope.orderByDate = function(item)
 		      document.getElementById("HireABikeTab").style.background = "#14141f";
 		      document.getElementById("MyBookingsTab").style.background = "#32324e";
 		  } else {
-			  console.log("on mybookings");
 			  window.location.hash='mybookings';
 			$cookieStore.put('currentTab','mybookings');
        		  document.getElementById("HireABike").style.display = "none";
@@ -1260,9 +1258,9 @@ $scope.orderByDate = function(item)
 // Check if user is logged in
 //=====================================================================================
 	var cookieUser = $cookieStore.get('currentUser');
+	var initialMyBookings = false; // Page was refreshed on the My Bookings Tab
 	if(!angular.isUndefined(cookieUser))
 	{
-		console.log("User already logged in");
 		document.getElementById('login').style.display='none';
 		var cookieCurrentTab = $cookieStore.get('currentTab');
 		window.location.hash= cookieCurrentTab;
@@ -1275,6 +1273,7 @@ $scope.orderByDate = function(item)
 		}
 		else if(cookieCurrentTab == 'mybookings')
 		{
+			initialMyBookings = true;
 			$scope.openTab("MyBookings");
 		}
 	}

@@ -1,0 +1,15 @@
+.dayComponent:nth-child(1), .dayComponent:nth-child(2), .dayComponent:nth-child(3), .dayComponent:nth-child(4) {
+	width: 24%;
+}
+
+.mb-dayComponent /* Booking Identifiers */
+{
+	font-size: 55px;
+}
+
+.mb-dayComponent:nth-child(1), .mb-dayComponent:nth-child(2), .mb-dayComponent:nth-child(3), .mb-dayComponent:nth-child(4) 
+{
+	width: 24%;
+}
+
+
