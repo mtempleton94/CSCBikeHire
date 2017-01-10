@@ -43,7 +43,7 @@ app.controller("HttpGetController", function ($scope, $http)
 		// Get Hash for User
 		var data = $.param({employeeID: idAndHash.employeeID, hash: idAndHash.hash});
 		
-			$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userverify/'+idAndHash.employeeID+'/'+idAndHash.hash, data)   
+			$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userverify/'+idAndHash.employeeID+'/'+idAndHash.hash, data)   
 			.success(function(response)
 			{	
 				$scope.result = response;
@@ -62,7 +62,7 @@ app.controller("HttpGetController", function ($scope, $http)
 			$scope.updateVerification = function(employeeID) 
 			{
 	    		var data = $.param({employeeID: employeeID});
-	    	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/updateverified', data, config)  
+	    	      $http.post('http://localhost:8080/CSCBikeHire/rest/hire/updateverified', data, config)  
 	    	        .success(function (data, status, headers, config)
 	    	        		{ 
 	    	        	$scope.PostDataResponse = data;

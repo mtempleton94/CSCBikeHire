@@ -134,7 +134,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	{
     	var data = $.param({employeeID: currentUser, pin: deletePinEntered});
 		var deleteActionDisplay = document.getElementById('deleteActionDisplay');
-    	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userlogin/'+currentUser+'/'+deletePinEntered, data)   
+    	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userlogin/'+currentUser+'/'+deletePinEntered, data)   
     	.success(function(userLoginResponse)
     	{	
     		$scope.userLoginResult = userLoginResponse;
@@ -168,7 +168,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 		var deleteData = $.param({
             employeeID: user, 
 			pin: pin });
-		$http.delete('http://localhost:8080/CSCBikeHire/rest/todos/deleteuser/'+user+'/'+pin, deleteData, config)      
+		$http.delete('http://localhost:8080/CSCBikeHire/rest/hire/deleteuser/'+user+'/'+pin, deleteData, config)      
 	        .success(function (deleteData, status, headers, config) {
 	            $scope.PostDataResponse = deleteData; 
 	    		$cookieStore.remove('currentUser');
@@ -233,7 +233,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 		if(mode == 1) // Log In
 		{
         	var data = $.param({employeeID: enteredEmailValue, pin: pinEntered});
-        	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userlogin/'+enteredEmailValue+'/'+pinEntered, data)  
+        	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userlogin/'+enteredEmailValue+'/'+pinEntered, data)  
         	.success(function(userLoginResponse)
         	{	
         		$scope.userLoginResult = userLoginResponse;
@@ -333,7 +333,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	            hash: hash
 	        });
 	        
-	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/createuser', data, config)  
+	      $http.post('http://localhost:8080/CSCBikeHire/rest/hire/createuser', data, config)  
 	        .success(function (data, status, headers, config) {
 	            $scope.PostDataResponse = data;
 	            alert("A Verification E-Mail has been sent to "+emailAddress+"@csc.com");
@@ -426,7 +426,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	            hash: hash
 	        });
 	        
-	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatehash', data, config)  
+	      $http.post('http://localhost:8080/CSCBikeHire/rest/hire/updatehash', data, config)  
 	        .success(function (data, status, headers, config) {
 	            $scope.PostDataResponse = data;
 	            if(callingFunction == "signUp")
@@ -458,7 +458,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================	
 	$scope.getBookings = function() 
 {
-	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/data')  
+	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/data')  
 	.success(function(response)
 	{	
 		$scope.result = response;
@@ -481,7 +481,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
     {
 		var userFound = false;
 		var data = $.param({employeeID: employeeID});
-		$http.get('http://localhost:8080/CSCBikeHire/rest/todos/finduser/'+employeeID, data)  
+		$http.get('http://localhost:8080/CSCBikeHire/rest/hire/finduser/'+employeeID, data)  
 		.success(function(userBookingResponse)
 		{	
 			var accountVerified = 0;
@@ -552,7 +552,7 @@ $scope.setPin = function(employeeID, pinEntered)
 			pin: pinEntered
 		});
 				        
-		$http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatepin', data, config)  
+		$http.post('http://localhost:8080/CSCBikeHire/rest/hire/updatepin', data, config)  
 				.success(function (data, status, headers, config) {
 				      $scope.PostDataResponse = data;
 				        })
@@ -577,7 +577,7 @@ $scope.setPin = function(employeeID, pinEntered)
 $scope.getUserBookings = function () 
 {
 	var data = $.param({employeeID: currentUser});
-	$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userbookings/'+currentUser, data)  
+	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userbookings/'+currentUser, data)  
 	.success(function(userBookingResponse)
 	{	
 		$scope.userBookingResult = userBookingResponse;
@@ -635,7 +635,7 @@ $scope.orderByDate = function(item)
     	            timeslot: dateTimeslot[1]
     	        });
     	        
-    	      $http.post('http://localhost:8080/CSCBikeHire/rest/todos', data, config)  
+    	      $http.post('http://localhost:8080/CSCBikeHire/rest/hire', data, config)  
     	        .success(function (data, status, headers, config) {
     	            $scope.PostDataResponse = data;
     	        })
@@ -686,7 +686,7 @@ $scope.orderByDate = function(item)
 		//Update the display
 		setTimeout(function () {
 		    $scope.$apply(function () {
-		         $http.get('http://localhost:8080/CSCBikeHire/rest/todos/data')  
+		         $http.get('http://localhost:8080/CSCBikeHire/rest/hire/data')  
 	        	.success(function(response)
 	        	{	
 	        		$scope.result = response;
@@ -905,7 +905,7 @@ $scope.orderByDate = function(item)
 			date: cancelDate,
             timeslot: cancelTime
         });
-	      $http.delete('http://localhost:8080/CSCBikeHire/rest/todos/delete/'+currentUser+'/'+convertDateSQL(cancelDate)+'/'+cancelTime, deleteData, config)      
+	      $http.delete('http://localhost:8080/CSCBikeHire/rest/hire/delete/'+currentUser+'/'+convertDateSQL(cancelDate)+'/'+cancelTime, deleteData, config)      
 	        .success(function (deleteData, status, headers, config) {
 	            $scope.PostDataResponse = deleteData;
 	            

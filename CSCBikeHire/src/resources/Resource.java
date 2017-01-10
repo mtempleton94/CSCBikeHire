@@ -34,7 +34,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-@Path("/todos")
+@Path("/hire")
 public class Resource 
 {
         @Context

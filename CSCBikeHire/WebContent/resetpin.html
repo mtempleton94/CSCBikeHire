@@ -95,7 +95,7 @@ app.controller("HttpGetController", function ($scope, $http)
 		// Get Hash for User
 		var data = $.param({employeeID: idAndHash.employeeID, hash: idAndHash.hash});
 		
-			$http.get('http://localhost:8080/CSCBikeHire/rest/todos/userverify/'+idAndHash.employeeID+'/'+idAndHash.hash, data)   
+			$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userverify/'+idAndHash.employeeID+'/'+idAndHash.hash, data)   
 			.success(function(response)
 			{	
 				$scope.result = response;
@@ -172,7 +172,7 @@ app.controller("HttpGetController", function ($scope, $http)
 						pin: pinEntered2
 				        });
 				        
-				$http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatepin', data, config)  
+				$http.post('http://localhost:8080/CSCBikeHire/rest/hire/updatepin', data, config)  
 				        .success(function (data, status, headers, config) {
 				            $scope.PostDataResponse = data;
 				            
@@ -205,7 +205,7 @@ app.controller("HttpGetController", function ($scope, $http)
 				   hash: ''
 				  });
 				        
-			$http.post('http://localhost:8080/CSCBikeHire/rest/todos/updatehash', data, config)  
+			$http.post('http://localhost:8080/CSCBikeHire/rest/hire/updatehash', data, config)  
 				 .success(function (data, status, headers, config) {
 				      $scope.PostDataResponse = data;
 				      console.log("http://localhost:8080/CSCBikeHire/resetpin.html?employeeID="+emailAddress+"&hash="+hash)
