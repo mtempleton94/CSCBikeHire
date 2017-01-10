@@ -34,12 +34,9 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-// Will map the resource to the URL todos
 @Path("/todos")
-public class TodosResource {
-
-        // Allows to insert contextual objects into the class,
-        // e.g. ServletContext, Request, Response, UriInfo
+public class Resource 
+{
         @Context
         UriInfo uriInfo;
         @Context
@@ -53,23 +50,23 @@ public class TodosResource {
         @Produces("application/json")
         public Response feed()
         {
-        String feeds = null;
-        	try
-        	{
-        		ArrayList<BookingObject> feedData = null; 
-        		ProjectManager projectManager= new ProjectManager();
-        		feedData = projectManager.GetAllBookings();
-        		Gson gson = new Gson();
-        		feeds = gson.toJson(feedData);
-        	}
-        	catch (Exception e)
-        	{
-        		System.out.println("Exception Error"); //Console 
-        	}
-        return Response.ok().entity(feeds)
-        		.header("Access-Control-Allow-Origin", "*")
-        		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
-        		.build();
+	        String feeds = null;
+	        try
+	        {
+	        	ArrayList<BookingObject> feedData = null; 
+	        	ProjectManager projectManager= new ProjectManager();
+	        	feedData = projectManager.GetAllBookings();
+	        	Gson gson = new Gson();
+	        	feeds = gson.toJson(feedData);
+	        }
+	        catch (Exception e)
+	        {
+	        	System.out.println("Exception Error"); //Console 
+	        }
+	        return Response.ok().entity(feeds)
+	        		.header("Access-Control-Allow-Origin", "*")
+	        		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
+	        		.build();
         } 
 //======================================================================
 // END :: Retrieve Existing Bookings        
@@ -80,30 +77,30 @@ public class TodosResource {
 //======================================================================
 // Retrieve Current User Bookings        
 //======================================================================
-             @GET
-             @Path("/userbookings/{employeeID}")
-             @Produces("application/json")
-             @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-             public Response userFeed(@PathParam("employeeID") String employeeID) throws IOException 
-             {
+        @GET
+        @Path("/userbookings/{employeeID}")
+        @Produces("application/json")
+        @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+        public Response userFeed(@PathParam("employeeID") String employeeID) throws IOException 
+        {
              String feeds = null;
-             	try
-             	{
-             		ArrayList<UserBookingObject> feedData = null; 
-             		ProjectManager projectManager= new ProjectManager();
-             		feedData = projectManager.GetUserBookings(employeeID);
-             		Gson gson = new Gson();
-             		feeds = gson.toJson(feedData);
-             	}
-             	catch (Exception e)
-             	{
-             		System.out.println("Exception Error"); //Console 
-             	}
+             try
+             {
+             	ArrayList<UserBookingObject> feedData = null; 
+             	ProjectManager projectManager= new ProjectManager();
+             	feedData = projectManager.GetUserBookings(employeeID);
+             	Gson gson = new Gson();
+             	feeds = gson.toJson(feedData);
+             }
+             catch (Exception e)
+             {
+             	System.out.println("Exception Error"); //Console 
+             }
              return Response.ok().entity(feeds)
              		.header("Access-Control-Allow-Origin", "*")
              		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
              		.build();
-             } 
+        } 
 //======================================================================
 // END :: Retrieve Current User Bookings        
 //======================================================================
@@ -112,63 +109,66 @@ public class TodosResource {
 //======================================================================
 // Retrieve Login Data For a User        
 //======================================================================
-@GET
-@Path("/userlogin/{employeeID}/{pin}")
-@Produces("application/json")
-@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-public Response userLoginFeed(@PathParam("employeeID") String employeeID, @PathParam("pin") String pin) throws IOException 
-{
-	String feeds = null;
-	try
-	{
-		ArrayList<UserLoginObject> feedData = null; 
-		ProjectManager projectManager= new ProjectManager();
-		feedData = projectManager.GetUserLogin(employeeID, pin);
-		Gson gson = new Gson();
-		feeds = gson.toJson(feedData);
-	}
-	catch (Exception e)
-	{
-		System.out.println("Exception Error");  
-	}
-return Response.ok().entity(feeds)
-		.header("Access-Control-Allow-Origin", "*")
-		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
-		.build();
-} 
+		@GET
+		@Path("/userlogin/{employeeID}/{pin}")
+		@Produces("application/json")
+		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+		public Response userLoginFeed(@PathParam("employeeID") String employeeID, @PathParam("pin") String pin) throws IOException 
+		{
+			String feeds = null;
+			try
+			{
+				ArrayList<UserLoginObject> feedData = null; 
+				ProjectManager projectManager= new ProjectManager();
+				feedData = projectManager.GetUserLogin(employeeID, pin);
+				Gson gson = new Gson();
+				feeds = gson.toJson(feedData);
+			}
+			catch (Exception e)
+			{
+				System.out.println("Exception Error");  
+			}
+		return Response.ok().entity(feeds)
+				.header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
+				.build();
+		} 
 //======================================================================
 // END :: Retrieve Login Data For a User        
 //======================================================================  
 
+		
+		
+		
 
 //======================================================================
 //Retrieve Verification Hash For a User        
 //======================================================================
-@GET
-@Path("/userverify/{employeeID}/{hash}")
-@Produces("application/json")
-@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-public Response userHashFeed(@PathParam("employeeID") String employeeID,
-		@PathParam("hash") String hash) throws IOException 
-{
-	String feeds = null;
-	try
-	{
-		ArrayList<UserLoginObject> feedData = null; 
-		ProjectManager projectManager= new ProjectManager();
-		feedData = projectManager.GetUserHash(employeeID, hash);
-		Gson gson = new Gson();
-		feeds = gson.toJson(feedData);
-	}
-	catch (Exception e)
-	{
-		System.out.println("Exception Error");  
-	}
-return Response.ok().entity(feeds)
-		.header("Access-Control-Allow-Origin", "*")
-		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
-		.build();
-} 
+		@GET
+		@Path("/userverify/{employeeID}/{hash}")
+		@Produces("application/json")
+		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+		public Response userHashFeed(@PathParam("employeeID") String employeeID,
+				@PathParam("hash") String hash) throws IOException 
+		{
+			String feeds = null;
+			try
+			{
+				ArrayList<UserLoginObject> feedData = null; 
+				ProjectManager projectManager= new ProjectManager();
+				feedData = projectManager.GetUserHash(employeeID, hash);
+				Gson gson = new Gson();
+				feeds = gson.toJson(feedData);
+			}
+			catch (Exception e)
+			{
+				System.out.println("Exception Error");  
+			}
+		return Response.ok().entity(feeds)
+				.header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
+				.build();
+		} 
 //======================================================================
 //END :: Retrieve Verification Hash For a User         
 //======================================================================    
@@ -179,30 +179,30 @@ return Response.ok().entity(feeds)
 //======================================================================
 // Check if a DB record already exists for a user        
 //======================================================================
-@GET
-@Path("/finduser/{employeeID}")
-@Produces("application/json")
-@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-public Response userExistsFeed(@PathParam("employeeID") String employeeID) throws IOException 
-{
-	String feeds = null;
-	try
-	{
-		ArrayList<UserLoginObject> feedData = null; 
-		ProjectManager projectManager= new ProjectManager();
-		feedData = projectManager.GetUserExists(employeeID);
-		Gson gson = new Gson();
-		feeds = gson.toJson(feedData);
-	}
-	catch (Exception e)
-	{
-		System.out.println("Exception Error");  
-	}
-return Response.ok().entity(feeds)
-		.header("Access-Control-Allow-Origin", "*")
-		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
-		.build();
-} 
+		@GET
+		@Path("/finduser/{employeeID}")
+		@Produces("application/json")
+		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+		public Response userExistsFeed(@PathParam("employeeID") String employeeID) throws IOException 
+		{
+			String feeds = null;
+			try
+			{
+				ArrayList<UserLoginObject> feedData = null; 
+				ProjectManager projectManager= new ProjectManager();
+				feedData = projectManager.GetUserExists(employeeID);
+				Gson gson = new Gson();
+				feeds = gson.toJson(feedData);
+			}
+			catch (Exception e)
+			{
+				System.out.println("Exception Error");  
+			}
+		return Response.ok().entity(feeds)
+				.header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD")
+				.build();
+		} 
 //======================================================================
 //END :: Check if a DB record already exists for a user       
 //====================================================================== 
@@ -224,10 +224,11 @@ return Response.ok().entity(feeds)
                      @Context HttpServletResponse servletResponse) throws IOException {
      	try
      	{
-     		sendVerificationEmail(employeeID, hash);
+     		//sendVerificationEmail(employeeID, hash);
      		ProjectManager.CreateUser(employeeID, pin, hash);
      	} 
-     	catch(Exception e) {
+     	catch(Exception e) 
+     	{
      		System.out.println("Exception: " + e.getMessage());
      	}
      }
@@ -235,6 +236,8 @@ return Response.ok().entity(feeds)
 //END :: Create a New User        
 //======================================================================
 
+     
+     /*
 static Properties mailServerProperties;
 static Session getMailSession;
 static MimeMessage generateMailMessage;
@@ -276,7 +279,7 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
 	transport.close();
 }
 
-
+*/
 
 //======================================================================
 // Update Hash for a user    
@@ -287,14 +290,17 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    public void updateHash(@FormParam("employeeID") String employeeID,
                    @FormParam("hash") String hash,
-                   @Context HttpServletResponse servletResponse) throws IOException {
-   	try{
-   		//Send Verification Email to the user
-   		sendVerificationEmail(employeeID, hash);
-   		ProjectManager.UpdateHash(employeeID, hash);
-   	} catch(Exception e) {
-   		System.out.println("Exception: " + e.getMessage());
-   	}
+                   @Context HttpServletResponse servletResponse) throws IOException 
+   {
+   		try
+   		{   		
+   			//sendVerificationEmail(employeeID, hash); //Send Verification Email to the user
+   			ProjectManager.UpdateHash(employeeID, hash);
+   		} 
+   		catch(Exception e) 
+   		{
+   			System.out.println("Exception: " + e.getMessage());
+   		}
    }
 //======================================================================
 //END :: Update Hash for a user        
@@ -306,19 +312,23 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
 //======================================================================
 // Update Pin for a user    
 //======================================================================      
-   @POST
-   @Path("/updatepin")
-   @Produces(MediaType.TEXT_HTML)
-   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   public void updatepin(@FormParam("employeeID") String employeeID,
-                   @FormParam("pin") String pin,
-                   @Context HttpServletResponse servletResponse) throws IOException {
-   	try{
-   		ProjectManager.UpdatePin(employeeID, pin);
-   	} catch(Exception e) {
-   		System.out.println("Exception: " + e.getMessage());
-   	}
-   }
+	   @POST
+	   @Path("/updatepin")
+	   @Produces(MediaType.TEXT_HTML)
+	   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	   public void updatepin(@FormParam("employeeID") String employeeID,
+	                   @FormParam("pin") String pin,
+	                   @Context HttpServletResponse servletResponse) throws IOException 
+	   {
+		   	try
+		   	{
+		   		ProjectManager.UpdatePin(employeeID, pin);
+	   		} 
+		   	catch(Exception e) 
+		   	{
+		   		System.out.println("Exception: " + e.getMessage());
+		   	}
+	   }
 //======================================================================
 //END :: Update Pin for a user        
 //======================================================================
@@ -334,10 +344,13 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
         public void postBooking(@FormParam("employeeID") String employeeID,
                         @FormParam("date") String date,
                         @FormParam("timeslot") String timeslot,
-                        @Context HttpServletResponse servletResponse) throws IOException {
-        	try{
+                        @Context HttpServletResponse servletResponse) throws IOException 
+        {
+        	try
+        	{
         		ProjectManager.PostFeeds(employeeID, date, timeslot);
-        	} catch(Exception e) {
+        	} catch(Exception e) 
+        	{
         		System.out.println("Exception: " + e.getMessage());
         	}
         }
@@ -354,75 +367,75 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
         @Produces(MediaType.TEXT_HTML)
         @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
         public void updateVerified(@FormParam("employeeID") String employeeID,
-             @Context HttpServletResponse servletResponse) throws IOException {
-        	try{
+             @Context HttpServletResponse servletResponse) throws IOException 
+        {
+        	try
+        	{
         		ProjectManager.UpdateVerified(employeeID);
-        	} catch(Exception e) {
+        	} 
+        	catch(Exception e) 
+        	{
         		System.out.println("Exception: " + e.getMessage());
         	}
         }      
 //======================================================================
 // END :: Update Account verified Field for User      
 //======================================================================
-       
-        
-        
-        
-        
-        
-        
-        
 
+        
+        
+        
+        
 //======================================================================
 // Delete a Booking      
 //======================================================================      
-             @DELETE
-             @Path("/delete/{employeeID}/{date}/{timeslot}")
-             @Produces(MediaType.TEXT_HTML)
-             @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-             public void deleteBooking(@PathParam("employeeID") String employeeID,
-            		 @PathParam("date") String date,
-            		 @PathParam("timeslot") String timeslot,
-                     @Context HttpServletResponse servletResponse) throws IOException {
-             	try{
-             		ProjectManager.DeleteBooking(employeeID, date, timeslot);
-             	} catch(Exception e) {
-             		System.out.println("Exception: " + e.getMessage());
-             	}
-             }
+        @DELETE
+        @Path("/delete/{employeeID}/{date}/{timeslot}")
+        @Produces(MediaType.TEXT_HTML)
+        @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+        public void deleteBooking(@PathParam("employeeID") String employeeID,
+        		@PathParam("date") String date,
+            	@PathParam("timeslot") String timeslot,
+                @Context HttpServletResponse servletResponse) throws IOException 
+        {
+        	try
+            {
+        		ProjectManager.DeleteBooking(employeeID, date, timeslot);
+            } 
+        	catch(Exception e) 
+            {
+             	System.out.println("Exception: " + e.getMessage());
+            }
+        }
 //======================================================================
 // END :: Delete a Booking      
 //======================================================================
-             
+          
+        
+        
+        
              
 //======================================================================
 // Delete a User      
 //======================================================================      
-@DELETE
-@Path("/deleteuser/{employeeID}/{pin}")
-@Produces(MediaType.TEXT_HTML)
-@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-public void deleteAccount(@PathParam("employeeID") String employeeID,
-		@PathParam("pin") String pin,
-        @Context HttpServletResponse servletResponse) throws IOException 
-		{
-	       	try
-	       	{
-	            ProjectManager.DeleteAccount(employeeID, pin);
-	       	} 
-	       	catch(Exception e) 
-	       	{
-	       		System.out.println("Exception: " + e.getMessage());
-	        }
-		}
+		@DELETE
+		@Path("/deleteuser/{employeeID}/{pin}")
+		@Produces(MediaType.TEXT_HTML)
+		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+		public void deleteAccount(@PathParam("employeeID") String employeeID,
+				@PathParam("pin") String pin,
+		        @Context HttpServletResponse servletResponse) throws IOException 
+				{
+			       	try
+			       	{
+			            ProjectManager.DeleteAccount(employeeID, pin);
+			       	} 
+			       	catch(Exception e) 
+			       	{
+			       		System.out.println("Exception: " + e.getMessage());
+			        }
+				}
 //======================================================================
 // END :: Delete a User       
 //======================================================================          
-             
-             
-             
-        
-        
-        
-
 }

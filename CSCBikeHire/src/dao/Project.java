@@ -58,7 +58,6 @@ public class Project
 		ArrayList<UserBookingObject> userBookingData = new ArrayList<UserBookingObject>();
 		try
 		{
-			//PreparedStatement ps = connection.prepareStatement("SELECT date, timeslot, bikeNumber FROM bikehire.booking WHERE emailAddress = '"+employeeID+"' AND date >= now()-1;");
 			String query = "SELECT date, timeslot, bikeNumber FROM bikehire.booking WHERE emailAddress = ? AND date >= now()-1;";
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setString(1, employeeID);
@@ -93,7 +92,6 @@ public class Project
 		ArrayList<UserLoginObject> userHashData = new ArrayList<UserLoginObject>();
 		try
 		{
-			//PreparedStatement ps = connection.prepareStatement("SELECT * FROM bikehire.employee WHERE emailAddress = '"+employeeID+"' AND hash = '"+ hash+"'");
 			String query = "SELECT * FROM bikehire.employee WHERE emailAddress = ? AND hash = ?";
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setString(1, employeeID);
@@ -128,7 +126,6 @@ public class Project
 		ArrayList<UserLoginObject> userBookingData = new ArrayList<UserLoginObject>();
 		try
 		{
-			//PreparedStatement ps = connection.prepareStatement("SELECT * FROM bikehire.employee WHERE emailAddress = '"+employeeID+"' AND pin = " + pin);
 			String query = "SELECT * FROM bikehire.employee WHERE emailAddress = ? AND pin = ?";
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setString(1, employeeID);
@@ -164,7 +161,6 @@ public class Project
 		ArrayList<UserLoginObject> userBookingData = new ArrayList<UserLoginObject>();
 		try
 		{
-			//PreparedStatement ps = connection.prepareStatement("SELECT emailAddress, accountVerified FROM bikehire.employee WHERE emailAddress = '"+employeeID+"'");
 			String query = "SELECT emailAddress, accountVerified FROM bikehire.employee WHERE emailAddress = ?";
 			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setString(1, employeeID);
