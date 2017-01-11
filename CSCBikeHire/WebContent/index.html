@@ -117,7 +117,7 @@
  			<p id="cancelBookingMessage">Cancel this booking?</p>
  			<p id="cancelDateTime"></p>
  			<button ng-click="confirmCancel()">Confirm</button>
-			<button ng-click="cancelCancel()">Cancel</button>
+			<button ng-click="cancelConfirmation()">Cancel</button>
  		</div>
 	</div> 
 <!--=========================== END : Cancel Booking Window ==========================-->
@@ -178,7 +178,7 @@
  		
  		
  		
- 		<!------------------ Report an Issue Window ------------------ -->
+ 		<!------------------ Report an Issue Window -------------------->
  	 	<div  class="reportIssueWindow" id="reportIssueWindow">
  			<p>Report an Issue</p>
 			<p>Please give as much detail about the issue as possible</p>
@@ -187,7 +187,7 @@
 			<button class="cancelIssueButton" ng-click="cancelConfirmation()">Cancel</button>
 			<button class="submitIssueButton" ng-click="submitIssueReport()">Submit</button>
  		</div>
- 		<!--------------- END : Report an Issue Window --------------- -->
+ 		<!--------------- END : Report an Issue Window ----------------->
  		
 	</div> 
 <!--==================== END : Options Overlay ====================-->
@@ -196,7 +196,8 @@
 
 <div class="header" id="header" >
   <img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
-  <button ng-click="displayOptions()">.</br>.</br>.</br></button>
+  <button ng-click="displayOptions()"><!--.</br>.</br>.</br> -->{{currentUser}}</button>
+  <div class="downArrow"></div>
 </div>
 
 
@@ -240,11 +241,26 @@
     	</div>
   	</div>
   
+  	<!-------------------- Make Booking Button --------------------->
   	<div class="makeBookingContainer">
-	    <button class="makeBookingButton" ng-click="makeBooking();">
+	    <button class="makeBookingButton" id="makeBookingButton" ng-click="makeBooking();">
 	        <span class="short-text">+</span>
 	    </button>
 	</div> 
+	<!----------------- END : Make Booking Button ------------------>
+	
+
+	<!------------------------ Top Button -------------------------->
+	 <div class="returnToTopContainer">
+	    <button class="returnToTopButton" id="returnToTopButton" ng-click="returnToTop();">
+	        <p></p> <!-- Used For Up Arrow -->
+	        <p></p> <!-- Used For Up Arrow -->
+	        <p>TOP</p>
+	    </button>
+	</div> 
+	<!--------------------- END : Top Button ----------------------->
+		
+	
 </div> 
 <!--========================= END : Hire a Bike Tab =========================-->
   
@@ -269,6 +285,9 @@
 			</div>
 		</div>
 	</div>
+	
+	<p class="noBookingsMessage" id="noBookingsMessage">You have no Bookings</p>
+	
 </div>
 <!--========================= END : My Bookings Tab =========================-->
   

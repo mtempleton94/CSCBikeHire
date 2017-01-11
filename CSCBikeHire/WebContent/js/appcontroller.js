@@ -1,7 +1,7 @@
 var app = angular.module("app", ['ngCookies']);
 app.controller("AppController", function ($scope, $http, $timeout, $cookies, $cookieStore) 
 {
-	var currentUser;
+	$scope.currentUser = "undefined";
 	var mode = 1; //1: General Log in / 2: Sign Up
 	var pinEntered = ""; //Store pin entered
 	var signUpPinEntered = ""; // Store pin entered during sign up
@@ -9,6 +9,8 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	$scope.selectedBookings = []; //Store all booking times that are currently selected by the user
 	$scope.myBookingsArray = new Array(); // Array to store all user bookings 
 	var found = false; // Booking record for a particular date exists in array
+	
+	var hireBikeScrollPos, myBookingsScrollPos; //Store vertical scroll position to prevent user losing position when switching tabs
 	
 	window.addEventListener("scroll", scroll, false);
 	window.addEventListener("resize", scroll, false);
@@ -21,9 +23,10 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================
     $scope.login = function(user)
 	{
+    	enableScroll();
 		document.getElementById('login').style.display='none';
-		currentUser = user;
-		$cookieStore.put('currentUser',currentUser);
+		$scope.currentUser = user;
+		$cookieStore.put('currentUser',$scope.currentUser);
 		$cookieStore.put('currentTab','hireabike');
 		$scope.generateDates();
 		$scope.getBookings();
@@ -45,6 +48,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================	 
 	$scope.logout = function()
 	{
+		enableScroll();
 		document.getElementById('optionsOverlay').style.display='none';
 		document.getElementById('login').style.display='block';
 		$scope.myBookingsArray = [];
@@ -132,23 +136,23 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================	
 	$scope.verifyAccount = function(deletePinEntered) // Used to verify account for deletion
 	{
-    	var data = $.param({employeeID: currentUser, pin: deletePinEntered});
+    	var data = $.param({employeeID: $scope.currentUser, pin: deletePinEntered});
 		var deleteActionDisplay = document.getElementById('deleteActionDisplay');
-    	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userlogin/'+currentUser+'/'+deletePinEntered, data)   
+    	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userlogin/'+$scope.currentUser+'/'+deletePinEntered, data)   
     	.success(function(userLoginResponse)
     	{	
     		$scope.userLoginResult = userLoginResponse;
     		
     		if(userLoginResponse.length < 1) //Incorrect Pin Entered
     		{
-    			deleteActionDisplay.innerHTML = "Incorrect Pin";
+    			deleteActionDisplay.innerHTML = "Incorrect E-Mail Address or Pin";
     			$scope.deletePinEntered='';
     		}
     		else
-    			{
+    		{
     			deleteActionDisplay.innerHTML = "Please Enter your Pin";
-    			$scope.deleteUser(currentUser, deletePinEntered);
-    			}
+    			$scope.deleteUser($scope.currentUser, deletePinEntered);
+    		}
     		pinEntered="";
     	});
 	}
@@ -174,6 +178,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	    		$cookieStore.remove('currentUser');
 	    		$cookieStore.remove('currentTab');
 	            $scope.logout();
+	            alert("Your Account has been Deleted");
 	        })
 	        .error(function (deleteData, status, header, config) {
 	            $scope.ResponseDetails = "Data: " + deleteData +
@@ -240,7 +245,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
         		
         		if(userLoginResponse.length < 1) //Incorrect Pin Entered
         		{
-        			loginActionDisplay.innerHTML = "Incorrect Pin"; 
+        			loginActionDisplay.innerHTML = "Incorrect E-Mail Address or Pin"; 
         		}
         			
         		$scope.userLoginResult.forEach(function(emailAddress) 
@@ -251,7 +256,8 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
         			}
         			else
         			{
-        				loginActionDisplay.innerHTML = "Your Account has not been Verified. Please check your Email or Sign Up again.";
+        				loginActionDisplay.innerHTML = "Account Not Verified.";
+        				alert("Your Account has not been Verified. Please check your Email for a Verification Link or Sign Up again.");
         			}
         		});
         		pinEntered="";
@@ -400,7 +406,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 		} 
 		else 
 		{
-			mode = 1;
+			$scope.clearLogin();
 		}
 	}
 //=====================================================================================
@@ -576,8 +582,8 @@ $scope.setPin = function(employeeID, pinEntered)
 //=====================================================================================	 
 $scope.getUserBookings = function () 
 {
-	var data = $.param({employeeID: currentUser});
-	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userbookings/'+currentUser, data)  
+	var data = $.param({employeeID: $scope.currentUser});
+	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userbookings/'+$scope.currentUser, data)  
 	.success(function(userBookingResponse)
 	{	
 		$scope.userBookingResult = userBookingResponse;
@@ -619,6 +625,9 @@ $scope.orderByDate = function(item)
 	var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
 	$scope.agreeStatDec = function () 
     {
+		document.getElementById("makeBookingButton").style.display = 'none';
+		scroll();
+		enableScroll();
 		document.getElementById('overlay').style.display = 'none';
 		document.getElementById('confirmBookingWindow').style.display = 'block';
 		document.getElementById('statDecWindow').style.display = 'none';
@@ -630,7 +639,7 @@ $scope.orderByDate = function(item)
     		var sqlDate = convertDateSQL(dateTimeslot[0]);
     		
     		var data = $.param({
-    	            employeeID: currentUser,
+    	            employeeID: $scope.currentUser,
     				date: sqlDate,
     	            timeslot: dateTimeslot[1]
     	        });
@@ -794,6 +803,9 @@ $scope.orderByDate = function(item)
 		var bookingID = formattedDate+"-"+date.timeslot;
 		$scope.changeTimeslotColour(document.getElementById(bookingID),3);
 		
+		//Remove message displaying no bookings
+		document.getElementById("noBookingsMessage").style.display = 'none';
+		
 		for(var i = 0; i < $scope.myBookingsArray.length; i++) 
 		{
 		    if ($scope.myBookingsArray[i].date == formattedDate) 
@@ -890,6 +902,7 @@ $scope.orderByDate = function(item)
 	
 	$scope.cancelBooking = function(date, timeslot) 
 	{
+		disableScroll();
 		document.getElementById('cancelOverlay').style.display = 'block';
 		var element = document.getElementById("cancelDateTime");
 		element.innerHTML = $scope.formatSelectedBooking(date + "-" + timeslot);
@@ -899,13 +912,14 @@ $scope.orderByDate = function(item)
 	
 	$scope.confirmCancel = function() 
 	{
+		enableScroll();
 		document.getElementById('cancelOverlay').style.display = 'none';
 		var deleteData = $.param({
-            employeeID: currentUser,
+            employeeID: $scope.currentUser,
 			date: cancelDate,
             timeslot: cancelTime
         });
-	      $http.delete('http://localhost:8080/CSCBikeHire/rest/hire/delete/'+currentUser+'/'+convertDateSQL(cancelDate)+'/'+cancelTime, deleteData, config)      
+	      $http.delete('http://localhost:8080/CSCBikeHire/rest/hire/delete/'+$scope.currentUser+'/'+convertDateSQL(cancelDate)+'/'+cancelTime, deleteData, config)      
 	        .success(function (deleteData, status, headers, config) {
 	            $scope.PostDataResponse = deleteData;
 	            
@@ -918,6 +932,13 @@ $scope.orderByDate = function(item)
 	    				var bookingID = $scope.myBookingsArray[i].date+"-"+$scope.myBookingsArray[i].timeslots;
 	    				$scope.changeTimeslotColour(document.getElementById(bookingID),1); 
 	    				$scope.myBookingsArray.splice(i, 1);
+	    				
+	    				//Display message if user has no bookings
+	    				if($scope.myBookingsArray.length === 0)
+	    				{
+	    					document.getElementById("noBookingsMessage").style.display = 'block';
+	    				}
+	    		
 	    			}
 	    			else if (obj.date == cancelDate) // Not final booking for the day
 	    			{
@@ -956,11 +977,6 @@ $scope.orderByDate = function(item)
 	                "<hr />headers: " + header +
 	                "<hr />config: " + config;
 	        });
-	}
-		
-	$scope.cancelCancel = function() 
-	{
-		document.getElementById('cancelOverlay').style.display = 'none';
 	}
 //=====================================================================================
 // END :: Cancel Booking 
@@ -1055,10 +1071,13 @@ $scope.orderByDate = function(item)
 	{
     	var bookingID = fullDate+"-"+timeslot;
     	var element= document.getElementById(bookingID);
+    	
     	if(getComputedStyle(element).backgroundColor=="rgba(255, 255, 255, 0.4)")
     	{
       		element.style.background = "rgba(0, 0, 0, 0.4)";
       		$scope.selectedBookings.push(bookingID);
+      		document.getElementById("makeBookingButton").style.display = "block";
+      		scroll(); // Update Top button pos
     	} 
     	else if (getComputedStyle(element).backgroundColor=="rgba(0, 0, 0, 0.4)")
     	{
@@ -1067,6 +1086,11 @@ $scope.orderByDate = function(item)
       		if (index > -1) 
       		{
       			$scope.selectedBookings.splice(index, 1);
+      			if($scope.selectedBookings.length === 0)
+      			{
+      				document.getElementById("makeBookingButton").style.display = "none";
+      				scroll(); // Update Top button pos
+      			}
       		} 
     	}
 	}
@@ -1085,7 +1109,11 @@ $scope.orderByDate = function(item)
 	// Confirm Hire Dates/Times
 	$scope.makeBooking = function() 
 	{
-		document.getElementById('overlay').style.display = 'block';
+		//if($scope.selectedBookings.length > 0)
+		//{
+			document.getElementById('overlay').style.display = 'block';
+			disableScroll();
+		//}
 	}
 	
 	// Stat Dec Window 
@@ -1112,8 +1140,8 @@ $scope.orderByDate = function(item)
 	// Report Issue Window (Submit Issue Button Pressed)
 	$scope.submitIssueReport = function()
 	{
-		document.getElementById('optionsOverlay').style.display = 'none';
-		document.getElementById('reportIssueWindow').style.display = 'none';
+		
+
 		var unsafeEntry = document.getElementById('reportIssueTextArea').value;
 		var escapedEntry = unsafeEntry
 		         .replace(/&/g, "&amp;")
@@ -1121,13 +1149,28 @@ $scope.orderByDate = function(item)
 		         .replace(/>/g, "&gt;")
 		         .replace(/"/g, "&quot;")
 		         .replace(/'/g, "&#039;");
-		alert(escapedEntry+"\n Thanks"); //Placeholder: Send an Email with the issue to me
-		document.getElementById('reportIssueTextArea').value = '';
+		
+		if(escapedEntry.length > 0)
+		{
+			enableScroll();
+			document.getElementById('optionsOverlay').style.display = 'none';
+			document.getElementById('reportIssueWindow').style.display = 'none';
+			alert(escapedEntry+"\n Thanks"); //Placeholder: Send an Email with the issue to me
+			unsafeEntry.value = '';
+		}
+		else
+		{
+			alert("Issue Report Cannot be Blank.");
+		}
+		
+		
+
 	}
 	
 	//Additional Options Window 
 	$scope.displayOptions = function() 
 	{
+		disableScroll();
 		document.getElementById('optionsOverlay').style.display = 'block';
 		document.getElementById('optionsWindow').style.display = 'block';
 	}
@@ -1141,6 +1184,7 @@ $scope.orderByDate = function(item)
 	// Cancel Button Pressed on Popup Window
 	$scope.cancelConfirmation = function() 
 	{
+		enableScroll();
 		document.getElementById('overlay').style.display = 'none';
 		document.getElementById('optionsOverlay').style.display = 'none';
 		document.getElementById('confirmBookingWindow').style.display = 'block';
@@ -1150,6 +1194,7 @@ $scope.orderByDate = function(item)
 		document.getElementById('reportIssueTextArea').value = '';
 		document.getElementById('forgotPinOverlay').style.display = 'none';
 		document.getElementById('forgotPinEmailEntry').value = '';
+		document.getElementById('cancelOverlay').style.display = 'none';
 		$scope.deletePinEntered = '';
 		deleteActionDisplay.innerHTML = "Please Enter your Pin";
 	}	
@@ -1182,13 +1227,14 @@ $scope.orderByDate = function(item)
 	
 	
 	
-	
+
 	
 //=====================================================================================
 // Change Tab
 //=====================================================================================
 	$scope.openTab = function (tabName) 
     {
+		console.log();
 		  var i, x, tablinks;
 		  x = document.getElementsByClassName("tabBody");
 		  document.getElementById(tabName).style.display = "block";
@@ -1196,18 +1242,38 @@ $scope.orderByDate = function(item)
 		  
 		  if(tabName=="HireABike")
 		  {
-		 	window.location.hash='hireabike';
-			$cookieStore.put('currentTab','hireabike');
+			  myBookingsScrollPos = document.body.scrollTop;
+			  document.body.scrollTop = hireBikeScrollPos;
+			  
+			  window.location.hash='hireabike';
+			  $cookieStore.put('currentTab','hireabike');
        		  document.getElementById("MyBookings").style.display = "none";
 		      document.getElementById("HireABikeTab").style.background = "#14141f";
 		      document.getElementById("MyBookingsTab").style.background = "#32324e";
-		  } else {
+		  } 
+		  else 
+		  {
+
+			  hireBikeScrollPos = document.body.scrollTop;
+			  document.body.scrollTop = myBookingsScrollPos;
+			  
 			  window.location.hash='mybookings';
-			$cookieStore.put('currentTab','mybookings');
+			  $cookieStore.put('currentTab','mybookings');
        		  document.getElementById("HireABike").style.display = "none";
 		      document.getElementById("HireABikeTab").style.background = "#32324e";
 		      document.getElementById("MyBookingsTab").style.background = "#14141f";
 		      $scope.displayMyBookingsContent();
+		      
+			  /*if($scope.myBookingsArray.length === 0)
+			  {
+				  document.getElementById("noBookingsMessage").style.display = 'block';
+				  console.log("block");
+			  }
+			  else
+			  {
+				  document.getElementById("noBookingsMessage").style.display = 'none';
+			  }*/
+			  
 		  }
 		scroll();  
 	}
@@ -1219,15 +1285,34 @@ $scope.orderByDate = function(item)
 
 	
 	
-	
-	
 
-	
 //=====================================================================================
 // Page Scroll
 //=====================================================================================		
 	function scroll() 
 	{
+		var returnToTopButton = document.getElementById("returnToTopButton");
+		
+		//Display Top Button
+		if(document.body.scrollTop >= 1350 && returnToTopButton.style.display === '')
+		{
+			returnToTopButton.style.display = 'block';
+		}
+		else if (document.body.scrollTop < 1350 && returnToTopButton.style.display === 'block')
+		{
+			returnToTopButton.style.display = '';
+		}
+		
+		//Align Top Button with make Booking Button
+		if(document.getElementById("makeBookingButton").style.display === 'block')
+		{
+			returnToTopButton.style.bottom='250px';
+		}
+		else
+		{
+			returnToTopButton.style.bottom='50px';
+		}
+			
 		var navPanel = document.getElementById('navPanel');
 		var navPanelRect = navPanel.getBoundingClientRect();
 		
@@ -1251,6 +1336,85 @@ $scope.orderByDate = function(item)
 // END :: Page Scroll
 //=====================================================================================
 	
+
+	
+	
+//=====================================================================================
+// Return To Top of Page
+//=====================================================================================	
+$scope.returnToTop = function ()
+{
+	var elem = document.body.scrollTop;   
+	var pos = document.body.scrollTop;
+	var id = setInterval(frame, 1);
+	function frame() 
+	{
+		if (document.body.scrollTop == 0) 
+	    {
+			clearInterval(id);
+	    } 
+	    else 
+	    {
+	    	document.body.scrollTop-=100; 
+	    }
+	}
+}	
+//=====================================================================================
+// END :: Return To Top of Page 
+//=====================================================================================	
+	
+	
+	
+	
+//=====================================================================================
+// Prevent Scrolling When Popup Window Is Displayed 
+//=====================================================================================	
+	// left: 37, up: 38, right: 39, down: 40,
+	// spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
+	var keys = {37: 1, 38: 1, 39: 1, 40: 1, 32: 1,33: 1,34: 1,35: 1,36: 1};
+
+	window.onkeyup = function(e) {
+		   var key = e.keyCode ? e.keyCode : e.which;
+		   if (keys[e.keyCode]) {
+		        preventDefault(e);
+		        return false;
+		    }
+
+		}
+	
+	function preventDefault(e) {
+	  e = e || window.event;
+	  if (e.preventDefault)
+	      e.preventDefault();
+	  e.returnValue = false;  
+	}
+
+	function preventDefaultForScrollKeys(e) {
+	    if (keys[e.keyCode]) {
+	        preventDefault(e);
+	        return false;
+	    }
+	}
+
+	function disableScroll() {
+		  window.onwheel = preventDefault;
+		  window.onmousewheel = document.onmousewheel = preventDefault;
+		  window.ontouchmove  = preventDefault;
+		  document.onkeydown  = preventDefaultForScrollKeys;
+		}
+
+	function enableScroll() {
+		    window.onmousewheel = document.onmousewheel = null; 
+		    window.onwheel = null; 
+		    window.ontouchmove = null;  
+		    document.onkeydown = null;  
+		}
+	
+	
+	
+//=====================================================================================
+// END :: Prevent Scrolling When Popup Window Is Displayed 
+//=====================================================================================	
 	
 	
 	
@@ -1264,7 +1428,7 @@ $scope.orderByDate = function(item)
 		document.getElementById('login').style.display='none';
 		var cookieCurrentTab = $cookieStore.get('currentTab');
 		window.location.hash= cookieCurrentTab;
-		currentUser = cookieUser;
+		$scope.currentUser = cookieUser;
 		$scope.generateDates();
 		$scope.getBookings();				
 		if(cookieCurrentTab == 'hireabike')
