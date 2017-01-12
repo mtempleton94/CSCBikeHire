@@ -3,28 +3,26 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>My Client</title>
+
 <link rel="stylesheet" href="style/style.css">
-
-<!--  <script type="text/javascript" src="js/angular.min.js"></script>  -->
-		
-
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
+<link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
 		
-		
-		<font face="arial black,arial">
+<font face="arial black,arial">
 </head>
-<body ng-controller="HttpGetController">
+
+<body ng-controller="ResetController">
 
 <div id="resetContent">
 	<h1 id="verifyText" class="verifyText"></h1>
 	<a href="http://localhost:8080/CSCBikeHire/index.html" class="button" id="goToLoginButton">Go to Login</a>
 
+	<!---------------------- Confirm New Pin Window  ---------------------->
    	<div class="confirmPinOverlay" id="confirmPinOverlay">
- 			
  		<div  class="confirmPinWindow" id="confirmPinWindow">
  			<p id="confirmPinMessage">Set this as your new Pin?</p>
  			<button ng-click="setPin()">Set New Pin</button>
@@ -32,9 +30,9 @@
  		</div>
 	</div> 
 
-<div class="resetLoginContents" id="resetLoginContents" >
+	<div class="resetLoginContents" id="resetLoginContents" >
 			
-				<p id="emailDisplay"></p>
+			<p id="emailDisplay"></p> <!-- Display user's email address -->
 			
 			<div class="resetActionDisplay" id="resetActionDisplay">
 				Please Enter a New Pin
@@ -59,14 +57,11 @@
 			</div>
 			
 			<div class="keypadLine">
-				<button class="keypadLineFinal"ng-click="resetKey('0')">0</button><br>
+				<button class="keypadLineFinal"ng-click="resetKey('0')">0</button>
+				<button ng-click="resetKey('del')"><p class="delIcon"></p></button>
+				
 			</div>
 		</div>
-
-
-
-
-
 </div>
 
 
@@ -76,106 +71,140 @@
 
 <script type="text/javascript">
 var app = angular.module("app", []);
-app.controller("HttpGetController", function ($scope, $http) 
+app.controller("ResetController", function ($scope, $http) 
 {
+	var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
+	var pinEntered1 = ''; // First Entered Pin
+	var pinEntered2 = ''; // Second Entered Pin (Confirm First Entry)
+	var idAndHash = {};
+    var query = window.location.search.substring(1);
+	var vars = query.split("&");
 	
-		  var idAndHash = {};
-		  var query = window.location.search.substring(1);
-		  var vars = query.split("&");
-		  for (var i=0;i<vars.length;i++) 
-		  {
-		    var pair = vars[i].split("=");
-		    idAndHash[pair[0]] = decodeURIComponent(pair[1]);
-		  } 
+	// Get ID and hash from URL
+	for (var i=0;i<vars.length;i++) 
+	{
+		var pair = vars[i].split("=");
+		idAndHash[pair[0]] = decodeURIComponent(pair[1]);
+	} 
 		  
-		  //Display user's email address 
-		  document.getElementById("emailDisplay").innerHTML = idAndHash.employeeID+"@csc.com";
-		  
-		  
-		// Get Hash for User
-		var data = $.param({employeeID: idAndHash.employeeID, hash: idAndHash.hash});
+	//Display user's email address 
+	document.getElementById("emailDisplay").innerHTML = idAndHash.employeeID+"@csc.com";
+	
+	
+	
+//=====================================================================================
+// Retrieve Stored Hash from DB  
+//=====================================================================================		
+	// Get Hash for User
+	var data = $.param({employeeID: idAndHash.employeeID, hash: idAndHash.hash});
 		
-			$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userverify/'+idAndHash.employeeID+'/'+idAndHash.hash, data)   
-			.success(function(response)
-			{	
-				$scope.result = response;
-				if($scope.result.length > 0)
-				{
-					$scope.updateVerification(idAndHash.employeeID);
-				} 
-				else 
-				{
-					document.getElementById("resetLoginContents").style.display = 'none';
-					document.getElementById("verifyText").innerHTML = "There was a issue processing your request. Please ensure you are using the correct link or try generating a new one.";
-					document.getElementById("goToLoginButton").style.display = 'block';
-				}
-			});
-			
-			
-			var config = {headers : {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
-			
-			var pinEntered1 = '';
-			var pinEntered2 = '';
-			$scope.resetKey = function(key)
+	$http.get('http://localhost:8080/CSCBikeHire/rest/hire/userverify/'+idAndHash.employeeID+'/'+idAndHash.hash, data)   
+	.success(function(response)
+	{	
+		$scope.result = response;
+		if($scope.result.length === 0)
+		{
+			document.getElementById("resetLoginContents").style.display = 'none';
+			document.getElementById("verifyText").innerHTML = "There was a issue processing your request. Please ensure you are using the correct link or try generating a new one.";
+			document.getElementById("goToLoginButton").style.display = 'block';
+		}
+	});
+//=====================================================================================
+// END :: Retrieve Stored Hash from DB  
+//=====================================================================================
+	
+	
+	
+	
+//=====================================================================================
+// Key Pressed on Keypad  
+//=====================================================================================	
+	$scope.resetKey = function(key)
+	{
+		if(key === 'del') // Delete Key Pressed
+		{
+			if(pinEntered1.length > 0 && pinEntered1.length < 4) // Entering first pin
 			{
-				if(pinEntered1.length < 4) // Entering first pin
+				pinEntered1 = pinEntered1.slice(0, -1);
+				$scope.setPinDisplay(pinEntered1.length);
+			}
+			else if (pinEntered2.length > 0 && pinEntered2.length < 4)
+			{
+				pinEntered2 = pinEntered2.slice(0, -1);
+				$scope.setPinDisplay(pinEntered2.length);
+			}
+		}
+		else // Number Key Pressed
+		{
+			if(pinEntered1.length < 4) // Entering first pin
+			{
+				pinEntered1+=key;
+				$scope.setPinDisplay(pinEntered1.length);
+				if(pinEntered1.length == 4 ) // Completed entry of pin 1 
 				{
-					pinEntered1+=key;
-					$scope.setPinDisplay(pinEntered1.length);
-					if(pinEntered1.length == 4 ) // Completed entry of pin 1 
-					{
-						document.getElementById('resetActionDisplay').innerHTML = "Please Re-Enter Your New Pin"; 
-					}
-				}
-				else 
-				{
-					pinEntered2+=key;
-					$scope.setPinDisplay(pinEntered2.length);
-				}
-				
-
-				
-				
-				if (pinEntered1.length == 4 && pinEntered2.length == 4) //Completed entry of pin 2 
-				{
-					if(pinEntered1 == pinEntered2)
-						{
-							document.getElementById("confirmPinOverlay").style.display = 'block';
-						}
-					else
-						{
-							document.getElementById('resetActionDisplay').innerHTML = "Pins do not match. Try Again"; 
-							pinEntered1 = '';
-							pinEntered2 = '';
-						}
+					document.getElementById('resetActionDisplay').innerHTML = "Please Re-Enter Your New Pin"; 
 				}
 			}
-			
-			
-			
-			
-			
-			$scope.cancelConfirmPin = function()
+			else 
 			{
-				document.getElementById("confirmPinOverlay").style.display = 'none';
-				document.getElementById('resetActionDisplay').innerHTML = "Please Enter a New Pin"; 
+				pinEntered2+=key;
+				$scope.setPinDisplay(pinEntered2.length);
+			}
+		}
+
+		//Pin Entry Completed
+		if (pinEntered1.length == 4 && pinEntered2.length == 4) 
+		{
+			if(pinEntered1 == pinEntered2)
+			{
+				document.getElementById("confirmPinOverlay").style.display = 'block';
+			}
+			else
+			{
+				document.getElementById('resetActionDisplay').innerHTML = "Pins do not match. Try Again"; 
 				pinEntered1 = '';
 				pinEntered2 = '';
-			}
+			 }
+		}
+	}
+//=====================================================================================
+// END :: Key Pressed on Keypad  
+//=====================================================================================			
 			
+	
+	
+	
+	
+//=====================================================================================
+// Reject Entered Pin  
+//=====================================================================================			
+	$scope.cancelConfirmPin = function()
+	{
+		document.getElementById("confirmPinOverlay").style.display = 'none';
+		document.getElementById('resetActionDisplay').innerHTML = "Please Enter a New Pin"; 
+		pinEntered1 = '';
+		pinEntered2 = '';
+	}
+//=====================================================================================
+// END :: Reject Entered Pin  
+//=====================================================================================		
 			
-			
-			$scope.setPin = function()
-			{
-					var data = $.param({
-						employeeID: idAndHash.employeeID,
-						pin: pinEntered2
-				        });
+
+	
+	
+	
+//=====================================================================================
+// Set New Pin for User  
+//=====================================================================================		
+	$scope.setPin = function()
+	{
+		var data = $.param({
+			employeeID: idAndHash.employeeID,
+			pin: pinEntered2});
 				        
-				$http.post('http://localhost:8080/CSCBikeHire/rest/hire/updatepin', data, config)  
-				        .success(function (data, status, headers, config) {
+		$http.post('http://localhost:8080/CSCBikeHire/rest/hire/updatepin', data, config)  
+			.success(function (data, status, headers, config) {
 				            $scope.PostDataResponse = data;
-				            
 				        })
 				        .error(function (data, status, header, config) {
 				            $scope.ResponseDetails = "Data: " + data +
@@ -184,17 +213,20 @@ app.controller("HttpGetController", function ($scope, $http)
 				                "<hr />config: " + config;
 				        });
 				
+		//Remove hash from DB so reset can nolonger be accessed
+		$scope.updateHash();
 				
-				//Remove hash from DB so reset can nolonger be accessed
-				$scope.updateHash();
-				
-				
-				
-				alert("Your pin has been reset");
-				window.location.href = 'http://localhost:8080/CSCBikeHire/index.html'; // Redirect user to login page
-			}
-			
-			
+		alert("Your pin has been reset");
+		window.location.href = 'http://localhost:8080/CSCBikeHire/index.html'; // Redirect user to login page
+	}
+//=====================================================================================
+// END :: Set New Pin for User  
+//=====================================================================================	
+	
+	
+	
+	
+	
 //=====================================================================================
 // Clear Stored Hash for user 
 //=====================================================================================
@@ -223,40 +255,42 @@ app.controller("HttpGetController", function ($scope, $http)
 			
 			
 			
-			
-			
-			
-			
-			
-			
-			$scope.setPinDisplay = function(pinLength)
-			{
-				var resetActionDisplay = document.getElementById('resetActionDisplay');
-		    	switch(pinLength) 
-		    	{
-		    	case 1:
-		    		resetActionDisplay.innerHTML = "."; 
-		        	break;
-		        case 2:
-		        	resetActionDisplay.innerHTML = "..";             
-		        	break;
-		        case 3:
-		        	resetActionDisplay.innerHTML = "...";             
-		        	break;
-		        case 4:
-		        	resetActionDisplay.innerHTML = "....";             
-		        	break;
-		    	} 
-			}
-			
-			
-		
-		
+	
+	
+//=====================================================================================
+// Display Feedback For Pin Entry 
+//=====================================================================================
+	$scope.setPinDisplay = function(pinLength)
+	{
+		var resetActionDisplay = document.getElementById('resetActionDisplay');
+		switch(pinLength) 
+		{
+			case 0:
+				if(pinEntered1.length === 4)
+					resetActionDisplay.innerHTML = "Please Re-Enter Your New Pin"; 
+				else
+					resetActionDisplay.innerHTML = "Please Enter a New Pin";
+				break;
+			case 1:
+		    	resetActionDisplay.innerHTML = "."; 
+		        break;
+		  	case 2:
+		        resetActionDisplay.innerHTML = "..";             
+		        break;
+		   	case 3:
+		        resetActionDisplay.innerHTML = "...";             
+		       	break;
+		    case 4:
+		        resetActionDisplay.innerHTML = "....";             
+		        break;
+		} 
+	}
+//=====================================================================================
+// END :: Display Feedback For Pin Entry 
+//=====================================================================================		
 	
 });
 
 </script>
-
-
 </body>
 </html>

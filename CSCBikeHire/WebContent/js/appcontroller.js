@@ -75,11 +75,20 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	{
 		var enteredEmail = document.getElementById('emailEntry');
 		var loginActionDisplay = document.getElementById('loginActionDisplay');
-
-		pinEntered+=key;
-        
-		$scope.setPinDisplay(pinEntered.length);
-
+		
+		if(key === 'del') // Delete Key Pressed
+		{
+			if(pinEntered.length > 0 && pinEntered.length < 4) // Entering first pin
+			{
+				pinEntered = pinEntered.slice(0, -1);
+				$scope.setPinDisplay(pinEntered.length);
+			}
+		}
+		else // Number Key Pressed
+		{
+			pinEntered+=key;
+			$scope.setPinDisplay(pinEntered.length);
+		}
         	
         	if(pinEntered.length == 4 && enteredEmail.value != "") //Pin and Email Address have been entered 
             {
@@ -105,9 +114,25 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	$scope.deleteKey = function(key)
 	{
 		var deleteActionDisplay = document.getElementById('deleteActionDisplay');
-		$scope.deletePinEntered+=key;
+		
+		//Delete Key
+		if(key === 'del')
+		{
+			if($scope.deletePinEntered.length > 0)
+			{
+				$scope.deletePinEntered = $scope.deletePinEntered.slice(0, -1);
+			}
+		} 
+		else
+		{
+			$scope.deletePinEntered+=key;
+		}
+		
 		switch($scope.deletePinEntered.length) 
     	{
+		case 0:
+			deleteActionDisplay.innerHTML = "Enter your Pin";
+			break;
     	case 1:
     		deleteActionDisplay.innerHTML = "."; 
         	break;
@@ -202,6 +227,21 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	{
     	switch(pinLength) 
     	{
+		case 0:
+			if(pinEntered.length === 4)
+				loginActionDisplay.innerHTML = "Please Re-Enter Your New Pin"; 
+			else
+			{
+				if(mode === 1)
+				{
+					loginActionDisplay.innerHTML = "Please Enter your Pin";
+				}
+				else if (mode === 2)
+				{
+					loginActionDisplay.innerHTML = "Please Enter a Pin";
+				}
+			}
+			break;
     	case 1:
     		loginActionDisplay.innerHTML = "."; 
         	break;
@@ -469,6 +509,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	{	
 		$scope.result = response;
 		$scope.result.forEach(function(date) {
+			console.log("Update Booking Display");
 		    $scope.updadeBookingDisplay(date);
 		});
 		$scope.getUserBookings();
@@ -1045,7 +1086,10 @@ $scope.orderByDate = function(item)
     	 {
     		 dayNum = "0"+dayNum;
     	 }
-         dateArray.push({"fullDate":getFullDate(currentDate), "dayWord":weekday[currentDate.getDay()], "dayNum":dayNum, "monthWord":month[currentDate.getMonth()]})
+    	 if(currentDate.getDay() !== 0 && currentDate.getDay() !== 6) // Filter out weekends
+    	 {
+    		 dateArray.push({"fullDate":getFullDate(currentDate), "dayWord":weekday[currentDate.getDay()], "dayNum":dayNum, "monthWord":month[currentDate.getMonth()]})
+    	 }
          currentDate = currentDate.addDays(1);
        }
        return dateArray;
@@ -1140,8 +1184,6 @@ $scope.orderByDate = function(item)
 	// Report Issue Window (Submit Issue Button Pressed)
 	$scope.submitIssueReport = function()
 	{
-		
-
 		var unsafeEntry = document.getElementById('reportIssueTextArea').value;
 		var escapedEntry = unsafeEntry
 		         .replace(/&/g, "&amp;")
@@ -1162,9 +1204,6 @@ $scope.orderByDate = function(item)
 		{
 			alert("Issue Report Cannot be Blank.");
 		}
-		
-		
-
 	}
 	
 	//Additional Options Window 
@@ -1234,7 +1273,6 @@ $scope.orderByDate = function(item)
 //=====================================================================================
 	$scope.openTab = function (tabName) 
     {
-		console.log();
 		  var i, x, tablinks;
 		  x = document.getElementsByClassName("tabBody");
 		  document.getElementById(tabName).style.display = "block";
@@ -1262,18 +1300,7 @@ $scope.orderByDate = function(item)
        		  document.getElementById("HireABike").style.display = "none";
 		      document.getElementById("HireABikeTab").style.background = "#32324e";
 		      document.getElementById("MyBookingsTab").style.background = "#14141f";
-		      $scope.displayMyBookingsContent();
-		      
-			  /*if($scope.myBookingsArray.length === 0)
-			  {
-				  document.getElementById("noBookingsMessage").style.display = 'block';
-				  console.log("block");
-			  }
-			  else
-			  {
-				  document.getElementById("noBookingsMessage").style.display = 'none';
-			  }*/
-			  
+		      $scope.displayMyBookingsContent();		      			  
 		  }
 		scroll();  
 	}

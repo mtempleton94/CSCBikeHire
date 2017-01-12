@@ -22,7 +22,13 @@ time, mark, audio, video {
 body
 {
 	background-color: #333333;
-	background-image: url("../images/background.png");
+	/*background-image: url("../images/background.png");*/
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#050729+39,1e2236+99,080f38+100 */
+	background: #050729; /* Old browsers */
+	background: -moz-linear-gradient(-45deg, #050729 39%, #1e2236 99%, #080f38 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(-45deg, #050729 39%,#1e2236 99%,#080f38 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(135deg, #050729 39%,#1e2236 99%,#080f38 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#050729', endColorstr='#080f38',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 	background-repeat: no-repeat;
     background-attachment: fixed;
     
@@ -30,43 +36,52 @@ body
 
 body #content 
 {
-	color: white;
+	/*color: white;
 	border-top: 1px solid white;
-	border-bottom: 1px solid white;
+	border-bottom: 1px solid white;*/
 	text-align:center;
-	position: relative;
+	height: 100%;
+	/*position: relative;
 	margin-top: 30%;
 	padding-top: 15px;
-	padding-bottom: 20px;
+	padding-bottom: 20px;*/
 }
 
 body #content h1 
 {
-	padding-bottom: 10px;	
+	padding-bottom: 10px;
+	font-size: 60px;
+    color: #FFFFFF;
 }
+
+.button 
+{   
+	text-decoration: none;
+	font-size: 60px;
+    color: #FFFFFF;
+    border: 6px solid white;
+	padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align:center;
+    background: Tansparent;
+ 	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	transform: translate(-50%, -50%);
+}
+
+
+
+
 
 
 #resetContent 
 {
 	color: white;
-
 	text-align:center;
 	height: 100vh;
-}
-
-
-.button 
-{
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
-    text-decoration: none;
-    color: #FFFFFF;
-    border: 1px solid white;
-    padding: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
-    
 }
 
 .header
@@ -81,7 +96,6 @@ body #content h1
     background: -o-linear-gradient(#32324e, #14141f);
     background: -moz-linear-gradient(#32324e, #14141f);
     background: linear-gradient(#32324e, #14141f);
-   
 }
 
 
@@ -182,22 +196,19 @@ body #content h1
 .loginContents, .resetLoginContents
 {
 	background-color: #333333;
-	background-image: url("../images/background.png");
+	/*background-image: url("../images/background.png");*/
+	background: #050729; /* Old browsers */
+	background: -moz-linear-gradient(-45deg, #050729 39%, #1e2236 99%, #080f38 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(-45deg, #050729 39%,#1e2236 99%,#080f38 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(135deg, #050729 39%,#1e2236 99%,#080f38 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#050729', endColorstr='#080f38',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 	background-repeat: no-repeat;
     background-attachment: fixed;
 	height: 85%;
 }
 
-.resetLoginContents .emailEntry
-{
-	text-align:center;
-    vertical-align: middle;
-    /*height: 75px;*/
-}
 
-
-
-/* Main Login */
+/* --------- Main Login --------- */
 .loginContents .emailEntry
 {
 	width: 100%;
@@ -220,23 +231,26 @@ body #content h1
 	color: rgba(0, 0, 0, 0.7); 
 }
 
-/* Reset Login */
-.resetLoginContents .emailEntry p
+
+/* --------- Reset Pin --------- */
+.resetLoginContents #emailDisplay
 {
-	height: 100%;
-    vertical-align: middle;
-	float:left; 
-	width: 30%;
-	color: #FFFFFF;
- 	margin-top: 25px;
+	/*width: 100%;*/
+	font-size: 40px;
+	text-align: left;
+	border-bottom: 1px solid white;
+	padding: 20px;
 }
 
-.resetLoginContents .emailEntry input
+#resetEmailDisplay, #resetActionDisplay
 {
-	float:left; 
-	width: 39%;
-	margin-top: 25px;
+	width: 100%;
+	font-size: 50px;
+	margin-top: 50px;
+	margin-bottom: 50px;
 }
+
+
 
 
 
@@ -244,7 +258,6 @@ body #content h1
 .loginContents .loginActionDisplay, .resetLoginContents .loginActionDisplay
 {
 	color: #FFFFFF;
-	height: 12.5%;
 	text-align:center;
     height: 75px;
     font-size: 50px;
@@ -295,7 +308,7 @@ body #content h1
     font-size: 90px;
 }
 
-.loginContents .keypadLine button:active
+.loginContents .keypadLine button:active, .resetLoginContents .keypadLine button:active
 {
 	background: rgba(255, 255, 255, 0.1);
 }
@@ -316,18 +329,69 @@ body #content h1
 	float:right;
 }
 
-
-
-#resetEmailDisplay, #resetActionDisplay
-{
-	width: 100%;
-	height: 200px;
-}
-
 .keypadLineFinal
 {
  margin-left: 33.5%;
 }
+
+
+
+/* --------- Delete Button for Keypads --------- */
+.keypadLine .delIcon, .deleteKeypadLine .delIcon
+{ 
+	background: white; 
+	display: inline-block; 
+	height: 80px; 
+	margin-left: 20px; 
+	margin-top: 0px; 
+	position: relative; 
+	width: 75px; 
+	color: #32324e;
+	font-size: 60px;
+} 
+
+.keypadLine .delIcon:before, .deleteKeypadLine .delIcon:before
+{ 
+	border-bottom: 40px solid transparent; 
+	border-top: 40px solid transparent; 
+	border-right: 40px solid white; 
+	content: ""; 
+	height: 0; 
+	left: -39px;
+	position: absolute; 
+	top: 0; 
+	width: 0; 
+}
+
+.keypadLine .delIcon:after, .deleteKeypadLine .delIcon:after
+{
+	content: "x"; 
+}
+
+.deleteKeypadLine .delIcon
+{ 
+
+	height: 60px; 
+	margin-left: 20px; 
+	color: #14141f;
+	font-size: 50px;
+} 
+
+.deleteKeypadLine .delIcon:before
+{ 
+	border-bottom: 30px solid transparent; 
+	border-top: 30px solid transparent; 
+	border-right: 30px solid white; 
+	left: -29px;
+}
+/* --------- END : Delete Button for Keypads --------- */
+
+
+
+
+
+
+
 
 .loginAdditionalActions
 {
@@ -532,14 +596,14 @@ body #content h1
 		padding-right: 20px;
 }
 
-.mb-dayComponent p:nth-child(2) /* Delete Button (X) */
+.mb-dayComponent p:nth-child(3) /* Delete Button (X) */
 {
 		margin-top: 40px;
 			color: #FF0000;
   		margin-left: 150px;
 }
 
-.mb-dayComponent p:nth-child(3) /* Bike Number */
+.mb-dayComponent p:nth-child(2) /* Bike Number */
 {
 		color: #FFFFFF;
   		font-size: 40px;

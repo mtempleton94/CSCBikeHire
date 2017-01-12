@@ -54,7 +54,8 @@
 				</div> 
 				
 				<div class="keypadLine">
-					<button class="keypadLineFinal"ng-click="loginKey('0')">0</button><br>
+					<button class="keypadLineFinal"ng-click="loginKey('0')">0</button>
+					<button ng-click="loginKey('del')"><p class="delIcon"></p></button>
 				</div> 
 			</div>
 			<!-- End : Keypad -->	
@@ -169,6 +170,7 @@
 			
 			<div class="deleteKeypadLine">
 				<button class="deleteKeypadLineFinal"ng-click="deleteKey('0')">0</button>
+				<button ng-click="deleteKey('del')"><p class="delIcon"></p></button>
 			</div><br>
 			<button class="cancelDeleteButton" ng-click="cancelConfirmation()">Cancel</button>
  		</div>

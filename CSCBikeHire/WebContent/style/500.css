@@ -1,4 +1,122 @@
-.login {
+body
+{
+	background-color: yellow;
+}
+
+.login 
+{
 	overflow-y: scroll;
 }
+
+/* ----------------- Header ----------------- */
+.header
+{
+	display: inline-block;
+	width: 100%;
+	display: flex;
+}
+
+
+.header img
+{
+  max-width:150px;
+  max-height:100px;
+  width: auto;
+  height: auto;
+}
+
+.header h1
+{
+	font-size: 50px;
+	float: left;
+	color: #FFFFFF;
+	margin-top: 15px;
+
+}
+/* -------------- END : Header -------------- */
+
+
+
+
+
+/* Action Display For Login Screen */
+.loginContents .loginActionDisplay, .resetLoginContents .loginActionDisplay
+{
+    font-size: 30px;
+    height: 40px;
+}
+
+/* Email Entry on Login Page */
+.loginContents .emailEntry input
+{
+	margin-top: -45px;
+    font-size: 40px;
+}
+
+.loginContents .emailEntry p
+{
+	margin-top: -20px;
+	font-size: 40px;
+}
+
+
+
+
+/* Action display for Pin Reset */
+#resetEmailDisplay, #resetActionDisplay
+{
+	font-size: 30px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+/* Email Address displayed on reset pin screen */
+.resetLoginContents #emailDisplay
+{ 
+	font-size: 30px;
+	padding: 10px;
+}
+
+/* Keypad Buttons */
+.loginContents .keypadLine button, .resetLoginContents .keypadLine button
+{
+    font-size: 50px;
+}
+
+/* --------- Delete Button for Keypads --------- */
+.keypadLine .delIcon, .deleteKeypadLine .delIcon
+{ 
+	height: 50px; 
+	width: 40px; 
+	font-size: 40px;
+} 
+
+.keypadLine .delIcon:before, .deleteKeypadLine .delIcon:before
+{ 
+	border-bottom: 25px solid transparent; 
+	border-top: 25px solid transparent; 
+	border-right: 25px solid white; 
+	left: -25px;
+	position: absolute; 
+}
+
+/*
+.deleteKeypadLine .delIcon
+{ 
+
+	height: 60px; 
+	margin-left: 20px; 
+	color: #14141f;
+	font-size: 50px;
+} 
+
+.deleteKeypadLine .delIcon:before
+{ 
+	border-bottom: 30px solid transparent; 
+	border-top: 30px solid transparent; 
+	border-right: 30px solid white; 
+	left: -29px;
+}*/
+/* --------- END : Delete Button for Keypads --------- */
+
 

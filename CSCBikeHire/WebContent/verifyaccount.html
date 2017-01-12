@@ -5,24 +5,24 @@
 <title>My Client</title>
 <link rel="stylesheet" href="style/style.css">
 
-<!--  <script type="text/javascript" src="js/angular.min.js"></script>  -->
-		
-
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
 		
-		
-		<font face="arial black,arial">
+<font face="arial black,arial">
 </head>
+
 <body ng-controller="HttpGetController">
 
 <div id="content">
 	<h1 id="verifyText" class="verifyText"></h1>
 	<a href="http://localhost:8080/CSCBikeHire/index.html" class="button">Go to Login</a>
+	
 </div>
+
+
 
 
 <script type="text/javascript">
@@ -66,7 +66,7 @@ app.controller("HttpGetController", function ($scope, $http)
 	    	        .success(function (data, status, headers, config)
 	    	        		{ 
 	    	        	$scope.PostDataResponse = data;
-	    	        	document.getElementById("verifyText").innerHTML = "Your Account has been Verified";
+	    	        	document.getElementById("verifyText").innerHTML = "Your Account has been Verified.";
 	    	        		
 	    	        })
 	    	        .error(function (data, status, header, config) {
