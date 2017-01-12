@@ -536,6 +536,8 @@ body #content h1
 	height: 220px;
 }
 
+
+/* --------- Day Identifier --------- */
 .mb-dayIdentifier 
 {
 	display: inline-block;
@@ -564,6 +566,10 @@ body #content h1
 	margin-top: -45px;
 }
 
+/* --------- END : Day Identifier --------- */
+
+
+
 .mb-dayComponent /* Booking Identifiers */
 {
 	padding-left: 10px;
@@ -588,26 +594,78 @@ body #content h1
 
 }
 
-.mb-dayComponent p:nth-child(1) /* Timeslot */
+.mb-timeslot /* Timeslot */
 {
-	margin-top: 40px;
-		float: left;
-		color: #FFFFFF;
-		padding-right: 20px;
+	color: #FFFFFF;
 }
 
-.mb-dayComponent p:nth-child(2) /* Delete Button (X) */
+.mb-dayComponent p:nth-child(2) /* Bike Number */
 {
-		margin-top: 40px;
-			color: #FF0000;
-  		margin-left: 150px;
+	font-size: 40px;
+	color: #FFFFFF;
 }
 
-.mb-dayComponent p:nth-child(3) /* Bike Number */
+.myBookingOptions p /* Delete Button (X) */
 {
-		color: #FFFFFF;
-  		font-size: 40px;
+	font-size: 60px;
+	float: left;
+	width: 50px;
+	color: #FF0000;
 }
+
+/* --------------- Unlock Bike Icon --------------- */
+.unlockBike 
+{
+ 	width: 75px;
+  	height: 75px;
+  	position: relative;
+  	overflow: hidden;
+	left: 50px;
+}
+
+/* Lock Loop */ 
+.unlockBike .lockLoop 
+{
+  	width: 40%;
+  	height: 40%;
+  	position: absolute;
+  	left: 50%;
+  	margin-left: -20%;
+  	top: 14%;
+  	background-color: red;
+  	border-radius: 40%;
+}
+
+/* Gap In Center of Loop */
+.unlockBike .lockLoopGap 
+{
+  	width: 24%;
+  	height: 40%;
+  	position: absolute;
+  	left: 50%;
+  	margin-left: -12%;
+  	top: 22%;
+  	background-color: #050729;
+  	border-radius: 25%;
+}
+
+/* Bottom of Lock */ 
+.unlockBike .lockBody 
+{
+	width: 60%;
+  	height: 48%;
+  	position: absolute;
+  	left: 50%;
+  	margin-left: -30%;
+  	bottom: 11%;
+  	background-color: red;
+  	border-radius: 15%;
+}
+/* ------------ END : Unlock Bike Icon ------------ */
+
+
+
+
 
 
 .noBookingsMessage
