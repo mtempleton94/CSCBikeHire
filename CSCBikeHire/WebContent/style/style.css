@@ -596,14 +596,14 @@ body #content h1
 		padding-right: 20px;
 }
 
-.mb-dayComponent p:nth-child(3) /* Delete Button (X) */
+.mb-dayComponent p:nth-child(2) /* Delete Button (X) */
 {
 		margin-top: 40px;
 			color: #FF0000;
   		margin-left: 150px;
 }
 
-.mb-dayComponent p:nth-child(2) /* Bike Number */
+.mb-dayComponent p:nth-child(3) /* Bike Number */
 {
 		color: #FFFFFF;
   		font-size: 40px;
