@@ -607,28 +607,17 @@ body #content h1
 
 .myBookingOptions p /* Delete Button (X) */
 {
-	font-size: 60px;
 	float: left;
-	width: 50px;
-	color: #FF0000;
-	
-	  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  font-size: 50px;
-  color: #fff;
-  line-height: 500px;
-  text-align: center;
-  background: #000
+  	width: 70px;
+  	height: 70px;
+  	border-radius: 50px;
+  	font-size: 50px;
+  	color: #050729;
+  	line-height: 65px;
+  	text-align: center;
+  	background: #fff
 }
 
-.myBookingOptions p:after
-{
-	background: yellow;
-	border-radius: 50%;
-	width: 200px;
-	height: 200px;
-}
 
 /* --------------- Unlock Bike Icon --------------- */
 .unlockBike 

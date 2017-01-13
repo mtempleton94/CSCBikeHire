@@ -889,13 +889,12 @@ $scope.orderByDate = function(item)
 			document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background = "red";
 		}
 		
-		if(state == 1 && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "yellow" && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "green")
+		if(state == 1 && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "rgb(255, 204, 0)" && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "green")
 		{
-			document.getElementById("mb_lkloop-"+date+"-"+timeslot).style.background = "yellow";
-			document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background = "yellow";
+			document.getElementById("mb_lkloop-"+date+"-"+timeslot).style.background = "#ffcc00";
+			document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background = "#ffcc00";
 		}
-		
-		if(state == 2 && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "green" && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background === "yellow")
+		if(state == 2 && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "green" && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background === "rgb(255, 204, 0)")
 		{
 			for(var i = 0; i < $scope.myBookingsArray.length; i++) 
 			{
