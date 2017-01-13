@@ -509,7 +509,6 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	{	
 		$scope.result = response;
 		$scope.result.forEach(function(date) {
-			console.log("Update Booking Display");
 		    $scope.updadeBookingDisplay(date);
 		});
 		$scope.getUserBookings();
@@ -758,9 +757,172 @@ $scope.orderByDate = function(item)
 //=====================================================================================
 // END :: Update Booking Display After Timeout (Ensure Processing Has Completed) 
 //=====================================================================================
+
 	
+	
+	
+	
+	
+	
+	
+//=====================================================================================
+// Call time check to se lock access (60 Second Intervals)
+//=====================================================================================	
+	// People can unlock a bike if they have it in the next 10 minutes and can continue 
+	// accessing it 1 hour after the session ends (hopefully to prevent people leaving the
+	// bike locked up away from CSC)
+	
+	setInterval(function () {
+	    $scope.$apply(function () 
+	    {
+	    	$scope.lockTimeCheck();
+	    });
+	}, 60000);
+//=====================================================================================
+// END :: Call time check to se lock access (60 Second Intervals)
+//=====================================================================================
+	
+	
+	
+	
+	
+//=====================================================================================
+// Time Check to update lock access for bikes 
+//=====================================================================================		
+	$scope.lockTimeCheck = function() 
+	{
+		var timeCheck = new Date();
+		for(var i = 0; i < $scope.myBookingsArray.length; i++)
+		{
+			if($scope.myBookingsArray[i].date === timeCheck.getDate()+"/"+timeCheck.getMonth()+1+"/"+timeCheck.getFullYear()) // User has a booking for today 
+			{
+				var bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.split("/"); 
+				var timeslots = $scope.myBookingsArray[i].timeslots.split("-"); 
+				
+				// Make Bike Locks Available 
+				for (var j in timeslots) 
+				{
+    				/* Timeslot 1 - 7:50 - 12 */
+					if(timeslots[j] == 1)
+					{
+	    				if(timeCheck.getHours() >= 7 && timeCheck.getHours() <= 11)
+	    				{
+	    					if((timeCheck.getHours() === 7 && timeCheck.getMinutes() >= 50) || timeCheck.getHours() >= 8)
+	    					{
+	    						$scope.updateLockState($scope.myBookingsArray[i].date, 1, bikeNumbers[j], 1); /*date, timeslot, bike no, state  */
+	    					}
+	    					else if(timeCheck.getHours() === 7 && timeCheck.getMinutes() < 50)
+	    					{
+	    						$scope.updateLockState($scope.myBookingsArray[i].date, 1, bikeNumbers[j], 0);
+	    					}
+	    				}
+	    				else if(timeCheck.getHours() < 7 ||  timeCheck.getHours() > 11)/* earlier than 7 or later than 12 */
+	    				{
+	    					$scope.updateLockState($scope.myBookingsArray[i].date, 1, bikeNumbers[j], 0);
+	    				}
+					} 
+					
+					/* Timeslot 2 - 10:50 - 3 */ //Assume 24hr time? = 10:50 - 15
+					else if (timeslots[j] == 2)
+					{
+	    				if(timeCheck.getHours() >= 10 && timeCheck.getHours() <= 14)
+	    				{
+	    					if((timeCheck.getHours() === 10 && timeCheck.getMinutes() >= 50) || timeCheck.getHours() >= 11)
+	    					{
+	    						$scope.updateLockState($scope.myBookingsArray[i].date, 2, bikeNumbers[j], 1); /*date, timeslot, bike no, state  */
+	    					}
+	    					else if(timeCheck.getHours() === 10 && timeCheck.getMinutes() < 50)
+	    					{
+	    						$scope.updateLockState($scope.myBookingsArray[i].date, 2, bikeNumbers[j], 0);
+	    					}
+	    				}
+	    				else if(timeCheck.getHours() < 10 ||  timeCheck.getHours() > 14)/* earlier than 10 or later than 3 */
+	    				{
+	    					$scope.updateLockState($scope.myBookingsArray[i].date, 2, bikeNumbers[j], 0);
+	    				}
+					}
+					
+					/* Timeslot 3 - 1:50 - 6*/ //Assume 24hr time? = 13:50 - 18
+					else if (timeslots[j] == 3)
+					{
+	    				if(timeCheck.getHours() >= 13 && timeCheck.getHours() <= 17)
+	    				{
+	    					if((timeCheck.getHours() === 13 && timeCheck.getMinutes() >= 50) || timeCheck.getHours() >= 14)
+	    					{
+	    						$scope.updateLockState($scope.myBookingsArray[i].date, 3, bikeNumbers[j], 1); /*date, timeslot, bike no, state  */
+	    					}
+	    					else if(timeCheck.getHours() === 13 && timeCheck.getMinutes() < 50)
+	    					{
+	    						$scope.updateLockState($scope.myBookingsArray[i].date, 3, bikeNumbers[j], 0);
+	    					}
+	    				}
+	    				else if(timeCheck.getHours() < 13 ||  timeCheck.getHours() > 17)/* earlier than 1 or later than 6 */
+	    				{
+	    					$scope.updateLockState($scope.myBookingsArray[i].date, 3, bikeNumbers[j], 0);
+	    				}
+					}
+				}
+				break;
+			}
+		}
+	}
+//=====================================================================================
+// END :: Time Check to update lock access for bikes 
+//=====================================================================================		
 	
 
+	
+	
+	
+//=====================================================================================
+// Set State of a Lock 
+//=====================================================================================		
+	//State
+		// 0 = Unavailable
+		// 1 = Available
+		// 2 = Unlocked
+	$scope.updateLockState = function(date, timeslot, bikeNo, state)
+	{
+		if(state == 0 && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "red")
+		{
+			document.getElementById("mb_lkloop-"+date+"-"+timeslot).style.background = "red";
+			document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background = "red";
+		}
+		
+		if(state == 1 && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "yellow" && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "green")
+		{
+			document.getElementById("mb_lkloop-"+date+"-"+timeslot).style.background = "yellow";
+			document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background = "yellow";
+		}
+		
+		if(state == 2 && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background != "green" && document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background === "yellow")
+		{
+			for(var i = 0; i < $scope.myBookingsArray.length; i++) 
+			{
+			    if ($scope.myBookingsArray[i].date == date) 
+			    {
+					var bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.split("/");
+					var timeslots = $scope.myBookingsArray[i].timeslots.split("-");
+			    }
+			}
+			var bikeNum = 0;
+			// Make Bike Locks Available 
+			for (var i in timeslots) 
+			{
+				if(timeslots[i] == timeslot)
+					bikeNum = bikeNumbers[i]; 
+			}
+			console.log("Unlock Bike ");
+			document.getElementById("mb_lkloop-"+date+"-"+timeslot).style.background = "green";
+			document.getElementById("mb_lkbody-"+date+"-"+timeslot).style.background = "green";
+		}
+	}
+//=====================================================================================
+// END :: Set State of a Lock 
+//=====================================================================================	
+	
+	
+	
 	
 	
 //=====================================================================================
@@ -891,6 +1053,7 @@ $scope.orderByDate = function(item)
 			{
 				document.getElementById("mb-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).style.display = 'inline-block';
 				document.getElementById("mb_bn-"+$scope.myBookingsArray[i].date+"-"+timeslots[j]).innerHTML = "Bike No. "+bikeNumbers[j];
+				$scope.lockTimeCheck();
 			}
 		}
 	}

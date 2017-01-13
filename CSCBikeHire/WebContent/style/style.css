@@ -611,6 +611,23 @@ body #content h1
 	float: left;
 	width: 50px;
 	color: #FF0000;
+	
+	  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  font-size: 50px;
+  color: #fff;
+  line-height: 500px;
+  text-align: center;
+  background: #000
+}
+
+.myBookingOptions p:after
+{
+	background: yellow;
+	border-radius: 50%;
+	width: 200px;
+	height: 200px;
 }
 
 /* --------------- Unlock Bike Icon --------------- */

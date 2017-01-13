@@ -290,10 +290,10 @@
 					<p class="mb-timeslot"> 8 - 11 </p><p id="mb_bn-{{booking.date}}-1">Bike No. 0</p>
 					<div class="myBookingOptions">
 						<p ng-click="cancelBooking(booking.date, 1);">X</p>
-						<div class="unlockBike" ng-click="unlockBike(booking.date, 1);">
-		    				<div class="lockLoop" ></div>
+						<div class="unlockBike" ng-click="updateLockState(booking.date, 1, booking.bikeNumbers, 2);">
+		    				<div class="lockLoop" id="mb_lkloop-{{booking.date}}-1"></div>
 						    <div class="lockLoopGap"></div>
-						    <div class="lockBody" ></div>
+						    <div class="lockBody" id="mb_lkbody-{{booking.date}}-1"></div>
 	  					</div>
 					</div>
 				</div>
@@ -303,10 +303,10 @@
 					<p class="mb-timeslot"> 11 - 2 </p><p id="mb_bn-{{booking.date}}-2">Bike No. 0</p>
 					<div class="myBookingOptions">
 						<p ng-click="cancelBooking(booking.date, 2);">X</p>
-						<div class="unlockBike" ng-click="unlockBike(booking.date, 2);">
-		    				<div class="lockLoop" ></div>
+						<div class="unlockBike" ng-click="updateLockState(booking.date, 2, booking.bikeNumbers, 2);">
+		    				<div class="lockLoop" id="mb_lkloop-{{booking.date}}-2"></div>
 						    <div class="lockLoopGap"></div>
-						    <div class="lockBody" ></div>
+						    <div class="lockBody" id="mb_lkbody-{{booking.date}}-2"></div>
 	  					</div>
 					</div>
 				</div>
@@ -316,10 +316,10 @@
 					<p class="mb-timeslot"> 2 - 5 </p><p id="mb_bn-{{booking.date}}-3">Bike No. 0</p>
 					<div class="myBookingOptions">
 						<p ng-click="cancelBooking(booking.date, 3);">X</p>
-						<div class="unlockBike" ng-click="unlockBike(booking.date, 3);">
-		    				<div class="lockLoop" ></div>
+						<div class="unlockBike" ng-click="updateLockState(booking.date, 3, booking.bikeNumbers, 2);">
+		    				<div class="lockLoop" id="mb_lkloop-{{booking.date}}-3"></div>
 						    <div class="lockLoopGap"></div>
-						    <div class="lockBody" ></div>
+						    <div class="lockBody" id="mb_lkbody-{{booking.date}}-3"></div>
 	  					</div>
 					</div>
 				</div>
