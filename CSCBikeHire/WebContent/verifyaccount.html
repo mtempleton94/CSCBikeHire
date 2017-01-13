@@ -14,11 +14,11 @@
 <font face="arial black,arial">
 </head>
 
-<body ng-controller="HttpGetController">
+<body ng-controller="VerifyController">
 
 <div id="content">
 	<h1 id="verifyText" class="verifyText"></h1>
-	<a href="http://localhost:8080/CSCBikeHire/index.html" class="button">Go to Login</a>
+	<a href="http://localhost:8080/CSCBikeHire/index.html" class="button" ng-click="goToLogin()">Go to Login</a>
 	
 </div>
 
@@ -26,8 +26,8 @@
 
 
 <script type="text/javascript">
-var app = angular.module("app", []);
-app.controller("HttpGetController", function ($scope, $http) 
+var app = angular.module("app", ['ngCookies']);
+app.controller("VerifyController", function ($scope, $http, $cookies, $cookieStore) 
 {
 	
 		  var idAndHash = {};
@@ -76,6 +76,12 @@ app.controller("HttpGetController", function ($scope, $http)
 	    	                "<hr />config: " + config;
 	    	        });
 
+			}
+			
+			$scope.goToLogin = function() 
+			{
+				$cookieStore.remove('currentUser');
+				$cookieStore.remove('currentTab');
 			}
 		
 		

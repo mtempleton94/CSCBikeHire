@@ -269,6 +269,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 //=====================================================================================	
 	$scope.completeLogin = function(enteredEmail) //User has entered an email address and pin
 	{
+		document.getElementById("noBookingsMessage").style.display = 'none';
 		var enteredEmailValue = enteredEmail.value;
 		if(enteredEmailValue.indexOf("@") > 0)
 		{
@@ -1439,9 +1440,10 @@ $scope.orderByDate = function(item)
 		  x = document.getElementsByClassName("tabBody");
 		  document.getElementById(tabName).style.display = "block";
 		  
-		  
 		  if(tabName=="HireABike")
 		  {
+				document.getElementById("noBookingsMessage").style.display = 'none';
+
 			  myBookingsScrollPos = document.body.scrollTop;
 			  document.body.scrollTop = hireBikeScrollPos;
 			  
@@ -1453,10 +1455,11 @@ $scope.orderByDate = function(item)
 		  } 
 		  else 
 		  {
+			  if($scope.myBookingsArray.length === 0)
+				document.getElementById("noBookingsMessage").style.display = 'block';
 
 			  hireBikeScrollPos = document.body.scrollTop;
 			  document.body.scrollTop = myBookingsScrollPos;
-			  
 			  window.location.hash='mybookings';
 			  $cookieStore.put('currentTab','mybookings');
        		  document.getElementById("HireABike").style.display = "none";
@@ -1513,24 +1516,16 @@ $scope.orderByDate = function(item)
 		var headerElement = document.getElementById("header");
 		var headerRect = headerElement.getBoundingClientRect();
 		
-		/*if(navPanelContainerRect.top <= 0)
+		if(document.body.scrollTop < headerElement.offsetHeight)
 		{
-			console.log("Grab Tabs");
-			navPanel.style.top = '0px';
-		}*/
-		//console.log("scroll: "+document.body.scrollTop+" header: "+headerElement.offsetHeight+" navpanel "+navPanelContainerRect.top);
-		if(document.body.scrollTop < headerElement.offsetHeight/*headerRect.bottom*/)
-		{
-			//console.log("Snap tabs in container");
-			//navPanel.style.top = navPanelContainerRect.top+"px";
 			navPanel.style.top = headerElement.offsetHeight +"px";
 			navPanel.style.position = 'absolute';
 		}
 		else
-			{
+		{
 			navPanel.style.top = '0px';
 			navPanel.style.position = 'fixed';
-			}
+		}
 		console.log(navPanel.style.top);
 	}
 //=====================================================================================
