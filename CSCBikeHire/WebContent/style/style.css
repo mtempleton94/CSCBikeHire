@@ -88,7 +88,6 @@ body #content h1
 {
 	padding-bottom: 30px;
 	display: inline-block;
-	background: #333333;
 	width: 100%;
 	display: flex;
     background: #333333; 
@@ -1116,11 +1115,12 @@ width: 100%;
 
 .navPanel {
 	width: 100%;
-    position:fixed;
+    position:absolute;
     left: 0px;
     right:0px;
     top:0px;
     background: #FFFF00;
+   	z-index: 31;
 }
 
 .tabs

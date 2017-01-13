@@ -1512,14 +1512,26 @@ $scope.orderByDate = function(item)
 		
 		var headerElement = document.getElementById("header");
 		var headerRect = headerElement.getBoundingClientRect();
-		if(navPanelContainerRect.top <= 0)
+		
+		/*if(navPanelContainerRect.top <= 0)
 		{
+			console.log("Grab Tabs");
 			navPanel.style.top = '0px';
-		}
-		if(document.body.scrollTop < headerRect.bottom)
+		}*/
+		//console.log("scroll: "+document.body.scrollTop+" header: "+headerElement.offsetHeight+" navpanel "+navPanelContainerRect.top);
+		if(document.body.scrollTop < headerElement.offsetHeight/*headerRect.bottom*/)
 		{
-			navPanel.style.top = navPanelContainerRect.top+"px";
+			//console.log("Snap tabs in container");
+			//navPanel.style.top = navPanelContainerRect.top+"px";
+			navPanel.style.top = headerElement.offsetHeight +"px";
+			navPanel.style.position = 'absolute';
 		}
+		else
+			{
+			navPanel.style.top = '0px';
+			navPanel.style.position = 'fixed';
+			}
+		console.log(navPanel.style.top);
 	}
 //=====================================================================================
 // END :: Page Scroll
@@ -1568,7 +1580,6 @@ $scope.returnToTop = function ()
 		        preventDefault(e);
 		        return false;
 		    }
-
 		}
 	
 	function preventDefault(e) {
