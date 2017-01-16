@@ -1,0 +1,10 @@
+.makeBookingContainer .makeBookingButton {
+    height: 150px;
+    width: 150px;
+}
+
+.makeBookingContainer .makeBookingButton span {
+    font-size: 200px;
+    left: 20px;
+    top: 60px;
+}

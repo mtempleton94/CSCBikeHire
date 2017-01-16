@@ -359,6 +359,38 @@ public static void generateAndSendEmail() throws AddressException, MessagingExce
 //======================================================================
        
 
+        
+        
+        
+//======================================================================
+// Add a Cancellation    
+//======================================================================      
+        @POST
+        @Path("/cancellation")
+        @Produces(MediaType.TEXT_HTML)
+        @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+        public void add(@FormParam("employeeID") String employeeID,
+        		@FormParam("date") String date,
+                @FormParam("timeslot") String timeslot,
+                @Context HttpServletResponse servletResponse) throws IOException 
+        {
+        	try
+            {
+        		ProjectManager.AddCancellation(employeeID, date, timeslot);
+            } 
+        	catch(Exception e) 
+            {
+             	System.out.println("Exception: " + e.getMessage());
+            }
+        }
+//======================================================================
+// END :: Add a Cancellation    
+//======================================================================       
+        
+        
+        
+        
+        
 //======================================================================
 // Update Account verified Field for User      
 //======================================================================     

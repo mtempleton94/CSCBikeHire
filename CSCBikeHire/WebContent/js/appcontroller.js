@@ -1063,6 +1063,8 @@ $scope.orderByDate = function(item)
 	
 
 	
+	
+	
 //=====================================================================================
 // Change Colour of a Timeslot Square
 //=====================================================================================		
@@ -1118,75 +1120,136 @@ $scope.orderByDate = function(item)
 	{
 		enableScroll();
 		document.getElementById('cancelOverlay').style.display = 'none';
-		var deleteData = $.param({
-            employeeID: $scope.currentUser,
-			date: cancelDate,
-            timeslot: cancelTime
-        });
-	      $http.delete('http://localhost:8080/CSCBikeHire/rest/hire/delete/'+$scope.currentUser+'/'+convertDateSQL(cancelDate)+'/'+cancelTime, deleteData, config)      
-	        .success(function (deleteData, status, headers, config) {
-	            $scope.PostDataResponse = deleteData;
-	            
-	            for(var i = 0; i < $scope.myBookingsArray.length; i++) 
-	            {
-    			var obj = $scope.myBookingsArray[i];
-
-	    			if(obj.date == cancelDate && obj.timeslots.indexOf("-") == -1) // Final booking for the day
-	    			{
-	    				var bookingID = $scope.myBookingsArray[i].date+"-"+$scope.myBookingsArray[i].timeslots;
-	    				$scope.changeTimeslotColour(document.getElementById(bookingID),1); 
-	    				$scope.myBookingsArray.splice(i, 1);
-	    				
-	    				//Display message if user has no bookings
-	    				if($scope.myBookingsArray.length === 0)
-	    				{
-	    					document.getElementById("noBookingsMessage").style.display = 'block';
-	    				}
-	    		
-	    			}
-	    			else if (obj.date == cancelDate) // Not final booking for the day
-	    			{
-	        			var bookingElement = document.getElementById("mb-"+obj.date+"-"+cancelTime);
-	        			bookingElement.style.display = 'none';
-	        				        			
-	        			var n = $scope.myBookingsArray[i].timeslots.indexOf(cancelTime);
-	        			$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n) + $scope.myBookingsArray[i].timeslots.slice(n+1);
-	        			$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, n) + $scope.myBookingsArray[i].bikeNumbers.slice(n+1);
-
-	        			//First Timeslot Identifier
-	        			if(n == 0)
-	        				{
-		        				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 0) + $scope.myBookingsArray[i].timeslots.slice(1);
-		        				$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, 0) + $scope.myBookingsArray[i].bikeNumbers.slice(1);
-	        				}
-	        			//Second Timeslot Identifier
-	        			else if (n == $scope.myBookingsArray[i].timeslots.length)
-	        				{
-		        				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n-1);
-		        				$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, n-1);
-	        				}
-	        			//Third Timeslot Identifier
-	        			else
-	        				{
-	        					$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 1) + $scope.myBookingsArray[i].timeslots.slice(2);
-	        					$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, 1) + $scope.myBookingsArray[i].bikeNumbers.slice(2);
-	        				}
-	        		}
-				}
-	            $scope.updateDisplay();
-	        })
-	        .error(function (deleteData, status, header, config) {
-	            $scope.ResponseDetails = "Data: " + deleteData +
-	                "<hr />status: " + status +
-	                "<hr />headers: " + header +
-	                "<hr />config: " + config;
-	        });
+		
+		//Check if cancelled booking was for today (Needs to be stored as bike lock may have been accessed)
+		var dateComponents = cancelDate.split('/');
+		var currentDate = new Date();
+		if(dateComponents[1] == currentDate.getMonth()+1 && dateComponents[0] == currentDate.getDate())
+		{
+			$scope.addBookingCancellation($scope.currentUser, convertDateSQL(cancelDate), cancelTime);
+		} 
+		else
+		{
+			deleteBooking();
+		}
 	}
 //=====================================================================================
 // END :: Cancel Booking 
 //=====================================================================================	
 	
+	
+	
+	
 
+//=====================================================================================
+// Record Booking Cancellation
+//=====================================================================================	
+$scope.addBookingCancellation = function(user, date, time) 
+{
+	var data = $.param({
+        employeeID: user,
+		date: date,
+        timeslot: time
+    });
+    
+  $http.post('http://localhost:8080/CSCBikeHire/rest/hire/cancellation', data, config)  
+    .success(function (data, status, headers, config) {
+        $scope.PostDataResponse = data;
+        deleteBooking();
+    })
+    .error(function (data, status, header, config) {
+        $scope.ResponseDetails = "Data: " + data +
+            "<hr />status: " + status +
+            "<hr />headers: " + header +
+            "<hr />config: " + config;
+    });
+}
+//=====================================================================================
+// END :: Record Booking Cancellation
+//=====================================================================================		
+	
+
+
+
+
+//=====================================================================================
+// Perform Booking Deletion
+//=====================================================================================
+function deleteBooking()
+{
+	//Delete from booking table
+	var deleteData = $.param({
+        employeeID: $scope.currentUser,
+		date: cancelDate,
+        timeslot: cancelTime
+    });
+	
+	$http.delete('http://localhost:8080/CSCBikeHire/rest/hire/delete/'+$scope.currentUser+'/'+convertDateSQL(cancelDate)+'/'+cancelTime, deleteData, config)      
+	.success(function (deleteData, status, headers, config) {
+	    $scope.PostDataResponse = deleteData;
+	    
+	    for(var i = 0; i < $scope.myBookingsArray.length; i++) 
+	    {
+		var obj = $scope.myBookingsArray[i];
+	
+			if(obj.date == cancelDate && obj.timeslots.indexOf("-") == -1) // Final booking for the day
+			{
+				var bookingID = $scope.myBookingsArray[i].date+"-"+$scope.myBookingsArray[i].timeslots;
+				$scope.changeTimeslotColour(document.getElementById(bookingID),1); 
+				$scope.myBookingsArray.splice(i, 1);
+				
+				//Display message if user has no bookings
+				if($scope.myBookingsArray.length === 0)
+				{
+					document.getElementById("noBookingsMessage").style.display = 'block';
+				}
+		
+			}
+			else if (obj.date == cancelDate) // Not final booking for the day
+			{
+				var bookingElement = document.getElementById("mb-"+obj.date+"-"+cancelTime);
+				bookingElement.style.display = 'none';
+					        			
+				var n = $scope.myBookingsArray[i].timeslots.indexOf(cancelTime);
+				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n) + $scope.myBookingsArray[i].timeslots.slice(n+1);
+				$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, n) + $scope.myBookingsArray[i].bikeNumbers.slice(n+1);
+	
+				//First Timeslot Identifier
+				if(n == 0)
+					{
+	    				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 0) + $scope.myBookingsArray[i].timeslots.slice(1);
+	    				$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, 0) + $scope.myBookingsArray[i].bikeNumbers.slice(1);
+					}
+				//Second Timeslot Identifier
+				else if (n == $scope.myBookingsArray[i].timeslots.length)
+					{
+	    				$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, n-1);
+	    				$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, n-1);
+					}
+				//Third Timeslot Identifier
+				else
+					{
+						$scope.myBookingsArray[i].timeslots = $scope.myBookingsArray[i].timeslots.slice(0, 1) + $scope.myBookingsArray[i].timeslots.slice(2);
+						$scope.myBookingsArray[i].bikeNumbers = $scope.myBookingsArray[i].bikeNumbers.slice(0, 1) + $scope.myBookingsArray[i].bikeNumbers.slice(2);
+					}
+			}
+		}
+	    $scope.updateDisplay();
+	})
+	.error(function (deleteData, status, header, config) {
+	    $scope.ResponseDetails = "Data: " + deleteData +
+	        "<hr />status: " + status +
+	        "<hr />headers: " + header +
+	        "<hr />config: " + config;
+	});
+}
+//=====================================================================================
+// END :: Perform Booking Deletion
+//=====================================================================================
+
+
+	
+	
 	
 	
 		
@@ -1526,7 +1589,6 @@ $scope.orderByDate = function(item)
 			navPanel.style.top = '0px';
 			navPanel.style.position = 'fixed';
 		}
-		console.log(navPanel.style.top);
 	}
 //=====================================================================================
 // END :: Page Scroll

@@ -255,6 +255,8 @@ public class ProjectManager {
 	
 	
 	
+	
+	
 //==========================================================	
 // Add New Booking	
 //==========================================================
@@ -283,12 +285,13 @@ public class ProjectManager {
 				ps.setString(8, date);
 				ps.setString(9, timeslot);
 				
-				System.out.println(ps);
+				//System.out.println(ps);
 
 				ps.executeUpdate();
 			}
 			catch (Exception e)
 			{
+				PostFeeds(employee, date, timeslot); // Possible deadlock - Restart Transaction
 				System.out.println("Exception: " + e.getMessage()); 
 				throw e;
 			}
@@ -306,6 +309,63 @@ public class ProjectManager {
 // END :: Add New Booking	
 //==========================================================
 	
+		
+		
+		
+		
+//==========================================================
+// Add a Cancellation    
+//==========================================================
+		public static void AddCancellation(String employee, String date, String timeslot) throws Exception 
+		{
+			Connection connection = null;
+			PreparedStatement ps = null;
+			try 
+			{
+				Database database = new Database();
+				connection = database.Get_Connection();
+				
+				String query = "INSERT INTO bikehire.cancellation (cancellation.emailAddressCan, cancellation.date, cancellation.timeslot, cancellation.bikeNumber) " 
+				+ "SELECT ?, ?, ?, booking.bikeNumber " 
+				+ "FROM bikehire.booking "
+				+ "WHERE booking.emailAddress = ? AND booking.date = ? AND booking.timeslot = ?";
+
+				ps = connection.prepareStatement(query);
+				ps.setString(1, employee);
+				ps.setString(2, date);
+				ps.setString(3, timeslot);
+				ps.setString(4, employee);
+				ps.setString(5, date);
+				ps.setString(6, timeslot);
+				System.out.println(ps);
+				ps.executeUpdate();
+			}
+			catch (Exception e)
+			{
+				System.out.println("Exception: " + e.getMessage()); 
+				throw e;
+			}
+			finally 
+			{
+				if (ps != null) {
+					ps.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			}
+		}		
+		
+		
+		
+		
+//==========================================================
+// END :: Add a Cancellation    
+//========================================================== 
+		
+		
+		
+		
 		
 //==========================================================	
 // Verify Employee Account	

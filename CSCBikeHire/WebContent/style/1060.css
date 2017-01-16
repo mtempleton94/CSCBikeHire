@@ -1,3 +1,7 @@
+.header
+{
+}
+
 .dayComponent:nth-child(1), .dayComponent:nth-child(2), .dayComponent:nth-child(3), .dayComponent:nth-child(4) {
 	width: 24%;
 }
