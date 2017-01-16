@@ -809,27 +809,7 @@ body #content h1
  
  
  
- /* --------------- Report Issue Window --------------- */
- .reportIssueWindow p
- {
- 	font-size: 70px;
- 	margin-left: 15px;
- }
- 
- .reportIssueWindow p:nth-child(2)
- {
- 	font-size: 50px;
- }
- 
- .reportIssueWindow textarea
- {
- 	resize: none;
- 	width: 98%;
- 	height: 500px;
- 	margin-left: 1%;
- 	font-size: 50px;
- }
- /* ------------ END : Report Issue Window ------------ */
+
 
 
 
@@ -881,6 +861,56 @@ body #content h1
     width: 100%;
 }
 
+ /* --------------- Report Issue Window --------------- */
+ .reportIssueWindow
+ {
+ 	height: 80%;
+ 	width: 90%;
+ }
+ 
+ .reportIssueWindow p
+ {
+ 	font-size: 70px;
+ 	margin-left: 15px;
+ 	 height: 15%;
+ }
+ 
+ .reportIssueWindow p:nth-child(2)
+ {
+ 	font-size: 30px;
+ 	 min-height: 15%;
+ }
+ 
+ .reportIssueWindow textarea
+ {
+ 	resize: none;
+ 	width: 98%;
+ 	height: 55%;
+ 	margin-left: 1%;
+ 	font-size: 50px;
+ }
+ 
+ .reportIssueActions
+ {
+ height: 15%;
+ }
+ 
+ .reportIssueActions button
+ {	
+   	position: absolute;
+   	bottom: 0;
+ 	height: 15%;
+ }
+  .reportIssueActions .submitIssueButton
+ {
+	right:0;
+ }
+ /* ------------ END : Report Issue Window ------------ */
+
+
+
+
+
 
 /* ------------ Delete Account Window ------------ */
 .deleteAccountWindow .deleteKeypadLine
@@ -892,11 +922,6 @@ body #content h1
 {
 	font-size: 70px;
 	text-align: center;
-}
-
-.deleteActionDisplay p
-{
-	font-size: 50px;
 }
 
 .deleteAccountWindow .deleteActionDisplay
@@ -912,9 +937,9 @@ body #content h1
     border: none;
     text-align: center;
     text-decoration: none;
-    font-size: 90px;
+    font-size: 50px;
     border: 1px solid white;
-    height: 150px;
+    height: 100px;
     margin-top: 0.5%; 
     background: rgba(255, 255, 255, 0.2);
 }
@@ -1147,6 +1172,7 @@ width: 100%;
 {
 	background-color: #32324e;
 }
+
 
 
 

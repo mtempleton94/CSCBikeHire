@@ -1,8 +1,3 @@
-body
-{
-	background-color: yellow;
-}
-
 .login 
 {
 	overflow-y: scroll;
@@ -120,5 +115,13 @@ body
 	position: absolute; 
 }
 /* --------- END : Delete Button for Keypads --------- */
+
+
+
+/* Report an Issue Window */
+/* .reportIssueWindow p
+ {
+ 	font-size: 30px;
+ } */
 
 

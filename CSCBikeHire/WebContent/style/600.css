@@ -1,0 +1,58 @@
+/* Delete Account Window */ 
+.deleteAccountWindow button
+{
+    font-size: 30px;
+	height: 40px;
+	padding-left: 0px;
+    padding-right: 0px;
+    padding-top:0px;
+    padding-bottom:0px;
+}
+
+.deleteAccountWindow p
+{
+	font-size: 40px;
+}
+
+.deleteAccountWindow .deleteActionDisplay
+{
+	font-size: 30px;
+}
+
+.deleteKeypadLine .delIcon
+{ 
+	width: 25px;
+	height: 30px; 
+	font-size: 30px;
+} 
+
+.deleteKeypadLine .delIcon:before
+{ 
+	border-bottom: 15px solid transparent; 
+	border-top: 15px solid transparent; 
+	border-right: 15px solid white; 
+	left: -14px;
+}
+
+/* END : Delete Account Window */ 
+
+
+
+
+
+/* Report an Issue Window */
+ .reportIssueWindow p
+ {
+ 	font-size: 50px;
+ }
+ 
+ .reportIssueWindow p:nth-child(2)
+ {
+ 	font-size: 30px;
+ }
+ 
+  .reportIssueActions button
+ {
+	font-size: 30px;
+ }
+/* END : Report an Issue Window */

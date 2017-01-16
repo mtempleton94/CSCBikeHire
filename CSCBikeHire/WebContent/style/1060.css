@@ -16,4 +16,15 @@
 	width: 24%;
 }
 
+/* Report an Issue Window */ 
+ /*.reportIssueWindow p
+ {
+ 	font-size: 15px;
+ }
+
+ .reportIssueWindow p:nth-child(2)
+ {
+ 	font-size: 20px;
+ }*/
+
 

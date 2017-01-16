@@ -1,0 +1,11 @@
+/* Report an Issue Window */
+ .reportIssueWindow p
+ {
+ 	font-size: 60px;
+ }
+ 
+ .reportIssueWindow p:nth-child(2)
+ {
+ 	font-size: 50px;
+ }
+ 

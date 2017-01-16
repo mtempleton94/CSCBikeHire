@@ -1,0 +1,25 @@
+/* Delete Account Window */ 
+.deleteAccountWindow p
+{
+	font-size: 70px;
+	text-align: center;
+}
+
+.deleteAccountWindow .deleteActionDisplay
+{
+	font-size: 50px;
+	text-align: center;
+}
+
+
+.deleteAccountWindow button
+{
+	background: blue;
+ 	font-size: 70px;
+ 	height: 150px;
+	padding-left: 0px;
+    padding-right: 0px;
+    padding-top:0px;
+    padding-bottom:0px;
+}
+/* END : Delete Account Window */

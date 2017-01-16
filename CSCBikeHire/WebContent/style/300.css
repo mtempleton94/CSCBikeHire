@@ -8,3 +8,37 @@
     left: 20px;
     top: 60px;
 }
+
+
+/* Delete Account Window */ 
+.deleteAccountWindow
+{	
+	/*height: 500px;*/
+}
+
+.deleteAccountWindow button
+{
+    font-size: 20px;
+	height: 30px;
+}
+
+.deleteAccountWindow p
+{
+	font-size: 30px;
+}
+
+.deleteKeypadLine .delIcon
+{ 
+	width: 25px;
+	height: 25px; 
+	font-size: 25px;
+} 
+
+.deleteKeypadLine .delIcon:before
+{ 
+	border-bottom: 13px solid transparent; 
+	border-top: 13px solid transparent; 
+	border-right: 13px solid white; 
+	left: -12px;
+}
+/* END : Delete Account Window */ 
