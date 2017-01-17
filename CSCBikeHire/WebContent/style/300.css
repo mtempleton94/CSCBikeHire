@@ -1,3 +1,4 @@
+/* ---------- Add Booking (+) Button ---------- */
 .makeBookingContainer .makeBookingButton {
     height: 150px;
     width: 150px;
@@ -8,14 +9,13 @@
     left: 20px;
     top: 60px;
 }
+/* ------- END : Add Booking (+) Button ------- */
 
 
-/* Delete Account Window */ 
-.deleteAccountWindow
-{	
-	/*height: 500px;*/
-}
 
+
+
+/* ---------- Delete Account Window ---------- */
 .deleteAccountWindow button
 {
     font-size: 20px;
@@ -41,13 +41,13 @@
 	border-right: 13px solid white; 
 	left: -12px;
 }
-/* END : Delete Account Window */ 
+/* ------- END : Delete Account Window ------- */
 
 
 
 
 
-/* Login Screen */
+/* ---------- Login Screen ---------- */
 .loginContents .emailEntry
 {
 	height: 35px;
@@ -75,13 +75,13 @@
 {
     top:210px;
 }
-/* END : Login Screen */
+/* ---------- END : Login Screen ---------- */
 
 
 
 
 
-/* Keypad Buttons */
+/* ------------ Keypad Buttons ------------ */
 .loginContents .keypadLine button, .resetLoginContents .keypadLine button
 {
     font-size: 30px;
@@ -91,7 +91,8 @@
 {
 	font-size: 25px;
 }
-/* END : Keypad Buttons */
+/* --------- END : Keypad Buttons --------- */
+
 
 
 

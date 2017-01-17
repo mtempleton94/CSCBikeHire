@@ -1,4 +1,4 @@
-/* Delete Account Window */ 
+/* --------- Delete Account Window --------- */ 
 .deleteAccountWindow button
 {
     font-size: 30px;
@@ -34,13 +34,13 @@
 	left: -14px;
 }
 
-/* END : Delete Account Window */ 
+/* ------ END : Delete Account Window  ------  */ 
 
 
 
 
 
-/* Report an Issue Window */
+/* ----------- Report Issue Window ----------- */
  .reportIssueWindow p
  {
  	font-size: 50px;
@@ -55,4 +55,4 @@
  {
 	font-size: 30px;
  }
-/* END : Report an Issue Window */
+/* -------- END : Report Issue Window -------- */
