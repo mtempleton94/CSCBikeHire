@@ -175,7 +175,7 @@ body #content h1
 .loginContents .emailEntry p
 {
 	position: absolute;
-	right: 20px;
+	right: 3%;
 	top: 230px;
 	font-size: 60px;
 	color: rgba(0, 0, 0, 0.7); 
@@ -681,7 +681,13 @@ body #content h1
 /* -------------- Confirm Booking Window --------------- */
 .confirmBookingWindow p 
 {
+	margin-left: 10px;
 	font-size: 60px;
+} 
+
+.selectedBookings p
+{
+	font-family: Arial, Helvetica, sans-serif;
 } 
 
 .confirmBookingWindow .selectedBookings p 
@@ -719,6 +725,11 @@ body #content h1
 {
 	font-size: 60px;
  	margin-left: 15px;
+}
+
+.cancelBookingWindow p:nth-child(2)
+{
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .cancelBookingWindow p:nth-child(2)
@@ -786,8 +797,14 @@ body #content h1
  {
  	font-size: 70px;
  	margin-left: 15px;
- 	 height: 15%;
+ 	height: 15%;
  }
+ 
+  .reportIssueWindow p:nth-child(2)
+  {
+   	font-family: Arial, Helvetica, sans-serif;
+  }
+ 
  
  .reportIssueWindow p:nth-child(2)
  {
@@ -903,7 +920,7 @@ width: 100%;
 {
 	position: absolute;
 	top:75px;
-	right:20px;
+	right: 3%;
     font-size: 40px;
 	color: rgba(0, 0, 0, 0.7); 
 }
@@ -1084,7 +1101,7 @@ width: 100%;
 
 
 
-
+/* ---------------- Jump to Week Menu ----------------- */
 .jumpToWeekButton {
     background-color: #14141f;
     color: white;
@@ -1114,29 +1131,37 @@ width: 100%;
     border-color: white transparent transparent transparent;
 }
 
-.jumpToWeekDropdown {
+.jumpToWeekDropdown 
+{
     display: none;
     position: absolute;
     background-color: #32324e;
-    overflow: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     width: 100vw;
-    font-size: 35px;
-    
+    font-size: 30px;
+	height:50vh;
+	overflow:scroll;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
-.jumpToWeekDropdown a {
+.jumpToWeekDropdown a 
+{
     color: white;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
 
-.jumpToWeek a:hover {background-color: #f1f1f1}
+.show 
+{
+	display:block;
+}
 
-.show {display:block;}
-
-
+.weekItem
+{
+	
+}
+/* ------------- END : Jump to Week Menu -------------- */
 
 
 

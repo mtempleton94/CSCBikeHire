@@ -1534,7 +1534,7 @@ function deleteBooking()
 		  
 		  if(tabName=="HireABike")
 		  {
-				document.getElementById("noBookingsMessage").style.display = 'none';
+			  document.getElementById("noBookingsMessage").style.display = 'none';
 
 			  myBookingsScrollPos = document.body.scrollTop;
 			  document.body.scrollTop = hireBikeScrollPos;
@@ -1544,6 +1544,9 @@ function deleteBooking()
        		  document.getElementById("MyBookings").style.display = "none";
 		      document.getElementById("HireABikeTab").style.background = "#14141f";
 		      document.getElementById("MyBookingsTab").style.background = "#32324e";
+		      
+		      document.getElementById("navPanelContainer").style.height = "215px";//Increase navigation Container Size
+		      
 		  } 
 		  else 
 		  {
@@ -1557,7 +1560,17 @@ function deleteBooking()
        		  document.getElementById("HireABike").style.display = "none";
 		      document.getElementById("HireABikeTab").style.background = "#32324e";
 		      document.getElementById("MyBookingsTab").style.background = "#14141f";
-		      $scope.displayMyBookingsContent();		      			  
+		      $scope.displayMyBookingsContent();
+		      
+		      //Decrease navigation Container Size 
+		      if(screen.width >= 800)
+		      {
+		    	  document.getElementById("navPanelContainer").style.height = "100px";
+		      }
+		      else
+		      {
+			      document.getElementById("navPanelContainer").style.height = "130px";
+		      }
 		  }
 		scroll();  
 	}

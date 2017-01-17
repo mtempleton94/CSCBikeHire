@@ -3,7 +3,7 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>My Client</title>
-	  <link rel="stylesheet" href="style/style.css">
+	 <link rel="stylesheet" href="style/style.css">
 	<link rel="stylesheet" media="screen and (max-device-height: 600px)" href="style/600.css" />
 	<link rel="stylesheet" media="screen and (max-device-width: 600px)" href="style/600_width.css" />
 	<link rel="stylesheet" media="screen and (max-device-width: 1060px)" href="style/1060.css" />
@@ -11,6 +11,7 @@
 	<link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
 	<link rel="stylesheet" media="screen and (max-device-height: 300px)" href="style/300.css" />
 	<link rel="stylesheet"  media='screen and (max-device-height: 980px) and (min-device-width: 800px)' href="style/500.css" /> 
+	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="style/800.css" />
 	 
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
@@ -84,7 +85,7 @@
 <!--======================= Confirm Bookings Window ======================-->
   	<div class="overlay" id="overlay">
  		<div  class="confirmBookingWindow" id="confirmBookingWindow">
- 			<p>Hire Bike For:</p>
+ 			<p>Hire Bike For</p>
  			<div class="selectedBookings" ng-repeat="booking in selectedBookings">
  				<p>{{formatSelectedBooking(booking)}}</p>
  			</div>
@@ -230,16 +231,6 @@
   		<div class="tablink" id="MyBookingsTab" ng-click="openTab('MyBookings');">My Bookings</div>
 	</div>
 </div>
-  
-<div class="jumpToWeek" id="jumpToWeek">
-	<button ng-click="showDropdown()" class="jumpToWeekButton">Jump to Week</button>
-	<div class="downArrow" id="jumpToWeekArrow" ng-click="showDropdown()"></div>
-  	<div id="jumpToWeekDropdown" class="jumpToWeekDropdown">
-  		<div ng-repeat="week in weekArray">
-  			<a ng-click="scrollToWeek(week.fullStartDate)">{{week.startDate}} {{week.startMonth}} - {{week.endDate}} {{week.endMonth}}</a>
-  		</div>
-  	</div>
-</div>
 <!--================= END : Navigation Tabs =================-->
 
 
@@ -248,6 +239,19 @@
 
 <!--=========================== Hire a Bike Tab ==========================-->
 <div id="HireABike" class="tabBody">
+
+	<!-------------------- Jump to Week Menu ----------------------->
+	<div class="jumpToWeek" id="jumpToWeek">
+		<button ng-click="showDropdown()" class="jumpToWeekButton">Jump to Week</button>
+		<div class="downArrow" id="jumpToWeekArrow" ng-click="showDropdown()"></div>
+	  	<div id="jumpToWeekDropdown" class="jumpToWeekDropdown">
+	  		<div ng-repeat="week in weekArray">
+	  			<a class="weekItem" ng-click="scrollToWeek(week.fullStartDate)">{{week.startDate}} {{week.startMonth}} - {{week.endDate}} {{week.endMonth}}</a>
+	  		</div>
+	  	</div>
+	</div>
+	<!----------------- END : Jump to Week Menu -------------------->
+
 	<div ng-repeat="date in dates">
   		<div class="day">   
 			<div class= "dayComponent">        
