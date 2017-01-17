@@ -3,7 +3,7 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>My Client</title>
-	<link rel="stylesheet" href="style/style.css">
+	  <link rel="stylesheet" href="style/style.css">
 	<link rel="stylesheet" media="screen and (max-device-height: 600px)" href="style/600.css" />
 	<link rel="stylesheet" media="screen and (max-device-width: 600px)" href="style/600_width.css" />
 	<link rel="stylesheet" media="screen and (max-device-width: 1060px)" href="style/1060.css" />
@@ -11,7 +11,7 @@
 	<link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
 	<link rel="stylesheet" media="screen and (max-device-height: 300px)" href="style/300.css" />
 	<link rel="stylesheet"  media='screen and (max-device-height: 980px) and (min-device-width: 800px)' href="style/500.css" /> 
-	
+	 
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-resource.js"></script>
@@ -223,12 +223,23 @@
 
 <!--==================== Navigation Tabs ====================-->
 <div class="navPanelContainer" id="navPanelContainer"></div>
+
 <div class="navPanel" id="navPanel">
 	<div class="tabs" id="tabs">
   		<div class="tablink" id="HireABikeTab" ng-click="openTab('HireABike');">Hire a Bike</div>
   		<div class="tablink" id="MyBookingsTab" ng-click="openTab('MyBookings');">My Bookings</div>
 	</div>
-  </div>
+</div>
+  
+<div class="jumpToWeek" id="jumpToWeek">
+	<button ng-click="showDropdown()" class="jumpToWeekButton">Jump to Week</button>
+	<div class="downArrow" id="jumpToWeekArrow" ng-click="showDropdown()"></div>
+  	<div id="jumpToWeekDropdown" class="jumpToWeekDropdown">
+  		<div ng-repeat="week in weekArray">
+  			<a ng-click="scrollToWeek(week.fullStartDate)">{{week.startDate}} {{week.startMonth}} - {{week.endDate}} {{week.endMonth}}</a>
+  		</div>
+  	</div>
+</div>
 <!--================= END : Navigation Tabs =================-->
 
 

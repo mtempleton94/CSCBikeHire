@@ -16,7 +16,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 	window.addEventListener("resize", scroll, false);
 
 	
-	
+	$scope.weekArray = new Array();
 	
 //=====================================================================================
 // Login
@@ -1301,8 +1301,9 @@ function deleteBooking()
 		return today;
 	}
 	
-
-    function getDates(startDate, stopDate) {
+	
+    function getDates(startDate, stopDate) 
+    {
        var dateArray = new Array();
        var currentDate = startDate;
        while (currentDate <= stopDate) 
@@ -1315,12 +1316,40 @@ function deleteBooking()
     	 if(currentDate.getDay() !== 0 && currentDate.getDay() !== 6) // Filter out weekends
     	 {
     		 dateArray.push({"fullDate":getFullDate(currentDate), "dayWord":weekday[currentDate.getDay()], "dayNum":dayNum, "monthWord":month[currentDate.getMonth()]})
+    		 
+    		 
+    		 //Generate Array storing all displayed week ranges
+    		 if($scope.weekArray.length == 0 || currentDate.getDay() == 1)
+    		 {
+    			 //Add correct number of days to get Friday
+    			 switch(currentDate.getDay()) 
+    			 {
+    			    case 1: //Mon
+    			    	var thisFriday = currentDate.addDays(4);
+    			        break;
+    			    case 2: //Tue
+    			    	var thisFriday = currentDate.addDays(3);
+    			        break;
+    			    case 3: //Wed
+    			    	var thisFriday = currentDate.addDays(2);
+    			        break;
+    			    case 4: //Thu
+    			    	var thisFriday = currentDate.addDays(1);
+    			        break;
+    			    default: //Fri
+    			    	 var thisFriday = currentDate;
+    			} 
+    			 $scope.weekArray.push({"fullStartDate": getFullDate(currentDate), "startDate":dayNum, "startMonth":month[currentDate.getMonth()],"endDate": thisFriday.getDate(),"endMonth":month[thisFriday.getMonth()]})
+    		 }
+    		 //===========================================================================================
+
     	 }
          currentDate = currentDate.addDays(1);
        }
        return dateArray;
      }
 
+   
     $scope.generateDates = function() 
 	{
  		var dateArray = getDates(new Date(), (new Date()).addDays(60));
@@ -1536,7 +1565,36 @@ function deleteBooking()
 // END :: Change Tab
 //=====================================================================================	
 
+
 	
+	
+	
+//=====================================================================================
+// Jump To Week
+//=====================================================================================
+	$scope.showDropdown = function () 
+	{
+		 document.getElementById("jumpToWeekDropdown").classList.toggle("show");
+	}
+	
+	//Close Drop Down Menu
+	window.onclick = function(event) {
+		  if (!event.target.matches('.jumpToWeekButton') && !event.target.matches('.downArrow') ) {
+
+		    var dropdowns = document.getElementsByClassName("jumpToWeekDropdown");
+		    var i;
+		    for (i = 0; i < dropdowns.length; i++) {
+		      var openDropdown = dropdowns[i];
+		      if (openDropdown.classList.contains('show')) {
+		        openDropdown.classList.remove('show');
+		      }
+		    }
+		  }
+		}
+	
+//=====================================================================================
+// END :: Jump To Week
+//=====================================================================================	
 
 	
 	
@@ -1569,13 +1627,11 @@ function deleteBooking()
 		}
 			
 		var navPanel = document.getElementById('navPanel');
-		var navPanelRect = navPanel.getBoundingClientRect();
+		var jumpToWeek = document.getElementById('jumpToWeek');
 		
 		//Container
 		var navPanelContainer = document.getElementById('navPanelContainer');
 		var navPanelContainerRect = navPanelContainer.getBoundingClientRect();
-		navPanelContainer.style.height = navPanel.offsetHeight+"px";
-		
 		var headerElement = document.getElementById("header");
 		var headerRect = headerElement.getBoundingClientRect();
 		
@@ -1583,11 +1639,15 @@ function deleteBooking()
 		{
 			navPanel.style.top = headerElement.offsetHeight +"px";
 			navPanel.style.position = 'absolute';
+			jumpToWeek.style.top = headerElement.offsetHeight+navPanel.offsetHeight +"px";
+			jumpToWeek.style.position = 'absolute';
 		}
 		else
 		{
 			navPanel.style.top = '0px';
 			navPanel.style.position = 'fixed';
+			jumpToWeek.style.top = navPanel.offsetHeight+'px';
+			jumpToWeek.style.position = 'fixed';
 		}
 	}
 //=====================================================================================
@@ -1597,13 +1657,64 @@ function deleteBooking()
 
 	
 	
+	
+//=====================================================================================
+// Scroll to Week Start
+//=====================================================================================	
+$scope.scrollToWeek = function(startDate)
+{
+	var dateElement = document.getElementById(startDate+"-1");
+	var elementPos = dateElement.offsetTop - dateElement.offsetHeight;
+	//Scroll Down
+	if(document.body.scrollTop < elementPos)
+	{
+		var id = setInterval(frame, 1);
+		function frame() 
+		{
+			if (document.body.scrollTop >= elementPos) 
+		    {
+				document.body.scrollTop = elementPos;
+				clearInterval(id);
+		    } 
+		    else 
+		    {
+		    	document.body.scrollTop+=100; 
+		    }
+		}
+	}
+	//Scroll Up
+	else if(document.body.scrollTop > elementPos)
+	{
+		var id = setInterval(frame, 1);
+		function frame() 
+		{
+			if (document.body.scrollTop <= elementPos) 
+		    {
+				document.body.scrollTop = elementPos;
+				clearInterval(id);
+		    } 
+		    else 
+		    {
+		    	document.body.scrollTop-=100; 
+		    }
+		}
+	}
+}
+//=====================================================================================
+// END :: Scroll to Week Start
+//=====================================================================================	
+	
+	
+	
+	
+	
 //=====================================================================================
 // Return To Top of Page
 //=====================================================================================	
 $scope.returnToTop = function ()
 {
-	var elem = document.body.scrollTop;   
-	var pos = document.body.scrollTop;
+	/*var elem = document.body.scrollTop;   
+	var pos = document.body.scrollTop;*/
 	var id = setInterval(frame, 1);
 	function frame() 
 	{

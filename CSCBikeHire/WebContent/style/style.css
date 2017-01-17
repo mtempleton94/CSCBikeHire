@@ -758,7 +758,6 @@ body #content h1
 
 .optionsWindow button
 {
-	
 	display: block;
     -moz-transition: 1s linear;
     -ms-transition: 1s linear;
@@ -1034,10 +1033,10 @@ width: 100%;
 
 
 
-
+/* ---------------- Navigation Tabs ------------------ */
 .navPanelContainer 
 {
-	height: 40px;
+	height: 215px;
 	background: #14141f;
 }
 
@@ -1077,6 +1076,66 @@ width: 100%;
 {
 	background-color: #32324e;
 }
+/* ------------- END : Navigation Tabs --------------- */
+
+
+
+
+
+
+
+
+.jumpToWeekButton {
+    background-color: #14141f;
+    color: white;
+    padding: 16px;
+    font-size: 45px;
+    border: none;
+    width: 100vw;
+    text-align: left;
+}
+
+
+.jumpToWeek {
+    display: inline-block;
+    position:absolute;
+    top: 0px;
+}
+
+.jumpToWeek .downArrow
+{
+	position: absolute;
+    right: 15px;
+    top: 20px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 34px 17px 17px;
+    border-color: white transparent transparent transparent;
+}
+
+.jumpToWeekDropdown {
+    display: none;
+    position: absolute;
+    background-color: #32324e;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    width: 100vw;
+    font-size: 35px;
+    
+}
+
+.jumpToWeekDropdown a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.jumpToWeek a:hover {background-color: #f1f1f1}
+
+.show {display:block;}
+
 
 
 
