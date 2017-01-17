@@ -435,7 +435,7 @@ app.controller("AppController", function ($scope, $http, $timeout, $cookies, $co
 			pinEntered="";
 			var enteredEmail = document.getElementById('emailEntry');
 			var loginActionDisplay = document.getElementById('loginActionDisplay');
-	        
+	       
 			if (enteredEmail.value == "") //No Email Address Entered
 			{
 	        	loginActionDisplay.innerHTML = "Please Enter a CSC E-Mail Address"; 

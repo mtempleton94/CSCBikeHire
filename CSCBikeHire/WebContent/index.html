@@ -5,12 +5,14 @@
 	<title>My Client</title>
 	<link rel="stylesheet" href="style/style.css">
 
-	<link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
+	
 	<link rel="stylesheet" media="screen and (max-device-height: 600px)" href="style/600.css" />
-	<link rel="stylesheet" media="screen and (max-device-height: 300px)" href="style/300.css" />
-	<link rel="stylesheet" media="screen and (max-device-width: 400px)" href="style/400.css" />
 	<link rel="stylesheet" media="screen and (max-device-width: 600px)" href="style/600_width.css" />
 	<link rel="stylesheet" media="screen and (max-device-width: 1060px)" href="style/1060.css" />
+	<link rel="stylesheet" media="screen and (max-device-width: 400px)" href="style/400.css" />
+	<link rel="stylesheet" media="screen and (max-device-height: 500px)" href="style/500.css" />
+	<link rel="stylesheet" media="screen and (max-device-height: 300px)" href="style/300.css" />
+	<link rel="stylesheet"  media='screen and (max-device-height: 980px) and (min-device-width: 800px)' href="style/500.css" /> 
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> 
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
@@ -26,50 +28,53 @@
 
 <!--========================= Login Screen =========================-->
   	<div class="login" id="login">
-  		   <div class="header" id="loginHeader" >
+  		<div class="header" id="loginHeader" >
   			<img src="images/csc_logo_transparent.png" alt="Logo"><h1>Bike Hire</h1>
 		  </div>  
+		
 		<div class="loginContents">
 			<div class="emailEntry">
-				<!-- <p>Email</p>   --><p class="atCSC">@csc.com</p>
 				<input type="text" name="emailEntry" id="emailEntry"  ng-model="confirmed" placeholder="Email">
+				<p class="atCSC">@csc.com</p>
 			</div>
 			
 			<div class="loginActionDisplay" id="loginActionDisplay">
-				Please Enter a CSC E-Mail Address
+				<p>Please Enter a CSC E-Mail Address</p>
 			</div>
 			
 			<!-- Keypad -->
-			<div class="keypad">
-				 <div class="keypadLine">
-					<button ng-click="loginKey('1')">1</button>
-					<button ng-click="loginKey('2')">2</button>
-					<button ng-click="loginKey('3')">3</button>
+			<div class="loginAllKeys">
+				<div class="keypad">
+					 <div class="keypadLine">
+						<button ng-click="loginKey('1')">1</button>
+						<button ng-click="loginKey('2')">2</button>
+						<button ng-click="loginKey('3')">3</button>
+					</div>
+					
+					<div class="keypadLine">
+						<button ng-click="loginKey('4')">4</button>
+						<button ng-click="loginKey('5')">5</button>
+						<button ng-click="loginKey('6')">6</button>
+					</div>
+					
+					<div class="keypadLine">
+						<button ng-click="loginKey('7')">7</button>
+						<button ng-click="loginKey('8')">8</button>
+						<button ng-click="loginKey('9')">9</button>
+					</div> 
+					
+					<div class="keypadLine">
+						<button class="keypadLineFinal"ng-click="loginKey('0')">0</button>
+						<button ng-click="loginKey('del')"><p class="delIcon"></p></button>
+					</div> 
 				</div>
+				<!-- End : Keypad -->	
 				
-				<div class="keypadLine">
-					<button ng-click="loginKey('4')">4</button>
-					<button ng-click="loginKey('5')">5</button>
-					<button ng-click="loginKey('6')">6</button>
+				<div class="loginAdditionalActions">
+					<button ng-click="forgotPin()">Forgot your Pin?</button>
+					<button id="signUpButton" ng-click="signUp()">Sign Up</button>
 				</div>
-				
-				<div class="keypadLine">
-					<button ng-click="loginKey('7')">7</button>
-					<button ng-click="loginKey('8')">8</button>
-					<button ng-click="loginKey('9')">9</button>
-				</div> 
-				
-				<div class="keypadLine">
-					<button class="keypadLineFinal"ng-click="loginKey('0')">0</button>
-					<button ng-click="loginKey('del')"><p class="delIcon"></p></button>
-				</div> 
-			</div>
-			<!-- End : Keypad -->	
-			
-			<div class="loginAdditionalActions">
-				<button ng-click="forgotPin()">Forgot your Pin?</button>
-				<button id="signUpButton" ng-click="signUp()">Sign Up</button>
-			</div>
+			</div> 
 		</div> 
 	</div> 
 <!--========================= END : Login Screen =========================-->
@@ -286,15 +291,6 @@
 				<div class= "mb-dayIdentifier">        
 					<p>{{formatDate(booking.date).dayWord}}</p><p>{{formatDate(booking.date).dayNum}}</p><p>{{formatDate(booking.date).monthWord}}</p>
 				</div>
-				<!-- <div class= "mb-dayComponent" id="mb-{{booking.date}}-1">        
-					<p> 8 - 11 </p> <p ng-click="cancelBooking(booking.date, 1);">X</p> <p id="mb_bn-{{booking.date}}-1">Bike No. 0</p>
-				</div>
-				<div class= "mb-dayComponent" id="mb-{{booking.date}}-2" ng-style="setBackground">        
-					<p> 11 - 2 </p> <p ng-click="cancelBooking(booking.date, 2);">X</p> <p id="mb_bn-{{booking.date}}-2">Bike No. 0</p>
-				</div>
-				<div class= "mb-dayComponent" id="mb-{{booking.date}}-3" ng-style="setBackground">        
-					<p> 2 - 5 </p>  <p ng-click="cancelBooking(booking.date, 3);">X</p> <p id="mb_bn-{{booking.date}}-3">Bike No. 0</p>
-				</div>  -->
 				
 				<!----------------------------- Timeslot 1 ----------------------------->
 				<div class= "mb-dayComponent" id="mb-{{booking.date}}-1">        
@@ -333,11 +329,7 @@
 						    <div class="lockBody" id="mb_lkbody-{{booking.date}}-3"></div>
 	  					</div>
 					</div>
-				</div>
-				
-				
-				
-				
+				</div>	
 			</div>
 		</div>
 	</div>
@@ -347,6 +339,5 @@
 </div>
 <!--========================= END : My Bookings Tab =========================-->
   
-
 </body>
 </html>

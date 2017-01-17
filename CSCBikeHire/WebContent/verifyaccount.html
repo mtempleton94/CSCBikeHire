@@ -19,11 +19,7 @@
 <div id="content">
 	<h1 id="verifyText" class="verifyText"></h1>
 	<a href="http://localhost:8080/CSCBikeHire/index.html" class="button" ng-click="goToLogin()">Go to Login</a>
-	
 </div>
-
-
-
 
 <script type="text/javascript">
 var app = angular.module("app", ['ngCookies']);
@@ -37,7 +33,6 @@ app.controller("VerifyController", function ($scope, $http, $cookies, $cookieSto
 		  {
 		    var pair = vars[i].split("=");
 		    idAndHash[pair[0]] = decodeURIComponent(pair[1]);
-
 		  } 
 		  
 		// Get Hash for User
@@ -83,9 +78,6 @@ app.controller("VerifyController", function ($scope, $http, $cookies, $cookieSto
 				$cookieStore.remove('currentUser');
 				$cookieStore.remove('currentTab');
 			}
-		
-		
-	
 });
 
 </script>

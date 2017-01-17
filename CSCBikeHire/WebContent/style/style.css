@@ -21,7 +21,6 @@ time, mark, audio, video {
 
 body
 {
-	background-color: #333333;
 	/*background-image: url("../images/background.png");*/
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#050729+39,1e2236+99,080f38+100 */
 	background: #050729; /* Old browsers */
@@ -178,7 +177,7 @@ body #content h1
 }
 
 /* --------- Login --------- */
-.LoginHeader
+/*#loginHeader
 {
 	display: inline-block;
 	width: 100%;
@@ -188,13 +187,12 @@ body #content h1
     background: -o-linear-gradient(#32324e, #14141f);
     background: -moz-linear-gradient(#32324e, #14141f);
     background: linear-gradient(#32324e, #14141f);
-    height: 15%;
-}
+    height: 10%;
+}*/
 
 
-.loginContents, .resetLoginContents
+/*.loginContents, */.resetLoginContents
 {
-	background-color: #333333;
 	/*background-image: url("../images/background.png");*/
 	background: #050729; /* Old browsers */
 	background: -moz-linear-gradient(-45deg, #050729 39%, #1e2236 99%, #080f38 100%); /* FF3.6-15 */
@@ -208,10 +206,20 @@ body #content h1
 
 
 /* --------- Main Login --------- */
+
+.loginAllKeys
+{
+    position:absolute;
+    top:400px;
+    bottom:0;
+    left:0;
+    right: 0;
+}
+
 .loginContents .emailEntry
 {
 	width: 100%;
-	height: 6%;
+	height: 80px;
 }
 
 .loginContents .emailEntry input
@@ -220,14 +228,17 @@ body #content h1
 	width: 95%;
     font-size: 60px;
     margin-left: 2.5%;
+    height: 100%;
 }
 
 .loginContents .emailEntry p
 {
 	position: absolute;
-	right: 30px;
+	right: 20px;
+	top: 230px;
 	font-size: 60px;
 	color: rgba(0, 0, 0, 0.7); 
+	text-align: right;
 }
 
 
@@ -258,9 +269,9 @@ body #content h1
 {
 	color: #FFFFFF;
 	text-align:center;
-    height: 75px;
     font-size: 50px;
-    height: 5%;
+    /*height: 10%;*/
+    height: 80px;
 }
 
 .loginContents .keypad
@@ -723,14 +734,14 @@ body #content h1
 	width: 100%;
 	height:100vh;
 	background: rgba(255, 255, 255, 0.4);
-	z-index: 50;
+	z-index: 100;
 	display: none;
 	         
 }
 
 .forgotPinOverlay
 {
-	z-index: 30;
+	z-index: 100;
 }
 
 
@@ -740,7 +751,7 @@ body #content h1
 	width: 90%;
 	max-height:90%;
 	background: #14141f;
-	z-index: 10;
+	z-index: 100;
 	display: block;    
 	margin-top: auto;
 	position:fixed;    
@@ -996,22 +1007,22 @@ width: 100%;
 }
 
 
-
-
-
-
-
-.login{
-	
+.login
+{
 	position:fixed;
 	width: 100%;
 	height:100vh;
-	background: #333333;
 	z-index: 100;
 	display: block;
-	/*overflow-y: scroll;*/
-
-	         
+	
+	
+	background: #050729; /* Old browsers */
+	background: -moz-linear-gradient(-45deg, #050729 39%, #1e2236 99%, #080f38 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(-45deg, #050729 39%,#1e2236 99%,#080f38 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(135deg, #050729 39%,#1e2236 99%,#080f38 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#050729', endColorstr='#080f38',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+	background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 

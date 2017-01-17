@@ -42,3 +42,74 @@
 	left: -12px;
 }
 /* END : Delete Account Window */ 
+
+
+
+
+
+/* Login Screen */
+.loginContents .emailEntry
+{
+	height: 35px;
+}
+
+.loginContents .emailEntry input
+{
+    font-size: 30px;
+}
+
+.loginContents .emailEntry p
+{
+	top: 130px;
+	font-size: 30px;
+}
+
+.loginContents .loginActionDisplay
+{
+	height: 40px;
+    font-size: 30px;
+}
+
+
+.loginAllKeys
+{
+    top:210px;
+}
+/* END : Login Screen */
+
+
+
+
+
+/* Keypad Buttons */
+.loginContents .keypadLine button, .resetLoginContents .keypadLine button
+{
+    font-size: 30px;
+}
+
+.loginAdditionalActions button
+{
+	font-size: 25px;
+}
+/* END : Keypad Buttons */
+
+
+
+
+/* --------- Delete Button for Keypads --------- */
+.keypadLine .delIcon, .deleteKeypadLine .delIcon
+{ 
+	height: 20px; 
+	width: 30px; 
+	font-size: 20px;
+} 
+
+.keypadLine .delIcon:before, .deleteKeypadLine .delIcon:before
+{ 
+	border-bottom: 10px solid transparent; 
+	border-top: 10px solid transparent; 
+	border-right: 10px solid white; 
+	left: -10px;
+	position: absolute; 
+}
+/* --------- END : Delete Button for Keypads --------- */
